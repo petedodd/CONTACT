@@ -1,0 +1,630 @@
+levelName,p,cost,deaths,lives,tbdx,att,tpt,tpttx,check
+Facility-based model                                                ,1,0,0,0,0,0,0,0,0
+ ¦--Child HH contact screened @ community                           ,1,0,0,0,0,0,0,0,0
+ ¦   ¦--Symptomatic child contact                                   ,1,0,0,0,0,0,0,0,0
+ ¦   ¦   °--Symptomatic child contact management                    ,1,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦--clinical and bacteriological assessment             ,,,0,0,0,0,0,0,0
+ ¦   ¦       ¦   ¦--MTB+                                            ,,,0,0,0,0,0,0,0
+ ¦   ¦       ¦   ¦   °--TB outcomes                                 ,,,0,0,0,0,0,0,0
+ ¦   ¦       ¦   ¦       ¦--DS-TB tx                                ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦   ¦       ¦   ¦       ¦   ¦--dies                                ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦   ¦       ¦   °--survives                            ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦   ¦       °--no DS-TB tx                             ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦   ¦           ¦--dies                                ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦   ¦           °--survives                            ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦   °--MTB-                                            ,,,0,0,0,0,0,0,0
+ ¦   ¦       ¦       ¦--LTFU                                        ,,,0,0,0,0,0,0,1
+ ¦   ¦       ¦       °--Clinical re(evaluation) with/without CXR    ,,,0,0,0,0,0,0,0
+ ¦   ¦       ¦           ¦--Clinical TB                             ,,,0,0,0,0,0,0,0
+ ¦   ¦       ¦           ¦   °--TB outcomes                         ,,,0,0,0,0,0,0,0
+ ¦   ¦       ¦           ¦       ¦--DS-TB tx                        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦   ¦       ¦           ¦       ¦   ¦--dies                        ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦           ¦       ¦   °--survives                    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦           ¦       °--no DS-TB tx                     ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦           ¦           ¦--dies                        ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦           ¦           °--survives                    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦           °--no TB                                   ,,,0,0,0,0,0,0,0
+ ¦   ¦       ¦               °--TPT outcomes                        ,,,0,0,0,0,1,0,0
+ ¦   ¦       ¦                   ¦--TPT tx                          ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+ ¦   ¦       ¦                   ¦   ¦--TB <1yr                     ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦                   ¦   ¦   °--TB outcomes             ,1,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦                   ¦   ¦       ¦--DS-TB tx            ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦   ¦       ¦                   ¦   ¦       ¦   ¦--dies            ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦                   ¦   ¦       ¦   °--survives        ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦                   ¦   ¦       °--no DS-TB tx         ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦                   ¦   ¦           ¦--dies            ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦                   ¦   ¦           °--survives        ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦                   ¦   °--no TB <1yr                  ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦                   ¦       °--no TB outcomes          ,1,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦                   ¦           ¦--dies                ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦                   ¦           °--survives            ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦                   °--no TPT tx                       ,p.ptptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦                       ¦--TB <1yr                     ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦                       ¦   °--TB outcomes             ,1,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦                       ¦       ¦--DS-TB tx            ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦   ¦       ¦                       ¦       ¦   ¦--dies            ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦                       ¦       ¦   °--survives        ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦                       ¦       °--no DS-TB tx         ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦                       ¦           ¦--dies            ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦                       ¦           °--survives        ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦                       °--no TB <1yr                  ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦                           °--no TB outcomes          ,1,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦                               ¦--dies                ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦                               °--survives            ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦   ¦       °--clinical assessment only + with/without CXR         ,,,0,0,0,0,0,0,0
+ ¦   ¦           ¦--Clinical TB                                     ,,,0,0,0,0,0,0,0
+ ¦   ¦           ¦   °--TB outcomes                                 ,,,0,0,0,0,0,0,0
+ ¦   ¦           ¦       ¦--DS-TB tx                                ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦   ¦           ¦       ¦   ¦--dies                                ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦   ¦           ¦       ¦   °--survives                            ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦   ¦           ¦       °--no DS-TB tx                             ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦           ¦           ¦--dies                                ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦   ¦           ¦           °--survives                            ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦   ¦           °--no TB                                           ,,,0,0,0,0,0,0,0
+ ¦   ¦               ¦--LTFU                                        ,,,0,0,0,0,0,0,1
+ ¦   ¦               °--Clinical re(evaluation) with/without CXR    ,,,0,0,0,0,0,0,0
+ ¦   ¦                   ¦--Clinical TB                             ,,,0,0,0,0,0,0,0
+ ¦   ¦                   ¦   °--TB outcomes                         ,,,0,0,0,0,0,0,0
+ ¦   ¦                   ¦       ¦--DS-TB tx                        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦   ¦                   ¦       ¦   ¦--dies                        ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦   ¦                   ¦       ¦   °--survives                    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦   ¦                   ¦       °--no DS-TB tx                     ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦                   ¦           ¦--dies                        ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦   ¦                   ¦           °--survives                    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦   ¦                   °--no TB                                   ,,,0,0,0,0,0,0,0
+ ¦   ¦                       °--TPT outcomes                        ,,,0,0,0,0,1,0,0
+ ¦   ¦                           ¦--TPT tx                          ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+ ¦   ¦                           ¦   ¦--TB <1yr                     ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦                           ¦   ¦   °--TB outcomes             ,1,0,0,0,0,0,0,0,0
+ ¦   ¦                           ¦   ¦       ¦--DS-TB tx            ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦   ¦                           ¦   ¦       ¦   ¦--dies            ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦   ¦                           ¦   ¦       ¦   °--survives        ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦   ¦                           ¦   ¦       °--no DS-TB tx         ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦                           ¦   ¦           ¦--dies            ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦   ¦                           ¦   ¦           °--survives        ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦   ¦                           ¦   °--no TB <1yr                  ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦                           ¦       °--no TB outcomes          ,1,0,0,0,0,0,0,0,0
+ ¦   ¦                           ¦           ¦--dies                ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦   ¦                           ¦           °--survives            ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦   ¦                           °--no TPT tx                       ,p.ptptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦                               ¦--TB <1yr                     ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦                               ¦   °--TB outcomes             ,1,0,0,0,0,0,0,0,0
+ ¦   ¦                               ¦       ¦--DS-TB tx            ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦   ¦                               ¦       ¦   ¦--dies            ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦   ¦                               ¦       ¦   °--survives        ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦   ¦                               ¦       °--no DS-TB tx         ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦                               ¦           ¦--dies            ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦   ¦                               ¦           °--survives        ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦   ¦                               °--no TB <1yr                  ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦                                   °--no TB outcomes          ,1,0,0,0,0,0,0,0,0
+ ¦   ¦                                       ¦--dies                ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦   ¦                                       °--survives            ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦   ¦--Asymptomatic child contact                                  ,1,0,0,0,0,0,0,0,0
+ ¦   ¦   °--Asymptomatic child contact management                   ,1,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦--Asymptomatic child contact @community               ,,,0,0,0,0,0,0,0
+ ¦   ¦       ¦   °--TPT outcomes                                    ,,,0,0,0,0,1,0,0
+ ¦   ¦       ¦       ¦--TPT tx                                      ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+ ¦   ¦       ¦       ¦   ¦--TB <1yr                                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦       ¦   ¦   °--TB outcomes                         ,1,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦       ¦   ¦       ¦--DS-TB tx                        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦   ¦       ¦       ¦   ¦       ¦   ¦--dies                        ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦       ¦   ¦       ¦   °--survives                    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦       ¦   ¦       °--no DS-TB tx                     ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦       ¦   ¦           ¦--dies                        ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦       ¦   ¦           °--survives                    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦       ¦   °--no TB <1yr                              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦       ¦       °--no TB outcomes                      ,1,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦       ¦           ¦--dies                            ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦       ¦           °--survives                        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦       °--no TPT tx                                   ,p.ptptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦           ¦--TB <1yr                                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦           ¦   °--TB outcomes                         ,1,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦           ¦       ¦--DS-TB tx                        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦   ¦       ¦           ¦       ¦   ¦--dies                        ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦           ¦       ¦   °--survives                    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦           ¦       °--no DS-TB tx                     ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦           ¦           ¦--dies                        ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦           ¦           °--survives                    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦   ¦       ¦           °--no TB <1yr                              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦               °--no TB outcomes                      ,1,0,0,0,0,0,0,0,0
+ ¦   ¦       ¦                   ¦--dies                            ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦   ¦       ¦                   °--survives                        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦   ¦       °--Asymptomatic child contact @facility                ,,,0,0,0,0,0,0,0
+ ¦   ¦           °--TPT outcomes                                    ,,,0,0,0,0,1,0,0
+ ¦   ¦               ¦--TPT tx                                      ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+ ¦   ¦               ¦   ¦--TB <1yr                                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦               ¦   ¦   °--TB outcomes                         ,1,0,0,0,0,0,0,0,0
+ ¦   ¦               ¦   ¦       ¦--DS-TB tx                        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦   ¦               ¦   ¦       ¦   ¦--dies                        ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦   ¦               ¦   ¦       ¦   °--survives                    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦   ¦               ¦   ¦       °--no DS-TB tx                     ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦               ¦   ¦           ¦--dies                        ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦   ¦               ¦   ¦           °--survives                    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦   ¦               ¦   °--no TB <1yr                              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦               ¦       °--no TB outcomes                      ,1,0,0,0,0,0,0,0,0
+ ¦   ¦               ¦           ¦--dies                            ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦   ¦               ¦           °--survives                        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦   ¦               °--no TPT tx                                   ,p.ptptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦                   ¦--TB <1yr                                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦                   ¦   °--TB outcomes                         ,1,0,0,0,0,0,0,0,0
+ ¦   ¦                   ¦       ¦--DS-TB tx                        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦   ¦                   ¦       ¦   ¦--dies                        ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦   ¦                   ¦       ¦   °--survives                    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦   ¦                   ¦       °--no DS-TB tx                     ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦   ¦                   ¦           ¦--dies                        ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦   ¦                   ¦           °--survives                    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦   ¦                   °--no TB <1yr                              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦   ¦                       °--no TB outcomes                      ,1,0,0,0,0,0,0,0,0
+ ¦   ¦                           ¦--dies                            ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦   ¦                           °--survives                        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦   °--Child contact rescreened                                    ,1,0,0,0,0,0,0,0,0
+ ¦       ¦--Symptomatic child contact                               ,1,0,0,0,0,0,0,0,0
+ ¦       ¦   °--Symptomatic child contact management                ,1,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦--clinical and bacteriological assessment         ,,,0,0,0,0,0,0,0
+ ¦       ¦       ¦   ¦--MTB+                                        ,,,0,0,0,0,0,0,0
+ ¦       ¦       ¦   ¦   °--TB outcomes                             ,,,0,0,0,0,0,0,0
+ ¦       ¦       ¦   ¦       ¦--DS-TB tx                            ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦       ¦       ¦   ¦       ¦   ¦--dies                            ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦       ¦       ¦   ¦       ¦   °--survives                        ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦       ¦       ¦   ¦       °--no DS-TB tx                         ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦   ¦           ¦--dies                            ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦       ¦       ¦   ¦           °--survives                        ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦       ¦       ¦   °--MTB-                                        ,,,0,0,0,0,0,0,0
+ ¦       ¦       ¦       ¦--LTFU                                    ,,,0,0,0,0,0,0,1
+ ¦       ¦       ¦       °--Clinical re(evaluation) with/without CXR,,,0,0,0,0,0,0,0
+ ¦       ¦       ¦           ¦--Clinical TB                         ,,,0,0,0,0,0,0,0
+ ¦       ¦       ¦           ¦   °--TB outcomes                     ,,,0,0,0,0,0,0,0
+ ¦       ¦       ¦           ¦       ¦--DS-TB tx                    ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦       ¦       ¦           ¦       ¦   ¦--dies                    ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦       ¦       ¦           ¦       ¦   °--survives                ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦       ¦       ¦           ¦       °--no DS-TB tx                 ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦           ¦           ¦--dies                    ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦       ¦       ¦           ¦           °--survives                ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦       ¦       ¦           °--no TB                               ,,,0,0,0,0,0,0,0
+ ¦       ¦       ¦               °--TPT outcomes                    ,,,0,0,0,0,1,0,0
+ ¦       ¦       ¦                   ¦--TPT tx                      ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+ ¦       ¦       ¦                   ¦   ¦--TB <1yr                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦                   ¦   ¦   °--TB outcomes         ,1,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦                   ¦   ¦       ¦--DS-TB tx        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦       ¦       ¦                   ¦   ¦       ¦   ¦--dies        ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦       ¦       ¦                   ¦   ¦       ¦   °--survives    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦       ¦       ¦                   ¦   ¦       °--no DS-TB tx     ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦                   ¦   ¦           ¦--dies        ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦       ¦       ¦                   ¦   ¦           °--survives    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦       ¦       ¦                   ¦   °--no TB <1yr              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦                   ¦       °--no TB outcomes      ,1,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦                   ¦           ¦--dies            ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦       ¦       ¦                   ¦           °--survives        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦       ¦       ¦                   °--no TPT tx                   ,p.ptptltfu,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦                       ¦--TB <1yr                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦                       ¦   °--TB outcomes         ,1,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦                       ¦       ¦--DS-TB tx        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦       ¦       ¦                       ¦       ¦   ¦--dies        ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦       ¦       ¦                       ¦       ¦   °--survives    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦       ¦       ¦                       ¦       °--no DS-TB tx     ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦                       ¦           ¦--dies        ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦       ¦       ¦                       ¦           °--survives    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦       ¦       ¦                       °--no TB <1yr              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦                           °--no TB outcomes      ,1,0,0,0,0,0,0,0,0
+ ¦       ¦       ¦                               ¦--dies            ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦       ¦       ¦                               °--survives        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦       ¦       °--clinical assessment only + with/without CXR     ,,,0,0,0,0,0,0,0
+ ¦       ¦           ¦--Clinical TB                                 ,,,0,0,0,0,0,0,0
+ ¦       ¦           ¦   °--TB outcomes                             ,,,0,0,0,0,0,0,0
+ ¦       ¦           ¦       ¦--DS-TB tx                            ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦       ¦           ¦       ¦   ¦--dies                            ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦       ¦           ¦       ¦   °--survives                        ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦       ¦           ¦       °--no DS-TB tx                         ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦       ¦           ¦           ¦--dies                            ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦       ¦           ¦           °--survives                        ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦       ¦           °--no TB                                       ,,,0,0,0,0,0,0,0
+ ¦       ¦               ¦--LTFU                                    ,,,0,0,0,0,0,0,1
+ ¦       ¦               °--Clinical re(evaluation) with/without CXR,,,0,0,0,0,0,0,0
+ ¦       ¦                   ¦--Clinical TB                         ,,,0,0,0,0,0,0,0
+ ¦       ¦                   ¦   °--TB outcomes                     ,,,0,0,0,0,0,0,0
+ ¦       ¦                   ¦       ¦--DS-TB tx                    ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦       ¦                   ¦       ¦   ¦--dies                    ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦       ¦                   ¦       ¦   °--survives                ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦       ¦                   ¦       °--no DS-TB tx                 ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦       ¦                   ¦           ¦--dies                    ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦       ¦                   ¦           °--survives                ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦       ¦                   °--no TB                               ,,,0,0,0,0,0,0,0
+ ¦       ¦                       °--TPT outcomes                    ,,,0,0,0,0,1,0,0
+ ¦       ¦                           ¦--TPT tx                      ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+ ¦       ¦                           ¦   ¦--TB <1yr                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦       ¦                           ¦   ¦   °--TB outcomes         ,1,0,0,0,0,0,0,0,0
+ ¦       ¦                           ¦   ¦       ¦--DS-TB tx        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦       ¦                           ¦   ¦       ¦   ¦--dies        ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦       ¦                           ¦   ¦       ¦   °--survives    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦       ¦                           ¦   ¦       °--no DS-TB tx     ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦       ¦                           ¦   ¦           ¦--dies        ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦       ¦                           ¦   ¦           °--survives    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦       ¦                           ¦   °--no TB <1yr              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦       ¦                           ¦       °--no TB outcomes      ,1,0,0,0,0,0,0,0,0
+ ¦       ¦                           ¦           ¦--dies            ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦       ¦                           ¦           °--survives        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦       ¦                           °--no TPT tx                   ,p.ptptltfu,0,0,0,0,0,0,0,0
+ ¦       ¦                               ¦--TB <1yr                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦       ¦                               ¦   °--TB outcomes         ,1,0,0,0,0,0,0,0,0
+ ¦       ¦                               ¦       ¦--DS-TB tx        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦       ¦                               ¦       ¦   ¦--dies        ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦       ¦                               ¦       ¦   °--survives    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦       ¦                               ¦       °--no DS-TB tx     ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦       ¦                               ¦           ¦--dies        ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦       ¦                               ¦           °--survives    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦       ¦                               °--no TB <1yr              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦       ¦                                   °--no TB outcomes      ,1,0,0,0,0,0,0,0,0
+ ¦       ¦                                       ¦--dies            ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦       ¦                                       °--survives        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦       °--Asymptomatic child contact                              ,1,0,0,0,0,0,0,0,0
+ ¦           °--Asymptomatic child contact management               ,1,0,0,0,0,0,0,0,0
+ ¦               ¦--Asymptomatic child contact @community           ,,,0,0,0,0,0,0,0
+ ¦               ¦   °--TPT outcomes                                ,,,0,0,0,0,1,0,0
+ ¦               ¦       ¦--TPT tx                                  ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+ ¦               ¦       ¦   ¦--TB <1yr                             ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦               ¦       ¦   ¦   °--TB outcomes                     ,1,0,0,0,0,0,0,0,0
+ ¦               ¦       ¦   ¦       ¦--DS-TB tx                    ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦               ¦       ¦   ¦       ¦   ¦--dies                    ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦               ¦       ¦   ¦       ¦   °--survives                ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦               ¦       ¦   ¦       °--no DS-TB tx                 ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦               ¦       ¦   ¦           ¦--dies                    ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦               ¦       ¦   ¦           °--survives                ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦               ¦       ¦   °--no TB <1yr                          ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦               ¦       ¦       °--no TB outcomes                  ,1,0,0,0,0,0,0,0,0
+ ¦               ¦       ¦           ¦--dies                        ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦               ¦       ¦           °--survives                    ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦               ¦       °--no TPT tx                               ,p.ptptltfu,0,0,0,0,0,0,0,0
+ ¦               ¦           ¦--TB <1yr                             ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦               ¦           ¦   °--TB outcomes                     ,1,0,0,0,0,0,0,0,0
+ ¦               ¦           ¦       ¦--DS-TB tx                    ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦               ¦           ¦       ¦   ¦--dies                    ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦               ¦           ¦       ¦   °--survives                ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦               ¦           ¦       °--no DS-TB tx                 ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦               ¦           ¦           ¦--dies                    ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦               ¦           ¦           °--survives                ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦               ¦           °--no TB <1yr                          ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦               ¦               °--no TB outcomes                  ,1,0,0,0,0,0,0,0,0
+ ¦               ¦                   ¦--dies                        ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦               ¦                   °--survives                    ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦               °--Asymptomatic child contact @facility            ,,,0,0,0,0,0,0,0
+ ¦                   °--TPT outcomes                                ,,,0,0,0,0,1,0,0
+ ¦                       ¦--TPT tx                                  ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+ ¦                       ¦   ¦--TB <1yr                             ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦                       ¦   ¦   °--TB outcomes                     ,1,0,0,0,0,0,0,0,0
+ ¦                       ¦   ¦       ¦--DS-TB tx                    ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦                       ¦   ¦       ¦   ¦--dies                    ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦                       ¦   ¦       ¦   °--survives                ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦                       ¦   ¦       °--no DS-TB tx                 ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦                       ¦   ¦           ¦--dies                    ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦                       ¦   ¦           °--survives                ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦                       ¦   °--no TB <1yr                          ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦                       ¦       °--no TB outcomes                  ,1,0,0,0,0,0,0,0,0
+ ¦                       ¦           ¦--dies                        ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦                       ¦           °--survives                    ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ ¦                       °--no TPT tx                               ,p.ptptltfu,0,0,0,0,0,0,0,0
+ ¦                           ¦--TB <1yr                             ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦                           ¦   °--TB outcomes                     ,1,0,0,0,0,0,0,0,0
+ ¦                           ¦       ¦--DS-TB tx                    ,1-p.ptltfu,0,0,0,0,1,0,0,0
+ ¦                           ¦       ¦   ¦--dies                    ,p.cfr.tx,0,1,0,0,0,0,0,1
+ ¦                           ¦       ¦   °--survives                ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+ ¦                           ¦       °--no DS-TB tx                 ,p.ptltfu,0,0,0,0,0,0,0,0
+ ¦                           ¦           ¦--dies                    ,p.cfr.notx,0,1,0,0,0,0,0,1
+ ¦                           ¦           °--survives                ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+ ¦                           °--no TB <1yr                          ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+ ¦                               °--no TB outcomes                  ,1,0,0,0,0,0,0,0,0
+ ¦                                   ¦--dies                        ,p.cfr.notb,0,1,0,0,0,0,0,1
+ ¦                                   °--survives                    ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+ °--Child HH contact screened @ facility                            ,1,0,0,0,0,0,0,0,0
+     ¦--Symptomatic child contact                                   ,1,0,0,0,0,0,0,0,0
+     ¦   °--Symptomatic child contact management                    ,1,0,0,0,0,0,0,0,0
+     ¦       ¦--clinical and bacteriological assessment             ,,,0,0,0,0,0,0,0
+     ¦       ¦   ¦--MTB+                                            ,,,0,0,0,0,0,0,0
+     ¦       ¦   ¦   °--TB outcomes                                 ,,,0,0,0,0,0,0,0
+     ¦       ¦   ¦       ¦--DS-TB tx                                ,1-p.ptltfu,0,0,0,0,1,0,0,0
+     ¦       ¦   ¦       ¦   ¦--dies                                ,p.cfr.tx,0,1,0,0,0,0,0,1
+     ¦       ¦   ¦       ¦   °--survives                            ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+     ¦       ¦   ¦       °--no DS-TB tx                             ,p.ptltfu,0,0,0,0,0,0,0,0
+     ¦       ¦   ¦           ¦--dies                                ,p.cfr.notx,0,1,0,0,0,0,0,1
+     ¦       ¦   ¦           °--survives                            ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+     ¦       ¦   °--MTB-                                            ,,,0,0,0,0,0,0,0
+     ¦       ¦       ¦--LTFU                                        ,,,0,0,0,0,0,0,1
+     ¦       ¦       °--Clinical re(evaluation) with/without CXR    ,,,0,0,0,0,0,0,0
+     ¦       ¦           ¦--Clinical TB                             ,,,0,0,0,0,0,0,0
+     ¦       ¦           ¦   °--TB outcomes                         ,,,0,0,0,0,0,0,0
+     ¦       ¦           ¦       ¦--DS-TB tx                        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+     ¦       ¦           ¦       ¦   ¦--dies                        ,p.cfr.tx,0,1,0,0,0,0,0,1
+     ¦       ¦           ¦       ¦   °--survives                    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+     ¦       ¦           ¦       °--no DS-TB tx                     ,p.ptltfu,0,0,0,0,0,0,0,0
+     ¦       ¦           ¦           ¦--dies                        ,p.cfr.notx,0,1,0,0,0,0,0,1
+     ¦       ¦           ¦           °--survives                    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+     ¦       ¦           °--no TB                                   ,,,0,0,0,0,0,0,0
+     ¦       ¦               °--TPT outcomes                        ,,,0,0,0,0,1,0,0
+     ¦       ¦                   ¦--TPT tx                          ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+     ¦       ¦                   ¦   ¦--TB <1yr                     ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦       ¦                   ¦   ¦   °--TB outcomes             ,1,0,0,0,0,0,0,0,0
+     ¦       ¦                   ¦   ¦       ¦--DS-TB tx            ,1-p.ptltfu,0,0,0,0,1,0,0,0
+     ¦       ¦                   ¦   ¦       ¦   ¦--dies            ,p.cfr.tx,0,1,0,0,0,0,0,1
+     ¦       ¦                   ¦   ¦       ¦   °--survives        ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+     ¦       ¦                   ¦   ¦       °--no DS-TB tx         ,p.ptltfu,0,0,0,0,0,0,0,0
+     ¦       ¦                   ¦   ¦           ¦--dies            ,p.cfr.notx,0,1,0,0,0,0,0,1
+     ¦       ¦                   ¦   ¦           °--survives        ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+     ¦       ¦                   ¦   °--no TB <1yr                  ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦       ¦                   ¦       °--no TB outcomes          ,1,0,0,0,0,0,0,0,0
+     ¦       ¦                   ¦           ¦--dies                ,p.cfr.notb,0,1,0,0,0,0,0,1
+     ¦       ¦                   ¦           °--survives            ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+     ¦       ¦                   °--no TPT tx                       ,p.ptptltfu,0,0,0,0,0,0,0,0
+     ¦       ¦                       ¦--TB <1yr                     ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦       ¦                       ¦   °--TB outcomes             ,1,0,0,0,0,0,0,0,0
+     ¦       ¦                       ¦       ¦--DS-TB tx            ,1-p.ptltfu,0,0,0,0,1,0,0,0
+     ¦       ¦                       ¦       ¦   ¦--dies            ,p.cfr.tx,0,1,0,0,0,0,0,1
+     ¦       ¦                       ¦       ¦   °--survives        ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+     ¦       ¦                       ¦       °--no DS-TB tx         ,p.ptltfu,0,0,0,0,0,0,0,0
+     ¦       ¦                       ¦           ¦--dies            ,p.cfr.notx,0,1,0,0,0,0,0,1
+     ¦       ¦                       ¦           °--survives        ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+     ¦       ¦                       °--no TB <1yr                  ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦       ¦                           °--no TB outcomes          ,1,0,0,0,0,0,0,0,0
+     ¦       ¦                               ¦--dies                ,p.cfr.notb,0,1,0,0,0,0,0,1
+     ¦       ¦                               °--survives            ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+     ¦       °--clinical assessment only + with/without CXR         ,,,0,0,0,0,0,0,0
+     ¦           ¦--Clinical TB                                     ,,,0,0,0,0,0,0,0
+     ¦           ¦   °--TB outcomes                                 ,,,0,0,0,0,0,0,0
+     ¦           ¦       ¦--DS-TB tx                                ,1-p.ptltfu,0,0,0,0,1,0,0,0
+     ¦           ¦       ¦   ¦--dies                                ,p.cfr.tx,0,1,0,0,0,0,0,1
+     ¦           ¦       ¦   °--survives                            ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+     ¦           ¦       °--no DS-TB tx                             ,p.ptltfu,0,0,0,0,0,0,0,0
+     ¦           ¦           ¦--dies                                ,p.cfr.notx,0,1,0,0,0,0,0,1
+     ¦           ¦           °--survives                            ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+     ¦           °--no TB                                           ,,,0,0,0,0,0,0,0
+     ¦               ¦--LTFU                                        ,,,0,0,0,0,0,0,1
+     ¦               °--Clinical re(evaluation) with/without CXR    ,,,0,0,0,0,0,0,0
+     ¦                   ¦--Clinical TB                             ,,,0,0,0,0,0,0,0
+     ¦                   ¦   °--TB outcomes                         ,,,0,0,0,0,0,0,0
+     ¦                   ¦       ¦--DS-TB tx                        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+     ¦                   ¦       ¦   ¦--dies                        ,p.cfr.tx,0,1,0,0,0,0,0,1
+     ¦                   ¦       ¦   °--survives                    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+     ¦                   ¦       °--no DS-TB tx                     ,p.ptltfu,0,0,0,0,0,0,0,0
+     ¦                   ¦           ¦--dies                        ,p.cfr.notx,0,1,0,0,0,0,0,1
+     ¦                   ¦           °--survives                    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+     ¦                   °--no TB                                   ,,,0,0,0,0,0,0,0
+     ¦                       °--TPT outcomes                        ,,,0,0,0,0,1,0,0
+     ¦                           ¦--TPT tx                          ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+     ¦                           ¦   ¦--TB <1yr                     ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦                           ¦   ¦   °--TB outcomes             ,1,0,0,0,0,0,0,0,0
+     ¦                           ¦   ¦       ¦--DS-TB tx            ,1-p.ptltfu,0,0,0,0,1,0,0,0
+     ¦                           ¦   ¦       ¦   ¦--dies            ,p.cfr.tx,0,1,0,0,0,0,0,1
+     ¦                           ¦   ¦       ¦   °--survives        ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+     ¦                           ¦   ¦       °--no DS-TB tx         ,p.ptltfu,0,0,0,0,0,0,0,0
+     ¦                           ¦   ¦           ¦--dies            ,p.cfr.notx,0,1,0,0,0,0,0,1
+     ¦                           ¦   ¦           °--survives        ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+     ¦                           ¦   °--no TB <1yr                  ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦                           ¦       °--no TB outcomes          ,1,0,0,0,0,0,0,0,0
+     ¦                           ¦           ¦--dies                ,p.cfr.notb,0,1,0,0,0,0,0,1
+     ¦                           ¦           °--survives            ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+     ¦                           °--no TPT tx                       ,p.ptptltfu,0,0,0,0,0,0,0,0
+     ¦                               ¦--TB <1yr                     ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦                               ¦   °--TB outcomes             ,1,0,0,0,0,0,0,0,0
+     ¦                               ¦       ¦--DS-TB tx            ,1-p.ptltfu,0,0,0,0,1,0,0,0
+     ¦                               ¦       ¦   ¦--dies            ,p.cfr.tx,0,1,0,0,0,0,0,1
+     ¦                               ¦       ¦   °--survives        ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+     ¦                               ¦       °--no DS-TB tx         ,p.ptltfu,0,0,0,0,0,0,0,0
+     ¦                               ¦           ¦--dies            ,p.cfr.notx,0,1,0,0,0,0,0,1
+     ¦                               ¦           °--survives        ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+     ¦                               °--no TB <1yr                  ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦                                   °--no TB outcomes          ,1,0,0,0,0,0,0,0,0
+     ¦                                       ¦--dies                ,p.cfr.notb,0,1,0,0,0,0,0,1
+     ¦                                       °--survives            ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+     ¦--Asymptomatic child contact                                  ,1,0,0,0,0,0,0,0,0
+     ¦   °--Asymptomatic child contact management                   ,1,0,0,0,0,0,0,0,0
+     ¦       ¦--Asymptomatic child contact @community               ,,,0,0,0,0,0,0,0
+     ¦       ¦   °--TPT outcomes                                    ,,,0,0,0,0,1,0,0
+     ¦       ¦       ¦--TPT tx                                      ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+     ¦       ¦       ¦   ¦--TB <1yr                                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦       ¦       ¦   ¦   °--TB outcomes                         ,1,0,0,0,0,0,0,0,0
+     ¦       ¦       ¦   ¦       ¦--DS-TB tx                        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+     ¦       ¦       ¦   ¦       ¦   ¦--dies                        ,p.cfr.tx,0,1,0,0,0,0,0,1
+     ¦       ¦       ¦   ¦       ¦   °--survives                    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+     ¦       ¦       ¦   ¦       °--no DS-TB tx                     ,p.ptltfu,0,0,0,0,0,0,0,0
+     ¦       ¦       ¦   ¦           ¦--dies                        ,p.cfr.notx,0,1,0,0,0,0,0,1
+     ¦       ¦       ¦   ¦           °--survives                    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+     ¦       ¦       ¦   °--no TB <1yr                              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦       ¦       ¦       °--no TB outcomes                      ,1,0,0,0,0,0,0,0,0
+     ¦       ¦       ¦           ¦--dies                            ,p.cfr.notb,0,1,0,0,0,0,0,1
+     ¦       ¦       ¦           °--survives                        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+     ¦       ¦       °--no TPT tx                                   ,p.ptptltfu,0,0,0,0,0,0,0,0
+     ¦       ¦           ¦--TB <1yr                                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦       ¦           ¦   °--TB outcomes                         ,1,0,0,0,0,0,0,0,0
+     ¦       ¦           ¦       ¦--DS-TB tx                        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+     ¦       ¦           ¦       ¦   ¦--dies                        ,p.cfr.tx,0,1,0,0,0,0,0,1
+     ¦       ¦           ¦       ¦   °--survives                    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+     ¦       ¦           ¦       °--no DS-TB tx                     ,p.ptltfu,0,0,0,0,0,0,0,0
+     ¦       ¦           ¦           ¦--dies                        ,p.cfr.notx,0,1,0,0,0,0,0,1
+     ¦       ¦           ¦           °--survives                    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+     ¦       ¦           °--no TB <1yr                              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦       ¦               °--no TB outcomes                      ,1,0,0,0,0,0,0,0,0
+     ¦       ¦                   ¦--dies                            ,p.cfr.notb,0,1,0,0,0,0,0,1
+     ¦       ¦                   °--survives                        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+     ¦       °--Asymptomatic child contact @facility                ,,,0,0,0,0,0,0,0
+     ¦           °--TPT outcomes                                    ,,,0,0,0,0,1,0,0
+     ¦               ¦--TPT tx                                      ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+     ¦               ¦   ¦--TB <1yr                                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦               ¦   ¦   °--TB outcomes                         ,1,0,0,0,0,0,0,0,0
+     ¦               ¦   ¦       ¦--DS-TB tx                        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+     ¦               ¦   ¦       ¦   ¦--dies                        ,p.cfr.tx,0,1,0,0,0,0,0,1
+     ¦               ¦   ¦       ¦   °--survives                    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+     ¦               ¦   ¦       °--no DS-TB tx                     ,p.ptltfu,0,0,0,0,0,0,0,0
+     ¦               ¦   ¦           ¦--dies                        ,p.cfr.notx,0,1,0,0,0,0,0,1
+     ¦               ¦   ¦           °--survives                    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+     ¦               ¦   °--no TB <1yr                              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦               ¦       °--no TB outcomes                      ,1,0,0,0,0,0,0,0,0
+     ¦               ¦           ¦--dies                            ,p.cfr.notb,0,1,0,0,0,0,0,1
+     ¦               ¦           °--survives                        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+     ¦               °--no TPT tx                                   ,p.ptptltfu,0,0,0,0,0,0,0,0
+     ¦                   ¦--TB <1yr                                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦                   ¦   °--TB outcomes                         ,1,0,0,0,0,0,0,0,0
+     ¦                   ¦       ¦--DS-TB tx                        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+     ¦                   ¦       ¦   ¦--dies                        ,p.cfr.tx,0,1,0,0,0,0,0,1
+     ¦                   ¦       ¦   °--survives                    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+     ¦                   ¦       °--no DS-TB tx                     ,p.ptltfu,0,0,0,0,0,0,0,0
+     ¦                   ¦           ¦--dies                        ,p.cfr.notx,0,1,0,0,0,0,0,1
+     ¦                   ¦           °--survives                    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+     ¦                   °--no TB <1yr                              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+     ¦                       °--no TB outcomes                      ,1,0,0,0,0,0,0,0,0
+     ¦                           ¦--dies                            ,p.cfr.notb,0,1,0,0,0,0,0,1
+     ¦                           °--survives                        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+     °--Child contact rescreened                                    ,1,0,0,0,0,0,0,0,0
+         ¦--Symptomatic child contact                               ,1,0,0,0,0,0,0,0,0
+         ¦   °--Symptomatic child contact management                ,1,0,0,0,0,0,0,0,0
+         ¦       ¦--clinical and bacteriological assessment         ,,,0,0,0,0,0,0,0
+         ¦       ¦   ¦--MTB+                                        ,,,0,0,0,0,0,0,0
+         ¦       ¦   ¦   °--TB outcomes                             ,,,0,0,0,0,0,0,0
+         ¦       ¦   ¦       ¦--DS-TB tx                            ,1-p.ptltfu,0,0,0,0,1,0,0,0
+         ¦       ¦   ¦       ¦   ¦--dies                            ,p.cfr.tx,0,1,0,0,0,0,0,1
+         ¦       ¦   ¦       ¦   °--survives                        ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+         ¦       ¦   ¦       °--no DS-TB tx                         ,p.ptltfu,0,0,0,0,0,0,0,0
+         ¦       ¦   ¦           ¦--dies                            ,p.cfr.notx,0,1,0,0,0,0,0,1
+         ¦       ¦   ¦           °--survives                        ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+         ¦       ¦   °--MTB-                                        ,,,0,0,0,0,0,0,0
+         ¦       ¦       ¦--LTFU                                    ,,,0,0,0,0,0,0,1
+         ¦       ¦       °--Clinical re(evaluation) with/without CXR,,,0,0,0,0,0,0,0
+         ¦       ¦           ¦--Clinical TB                         ,,,0,0,0,0,0,0,0
+         ¦       ¦           ¦   °--TB outcomes                     ,,,0,0,0,0,0,0,0
+         ¦       ¦           ¦       ¦--DS-TB tx                    ,1-p.ptltfu,0,0,0,0,1,0,0,0
+         ¦       ¦           ¦       ¦   ¦--dies                    ,p.cfr.tx,0,1,0,0,0,0,0,1
+         ¦       ¦           ¦       ¦   °--survives                ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+         ¦       ¦           ¦       °--no DS-TB tx                 ,p.ptltfu,0,0,0,0,0,0,0,0
+         ¦       ¦           ¦           ¦--dies                    ,p.cfr.notx,0,1,0,0,0,0,0,1
+         ¦       ¦           ¦           °--survives                ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+         ¦       ¦           °--no TB                               ,,,0,0,0,0,0,0,0
+         ¦       ¦               °--TPT outcomes                    ,,,0,0,0,0,1,0,0
+         ¦       ¦                   ¦--TPT tx                      ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+         ¦       ¦                   ¦   ¦--TB <1yr                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+         ¦       ¦                   ¦   ¦   °--TB outcomes         ,1,0,0,0,0,0,0,0,0
+         ¦       ¦                   ¦   ¦       ¦--DS-TB tx        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+         ¦       ¦                   ¦   ¦       ¦   ¦--dies        ,p.cfr.tx,0,1,0,0,0,0,0,1
+         ¦       ¦                   ¦   ¦       ¦   °--survives    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+         ¦       ¦                   ¦   ¦       °--no DS-TB tx     ,p.ptltfu,0,0,0,0,0,0,0,0
+         ¦       ¦                   ¦   ¦           ¦--dies        ,p.cfr.notx,0,1,0,0,0,0,0,1
+         ¦       ¦                   ¦   ¦           °--survives    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+         ¦       ¦                   ¦   °--no TB <1yr              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+         ¦       ¦                   ¦       °--no TB outcomes      ,1,0,0,0,0,0,0,0,0
+         ¦       ¦                   ¦           ¦--dies            ,p.cfr.notb,0,1,0,0,0,0,0,1
+         ¦       ¦                   ¦           °--survives        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+         ¦       ¦                   °--no TPT tx                   ,p.ptptltfu,0,0,0,0,0,0,0,0
+         ¦       ¦                       ¦--TB <1yr                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+         ¦       ¦                       ¦   °--TB outcomes         ,1,0,0,0,0,0,0,0,0
+         ¦       ¦                       ¦       ¦--DS-TB tx        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+         ¦       ¦                       ¦       ¦   ¦--dies        ,p.cfr.tx,0,1,0,0,0,0,0,1
+         ¦       ¦                       ¦       ¦   °--survives    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+         ¦       ¦                       ¦       °--no DS-TB tx     ,p.ptltfu,0,0,0,0,0,0,0,0
+         ¦       ¦                       ¦           ¦--dies        ,p.cfr.notx,0,1,0,0,0,0,0,1
+         ¦       ¦                       ¦           °--survives    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+         ¦       ¦                       °--no TB <1yr              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+         ¦       ¦                           °--no TB outcomes      ,1,0,0,0,0,0,0,0,0
+         ¦       ¦                               ¦--dies            ,p.cfr.notb,0,1,0,0,0,0,0,1
+         ¦       ¦                               °--survives        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+         ¦       °--clinical assessment only + with/without CXR     ,,,0,0,0,0,0,0,0
+         ¦           ¦--Clinical TB                                 ,,,0,0,0,0,0,0,0
+         ¦           ¦   °--TB outcomes                             ,,,0,0,0,0,0,0,0
+         ¦           ¦       ¦--DS-TB tx                            ,1-p.ptltfu,0,0,0,0,1,0,0,0
+         ¦           ¦       ¦   ¦--dies                            ,p.cfr.tx,0,1,0,0,0,0,0,1
+         ¦           ¦       ¦   °--survives                        ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+         ¦           ¦       °--no DS-TB tx                         ,p.ptltfu,0,0,0,0,0,0,0,0
+         ¦           ¦           ¦--dies                            ,p.cfr.notx,0,1,0,0,0,0,0,1
+         ¦           ¦           °--survives                        ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+         ¦           °--no TB                                       ,,,0,0,0,0,0,0,0
+         ¦               ¦--LTFU                                    ,,,0,0,0,0,0,0,1
+         ¦               °--Clinical re(evaluation) with/without CXR,,,0,0,0,0,0,0,0
+         ¦                   ¦--Clinical TB                         ,,,0,0,0,0,0,0,0
+         ¦                   ¦   °--TB outcomes                     ,,,0,0,0,0,0,0,0
+         ¦                   ¦       ¦--DS-TB tx                    ,1-p.ptltfu,0,0,0,0,1,0,0,0
+         ¦                   ¦       ¦   ¦--dies                    ,p.cfr.tx,0,1,0,0,0,0,0,1
+         ¦                   ¦       ¦   °--survives                ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+         ¦                   ¦       °--no DS-TB tx                 ,p.ptltfu,0,0,0,0,0,0,0,0
+         ¦                   ¦           ¦--dies                    ,p.cfr.notx,0,1,0,0,0,0,0,1
+         ¦                   ¦           °--survives                ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+         ¦                   °--no TB                               ,,,0,0,0,0,0,0,0
+         ¦                       °--TPT outcomes                    ,,,0,0,0,0,1,0,0
+         ¦                           ¦--TPT tx                      ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+         ¦                           ¦   ¦--TB <1yr                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+         ¦                           ¦   ¦   °--TB outcomes         ,1,0,0,0,0,0,0,0,0
+         ¦                           ¦   ¦       ¦--DS-TB tx        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+         ¦                           ¦   ¦       ¦   ¦--dies        ,p.cfr.tx,0,1,0,0,0,0,0,1
+         ¦                           ¦   ¦       ¦   °--survives    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+         ¦                           ¦   ¦       °--no DS-TB tx     ,p.ptltfu,0,0,0,0,0,0,0,0
+         ¦                           ¦   ¦           ¦--dies        ,p.cfr.notx,0,1,0,0,0,0,0,1
+         ¦                           ¦   ¦           °--survives    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+         ¦                           ¦   °--no TB <1yr              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+         ¦                           ¦       °--no TB outcomes      ,1,0,0,0,0,0,0,0,0
+         ¦                           ¦           ¦--dies            ,p.cfr.notb,0,1,0,0,0,0,0,1
+         ¦                           ¦           °--survives        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+         ¦                           °--no TPT tx                   ,p.ptptltfu,0,0,0,0,0,0,0,0
+         ¦                               ¦--TB <1yr                 ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+         ¦                               ¦   °--TB outcomes         ,1,0,0,0,0,0,0,0,0
+         ¦                               ¦       ¦--DS-TB tx        ,1-p.ptltfu,0,0,0,0,1,0,0,0
+         ¦                               ¦       ¦   ¦--dies        ,p.cfr.tx,0,1,0,0,0,0,0,1
+         ¦                               ¦       ¦   °--survives    ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+         ¦                               ¦       °--no DS-TB tx     ,p.ptltfu,0,0,0,0,0,0,0,0
+         ¦                               ¦           ¦--dies        ,p.cfr.notx,0,1,0,0,0,0,0,1
+         ¦                               ¦           °--survives    ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+         ¦                               °--no TB <1yr              ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+         ¦                                   °--no TB outcomes      ,1,0,0,0,0,0,0,0,0
+         ¦                                       ¦--dies            ,p.cfr.notb,0,1,0,0,0,0,0,1
+         ¦                                       °--survives        ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+         °--Asymptomatic child contact                              ,1,0,0,0,0,0,0,0,0
+             °--Asymptomatic child contact management               ,1,0,0,0,0,0,0,0,0
+                 ¦--Asymptomatic child contact @community           ,,,0,0,0,0,0,0,0
+                 ¦   °--TPT outcomes                                ,,,0,0,0,0,1,0,0
+                 ¦       ¦--TPT tx                                  ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+                 ¦       ¦   ¦--TB <1yr                             ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+                 ¦       ¦   ¦   °--TB outcomes                     ,1,0,0,0,0,0,0,0,0
+                 ¦       ¦   ¦       ¦--DS-TB tx                    ,1-p.ptltfu,0,0,0,0,1,0,0,0
+                 ¦       ¦   ¦       ¦   ¦--dies                    ,p.cfr.tx,0,1,0,0,0,0,0,1
+                 ¦       ¦   ¦       ¦   °--survives                ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+                 ¦       ¦   ¦       °--no DS-TB tx                 ,p.ptltfu,0,0,0,0,0,0,0,0
+                 ¦       ¦   ¦           ¦--dies                    ,p.cfr.notx,0,1,0,0,0,0,0,1
+                 ¦       ¦   ¦           °--survives                ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+                 ¦       ¦   °--no TB <1yr                          ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+                 ¦       ¦       °--no TB outcomes                  ,1,0,0,0,0,0,0,0,0
+                 ¦       ¦           ¦--dies                        ,p.cfr.notb,0,1,0,0,0,0,0,1
+                 ¦       ¦           °--survives                    ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+                 ¦       °--no TPT tx                               ,p.ptptltfu,0,0,0,0,0,0,0,0
+                 ¦           ¦--TB <1yr                             ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+                 ¦           ¦   °--TB outcomes                     ,1,0,0,0,0,0,0,0,0
+                 ¦           ¦       ¦--DS-TB tx                    ,1-p.ptltfu,0,0,0,0,1,0,0,0
+                 ¦           ¦       ¦   ¦--dies                    ,p.cfr.tx,0,1,0,0,0,0,0,1
+                 ¦           ¦       ¦   °--survives                ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+                 ¦           ¦       °--no DS-TB tx                 ,p.ptltfu,0,0,0,0,0,0,0,0
+                 ¦           ¦           ¦--dies                    ,p.cfr.notx,0,1,0,0,0,0,0,1
+                 ¦           ¦           °--survives                ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+                 ¦           °--no TB <1yr                          ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+                 ¦               °--no TB outcomes                  ,1,0,0,0,0,0,0,0,0
+                 ¦                   ¦--dies                        ,p.cfr.notb,0,1,0,0,0,0,0,1
+                 ¦                   °--survives                    ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+                 °--Asymptomatic child contact @facility            ,,,0,0,0,0,0,0,0
+                     °--TPT outcomes                                ,,,0,0,0,0,1,0,0
+                         ¦--TPT tx                                  ,1-p.ptptltfu,0,0,0,0,0,0,1,0
+                         ¦   ¦--TB <1yr                             ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+                         ¦   ¦   °--TB outcomes                     ,1,0,0,0,0,0,0,0,0
+                         ¦   ¦       ¦--DS-TB tx                    ,1-p.ptltfu,0,0,0,0,1,0,0,0
+                         ¦   ¦       ¦   ¦--dies                    ,p.cfr.tx,0,1,0,0,0,0,0,1
+                         ¦   ¦       ¦   °--survives                ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+                         ¦   ¦       °--no DS-TB tx                 ,p.ptltfu,0,0,0,0,0,0,0,0
+                         ¦   ¦           ¦--dies                    ,p.cfr.notx,0,1,0,0,0,0,0,1
+                         ¦   ¦           °--survives                ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+                         ¦   °--no TB <1yr                          ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+                         ¦       °--no TB outcomes                  ,1,0,0,0,0,0,0,0,0
+                         ¦           ¦--dies                        ,p.cfr.notb,0,1,0,0,0,0,0,1
+                         ¦           °--survives                    ,1-p.cfr.notb,0,0,1,0,0,0,0,1
+                         °--no TPT tx                               ,p.ptptltfu,0,0,0,0,0,0,0,0
+                             ¦--TB <1yr                             ,p.tbdx.<1yr,0,0,0,0,0,0,0,0
+                             ¦   °--TB outcomes                     ,1,0,0,0,0,0,0,0,0
+                             ¦       ¦--DS-TB tx                    ,1-p.ptltfu,0,0,0,0,1,0,0,0
+                             ¦       ¦   ¦--dies                    ,p.cfr.tx,0,1,0,0,0,0,0,1
+                             ¦       ¦   °--survives                ,1-p.cfr.tx,0,0,1,0,0,0,0,1
+                             ¦       °--no DS-TB tx                 ,p.ptltfu,0,0,0,0,0,0,0,0
+                             ¦           ¦--dies                    ,p.cfr.notx,0,1,0,0,0,0,0,1
+                             ¦           °--survives                ,1-p.cfr.notx,0,0,1,0,0,0,0,1
+                             °--no TB <1yr                          ,1-p.tbdx.<1yr,0,0,0,0,0,0,0,0
+                                 °--no TB outcomes                  ,1,0,0,0,0,0,0,0,0
+                                     ¦--dies                        ,p.cfr.notb,0,1,0,0,0,0,0,1
+                                     °--survives                    ,1-p.cfr.notb,0,0,1,0,0,0,0,1

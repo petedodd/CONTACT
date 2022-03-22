@@ -1,0 +1,21 @@
+Symptomatic child contact management
+	clinical and bacteriological assessment
+		MTB+
+			TB outcomes
+		MTB-
+			LTFU
+			Clinical re(evaluation) with/without CXR 
+				Clinical TB 
+					TB outcomes
+				no TB
+					TPT outcomes
+	clinical assessment only + with/without CXR
+		Clinical TB
+			TB outcomes
+		no TB 
+			LTFU
+			Clinical re(evaluation) with/without CXR 
+				Clinical TB
+					TB outcomes
+				no TB
+					TPT outcomes

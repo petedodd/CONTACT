@@ -1,0 +1,7 @@
+DS-TB outcomes
+	DS-TB tx
+		dies 
+		survives
+	no DS-TB tx
+		dies 
+		survives

@@ -1,0 +1,21 @@
+Child HH contact
+	Child HH contact screened @ community
+		Symptomatic child contact
+			Symptomatic child contact management
+		Asymptomatic child contact
+			Asymptomatic child contact management
+		Child contact rescreened
+			Symptomatic child contact
+				Symptomatic child contact management
+			Asymptomatic child contact
+				Asymptomatic child contact management
+	Child HH contact screened @ facility
+		Symptomatic child contact
+			Symptomatic child contact management
+		Asymptomatic child contact
+			Asymptomatic child contact management
+		Child contact rescreened
+			Symptomatic child contact
+				Symptomatic child contact management
+			Asymptomatic child contact
+				Asymptomatic child contact management

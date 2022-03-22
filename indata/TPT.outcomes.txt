@@ -1,0 +1,11 @@
+TPT outcomes
+	TPT tx
+		TB <1yr
+			TB outcomes
+		no TB <1yr
+			no TB outcomes
+	no TPT tx
+		TB <1yr
+			TB outcomes
+		no TB <1yr
+			no TB outcomes
