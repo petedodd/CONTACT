@@ -1,0 +1,10 @@
+Child contact, age, HIV/ART status
+	Child contact screened
+		Symptomatic child contact
+			Active TB
+				TB outcomes
+			No active TB
+				TPT outcomes
+		Aymptomatic child contact
+			TPT outcomes
+	Child contact not screened

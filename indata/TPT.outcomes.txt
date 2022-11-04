@@ -1,11 +1,17 @@
 TPT outcomes
-	TPT tx
-		TB <1yr
+	Eligible for TPT
+		TPT
+			TB disease <1yr
+				TB outcomes
+			no TB disease <1yr
+				no TB outcomes
+		no TPT
+			TB disease <1yr
+				TB outcomes
+			no TB disease <1yr
+				no TB outcomes
+	Not eligible for TPT
+		TB disease <1yr
 			TB outcomes
-		no TB <1yr
-			no TB outcomes
-	no TPT tx
-		TB <1yr
-			TB outcomes
-		no TB <1yr
+		no TB disease <1yr
 			no TB outcomes

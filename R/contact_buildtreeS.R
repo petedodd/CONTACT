@@ -7,6 +7,8 @@ library(DiagrammeR)
 library(data.table)
 library(glue)
 
+# data.table::setDTthreads(4)
+# getDTthreads()
 # set_here('C:/Users/cm1nm/Dropbox/CONTACT')
 
 ## === outcomes subtree ===
@@ -53,8 +55,8 @@ AddOutcomes <- function(D){
   D$Set(cost=0)
 
   ## === merge to create final tree ===
-  MergeByName(D,asymp,'Asymptomatic child contact',leavesonly = TRUE)
-  MergeByName(D,symp,'Symptomatic child contact')
+  # MergeByName(D,asymp,'Asymptomatic child contact',leavesonly = TRUE)
+  # MergeByName(D,symp,'Symptomatic child contact')
   MergeByName(D,tpt,'TPT outcomes')
   # MergeByName(D,tpt,'no TPT outcomes')
   MergeByName(D,tb,'TB outcomes')
@@ -73,9 +75,8 @@ AddOutcomes <- function(D){
   
   ## deaths for incident TB
   D$Set(incdeaths=0)
-  D$`Child contact screened`$`Asymptomatic child contact`$`TPT outcomes`$Set(incdeaths=1,filterFun=function(x)x$name=='dies')
-  D$`Child contact screened`$`Asymptomatic child contact`$`TPT outcomes`$Set(incdeaths=1,filterFun=function(x)x$name=='dies')
-  D$`Child contact screened`$`Asymptomatic child contact`$`TPT outcomes`$Set(incdeaths=1,filterFun=function(x)x$name=='dies')
+  D$`Child contact screened`$`Aymptomatic child contact`$`TPT outcomes`$Set(incdeaths=1,filterFun=function(x)x$name=='dies')
+  D$`Child contact screened`$`Symptomatic child contact`$`No active TB`$`TPT outcomes`$Set(incdeaths=1,filterFun=function(x)x$name=='dies')
   
   ## lives
   D$Set(lives=0)
@@ -87,21 +88,21 @@ AddOutcomes <- function(D){
   
   ## coprevalent TB
   
-  ## dx clinical
-  D$Set(tbdxc=0)
-  D$Set(tbdxc=1,filterFun=function(x) x$name=='TB diagnosed (clinical)')
-  
-  ## dx bac
-  D$Set(tbdxb=0)
-  D$Set(tbdxb=1,filterFun=function(x) x$name=='TB diagnosed (bacteriological)')
+  # ## dx clinical
+  # D$Set(tbdxc=0)
+  # D$Set(tbdxc=1,filterFun=function(x) x$name=='TB diagnosed (clinical)')
+  # 
+  # ## dx bac
+  # D$Set(tbdxb=0)
+  # D$Set(tbdxb=1,filterFun=function(x) x$name=='TB diagnosed (bacteriological)')
   
   ## coprevalent TB total
   D$Set(prevtb=0)
-  D$Set(prevtb=1,filterFun=function(x)x$name %in% c('TB diagnosed (clinical)', 'TB diagnosed (bacteriological)'))
+  D$Set(prevtb=1,filterFun=function(x)x$name %in% c('Active TB'))
   
   ## ATT in incidence
   D$Set(atti=0)
-  D$`Child contact screened`$`Asymptomatic child contact`$`TPT outcomes`$Set(atti=1,filterFun=function(x)  x$name=='TB tx')
+  D$`Child contact screened`$`Aymptomatic child contact`$`TPT outcomes`$Set(atti=1,filterFun=function(x)  x$name=='TB tx')
   
   ## ATT courses
   D$Set(att=0)
@@ -121,9 +122,10 @@ AddOutcomes <- function(D){
 }
 
 # main tree structures
-contact <- txt2tree(here('indata/Child.hh.contact.txt'))
-asymp <- txt2tree(here('indata/Asymptomatic.child.contact.txt'))
-symp <- txt2tree(here('indata/Symptomatic.child.contact.txt'))
+# contact <- txt2tree(here('indata/Child.hh.contact.txt'))
+contact <- txt2tree(here('indata/Child.hh.contact (alernative).txt'))
+# asymp <- txt2tree(here('indata/Asymptomatic.child.contact.txt'))
+# symp <- txt2tree(here('indata/Symptomatic.child.contact.txt'))
 
 ## merge in extras, make model of care branches, write out
 tempTree <- AddOutcomes(contact)
@@ -134,13 +136,13 @@ SOC$AddChildNode(tempTree)
 
 SOC$name <- 'Facility-based model'
 
-tree2file(SOC,filename = here('indata/CSV/SOC.csv'),
-          'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb', 'att','lives','incdeaths','deaths','check',
+tree2file(SOC,filename = here('indata/CSV/SOCs.csv'),
+          'p','cost','tpte', 'tpt', 'inctb','prevtb', 'att','lives','incdeaths','deaths','check',
           'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
           'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
 
 # ## create version with probs/costs
-fn <- here('indata/CSV/SOC1.csv')
+fn <- here('indata/CSV/SOCs1.csv')
 if(file.exists(fn)){
         ## read
         labz <- fread(fn)
@@ -156,9 +158,8 @@ if(file.exists(fn)){
         SOC$Set(TB.diagnosed=labz$TB.diagnosed)
         SOC$Set(TB.treated=labz$TB.treated)
         ## save out
-        tree2file(SOC,filename = here('indata/CSV/SOC2.csv'),
-                  'p','cost','deaths','lives','refers','dxc','dxb','att',
-                  'check',
+        tree2file(SOC,filename = here('indata/CSV/SOCs2.csv'),
+                  'p','cost','tpte', 'tpt', 'inctb','prevtb', 'att','lives','incdeaths','deaths','check',
                   'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
                   'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
 }
@@ -167,13 +168,13 @@ if(file.exists(fn)){
 INT <- Clone(SOC)
 INT$name <- 'Community-based model'
 
-tree2file(INT,filename = here('indata/CSV/INT.csv'),
-          'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb', 'att','lives','incdeaths','deaths','check',
+tree2file(INT,filename = here('indata/CSV/INTs.csv'),
+          'p','cost','tpte', 'tpt', 'inctb','prevtb', 'att','lives','incdeaths','deaths','check',
           'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
           'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
 
 ## create version with probs/costs
-fn <- here('indata/CSV/INT1.csv')
+fn <- here('indata/CSV/INTs1.csv')
 if(file.exists(fn)){
         ## read
         labz <- fread(fn)
@@ -190,18 +191,16 @@ if(file.exists(fn)){
         INT$Set(TB.diagnosed=labz$TB.diagnosed)
         INT$Set(TB.treated=labz$TB.treated)
         ## save out
-        tree2file(INT,filename = here('indata/CSV/INT2.csv'),
-                  'p','cost','deaths','lives','refers','dxc','dxb','att',
-                  'check',
+        tree2file(INT,filename = here('indata/CSV/INTs2.csv'),
+                  'p','cost','tpte', 'tpt', 'inctb','prevtb', 'att','lives','incdeaths','deaths','check',
                   'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
                   'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
 }
 
 ## make functions
-fnmz <- c('check','cost','deaths','att',
-          'lives','refers','dxc','dxb',
-          'DH.presented','DH.screened','DH.presumed','DH.treated',
-          'PHC.presented','PHC.screened','PHC.presumed','PHC.treated')
+fnmz <- c('check','p','cost','tpte', 'tpt', 'inctb','prevtb', 'att','lives','incdeaths','deaths',
+          'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
+          'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
 
 SOC.F <- makeTfuns(SOC,fnmz)
 INT.F <- makeTfuns(INT,fnmz)

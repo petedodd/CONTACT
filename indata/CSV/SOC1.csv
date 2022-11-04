@@ -1,5 +1,5 @@
 levelName,p,cost,tpte,tpt,inctb,tbdxc,tbdxb,prevtb,att,lives,incdeaths,deaths,check,TPT.screened,TPT.asymptomatic,TPT.eligible,TPT.treated,TB.symptoms,TB.evaluated,TB.diagnosed,TB.treated
-Community-based model                                                           ,1,0,,,,,,,,,,,,0,0,0,0,0,0,0,0
+Facility-based model                                                            ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
  °--Child TB contact                                                            ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦--Child contact screened                                                  ,soc.frac.screened,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
      ¦   ¦--Needs re-screening                                                  ,1-(soc.frac.asymp+soc.frac.symp),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0

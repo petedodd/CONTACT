@@ -1,21 +1,12 @@
-Child HH contact
-	Child HH contact screened @ community
+Child TB contact
+	Child contact screened
+		Needs re-screening
+			Child contact re-screened
+				Symptomatic child contact
+				Asymptomatic child contact
+					TPT outcomes
+			Child contact not re-screened
 		Symptomatic child contact
-			Symptomatic child contact management
 		Asymptomatic child contact
-			Asymptomatic child contact management
-		Child contact rescreened
-			Symptomatic child contact
-				Symptomatic child contact management
-			Asymptomatic child contact
-				Asymptomatic child contact management
-	Child HH contact screened @ facility
-		Symptomatic child contact
-			Symptomatic child contact management
-		Asymptomatic child contact
-			Asymptomatic child contact management
-		Child contact rescreened
-			Symptomatic child contact
-				Symptomatic child contact management
-			Asymptomatic child contact
-				Asymptomatic child contact management
+			TPT outcomes
+	Child contact not screened

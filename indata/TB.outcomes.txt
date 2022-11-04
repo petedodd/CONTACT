@@ -1,7 +1,7 @@
-DS-TB outcomes
-	DS-TB tx
+TB outcomes
+	TB tx
 		dies 
 		survives
-	no DS-TB tx
+	no TB tx
 		dies 
 		survives
