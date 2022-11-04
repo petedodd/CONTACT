@@ -33,12 +33,12 @@ tb$`TB tx`$dies$p <- 'p.cfr.tx'
 tb$`TB tx`$survives$p <- '1-p.cfr.tx'
 
 ## -- tpt outcomes:
-tpt$`Eligible for TPT`$TPT$`TB disease <1yr`$p <- 'p.tbdx.<1yr*tptRR'
-tpt$`Eligible for TPT`$`no TPT`$`TB disease <1yr`$p <- 'p.tbdx.<1yr'
-tpt$`Eligible for TPT`$TPT$`no TB disease <1yr`$p <- '1-p.tbdx.<1yr*tptRR'
-tpt$`Eligible for TPT`$`no TPT`$`no TB disease <1yr`$p <- '1-p.tbdx.<1yr'
-tpt$`Not eligible for TPT`$`TB disease <1yr`$p <- 'p.tbdx.<1yr'
-tpt$`Not eligible for TPT`$`no TB disease <1yr`$p <- '1-p.tbdx.<1yr'
+tpt$`Eligible for TPT`$TPT$`TB disease <1yr`$p <- 'p.tbdx.1yr*tptRR'
+tpt$`Eligible for TPT`$`no TPT`$`TB disease <1yr`$p <- 'p.tbdx.1yr'
+tpt$`Eligible for TPT`$TPT$`no TB disease <1yr`$p <- '1-p.tbdx.1yr*tptRR'
+tpt$`Eligible for TPT`$`no TPT`$`no TB disease <1yr`$p <- '1-p.tbdx.1yr'
+tpt$`Not eligible for TPT`$`TB disease <1yr`$p <- 'p.tbdx.1yr'
+tpt$`Not eligible for TPT`$`no TB disease <1yr`$p <- '1-p.tbdx.1yr'
 print(tpt,'p')
 
 # no tb outcomes
@@ -176,7 +176,6 @@ tree2file(INT,filename = here('indata/CSV/INT.csv'),
 fn <- here('indata/CSV/INT1.csv')
 if(file.exists(fn)){
         ## read
-        labz <- fread(fn)
         labz <- fread(fn)
         INT$Set(p=labz$p)
         INT$Set(cost=labz$cost)
