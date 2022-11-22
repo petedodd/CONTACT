@@ -1,0 +1,38 @@
+country,age_cat,rando,cascade,cascade_cost,cost.m,cost.sd,cost.lo,cost.hi
+Cameroon,u5,INT,att_coprev,Co-prevalent TB treatment,277.367,238.495,0,43.01
+Cameroon,u5,SOC,att_coprev,Co-prevalent TB treatment,277.367,238.495,0,0
+Cameroon,u5,INT,att_inc,Incident TB treatment,277.367,238.495,0,237.16
+Cameroon,u5,SOC,att_inc,Incident TB treatment,277.367,238.495,0,0
+Cameroon,u5,INT,inv_coprev,Co-prevalent TB investigations,55.31,17.32,25.34,87.75
+Cameroon,u5,SOC,inv_coprev,Co-prevalent TB investigations,57.13,14.9,34.8,89.5
+Cameroon,u5,INT,inv_inc,Incident TB investigations,64.07,40.35,26.79,149.34
+Cameroon,u5,SOC,inv_inc,Incident TB investigations,70.68,51.58,38.35,174.44
+Cameroon,u5,INT,screening,Household contact investigations,56.04,43.31,27.92,139.94
+Cameroon,u5,SOC,screening,Household contact investigations,29.39,1.58,26.65,32.57
+Cameroon,u5,INT,tpt,TPT initiation,1235.41,512.29,38.02,2162.84
+Cameroon,u5,SOC,tpt,TPT initiation,493.69,289.59,45.53,1001.43
+Cameroon,o5,INT,att_coprev,Co-prevalent TB treatment,277.367,238.495,0,264.89
+Cameroon,o5,SOC,att_coprev,Co-prevalent TB treatment,277.367,238.495,0,0
+Cameroon,o5,INT,inv_coprev,Co-prevalent TB investigations,49.1,18.71,16.99,80.21
+Cameroon,o5,SOC,inv_coprev,Co-prevalent TB investigations,73.28,9.49,66.91,79.65
+Cameroon,o5,INT,screening,Household contact investigations,47.07,32.29,29.84,137.95
+Cameroon,o5,SOC,screening,Household contact investigations,32.13,2.88,26.82,34.24
+Cameroon,o5,INT,tpt,TPT initiation,35.75,327.67,0,0
+Uganda,u5,SOC,att_coprev,Co-prevalent TB treatment,214.5907,45.1783,0,0
+Uganda,u5,INT,att_coprev,Co-prevalent TB treatment,214.5907,45.1783,0,222.86
+Uganda,u5,INT,att_inc,Incident TB treatment,214.5907,45.1783,195.15,195.15
+Uganda,u5,SOC,inv_coprev,Co-prevalent TB investigations,51.01,8.87,42.1,63.5
+Uganda,u5,INT,inv_coprev,Co-prevalent TB investigations,41.11,18.84,24.39,70.12
+Uganda,u5,INT,inv_inc,Incident TB investigations,24.45,,24.45,24.45
+Uganda,u5,SOC,screening,Household contact investigations,29,3.23,26.58,32.32
+Uganda,u5,INT,screening,Household contact investigations,35.01,13.91,28.45,41.38
+Uganda,u5,SOC,tpt,TPT initiation,485.23,270.54,62.11,1429.04
+Uganda,u5,INT,tpt,TPT initiation,1101.46,228.94,273.04,1553.91
+Uganda,o5,SOC,att_coprev,Co-prevalent TB treatment,214.5907,45.1783,0,142.35
+Uganda,o5,INT,att_coprev,Co-prevalent TB treatment,214.5907,45.1783,0,280.18
+Uganda,o5,SOC,inv_coprev,Co-prevalent TB investigations,51.29,12.06,34.58,67.22
+Uganda,o5,INT,inv_coprev,Co-prevalent TB investigations,48.91,12.64,29.24,70.99
+Uganda,o5,SOC,screening,Household contact investigations,30.17,2.13,26.86,33.81
+Uganda,o5,INT,screening,Household contact investigations,35.25,8.82,29.07,40.73
+Uganda,o5,INT,tpt,TPT initiation,303.59,882.94,3.94,2131.94
+Uganda,o5,SOC,tpt,TPT initiation,7.57,3.6,4.6,12.99

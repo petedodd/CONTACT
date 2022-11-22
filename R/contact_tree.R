@@ -1,11 +1,14 @@
-## looking at tree 7
 rm(list=ls())
 library(here)
 library(HEdtree)
+library(discly)
 library(data.tree)
-library(DiagrammeR)
 library(data.table)
 library(glue)
+## NOTE these packages are only needed if wanting to output graphs etc
+library(BCEA)
+library(ggplot2)
+library(scales)
 
 # set_here('C:/Users/cm1nm/Dropbox/CONTACT')
 
@@ -25,12 +28,12 @@ tpt$Set(cost=0)
 ## set probabilities
 ## NOTE these namings actually get overwritten by CSV read-ins below
 ## -- tb outcomes:
-tb$`no TB tx`$p <- 'p.ptltfu'
-tb$`no TB tx`$dies$p <- 'p.cfr.notx'
-tb$`no TB tx`$survives$p <- '1-p.cfr.notx'
-tb$`TB tx`$p <- '1-p.ptltfu'
-tb$`TB tx`$dies$p <- 'p.cfr.tx'
-tb$`TB tx`$survives$p <- '1-p.cfr.tx'
+tb$`no TB tx`$p <- 'frac.pre.att.ltfu'
+tb$`no TB tx`$dies$p <- 'cfr.notx'
+tb$`no TB tx`$survives$p <- '1-cfr.notx'
+tb$`TB tx`$p <- '1-frac.pre.att.ltfu'
+tb$`TB tx`$dies$p <- 'cfr.tx'
+tb$`TB tx`$survives$p <- '1-cfr.tx'
 
 ## -- tpt outcomes:
 tpt$`Eligible for TPT`$TPT$`TB disease <1yr`$p <- 'p.tbdx.1yr*tptRR'
@@ -42,8 +45,8 @@ tpt$`Not eligible for TPT`$`no TB disease <1yr`$p <- '1-p.tbdx.1yr'
 print(tpt,'p')
 
 # no tb outcomes
-notb$dies$p <- 'p.cfr.notb'
-notb$survives$p <- '1-p.cfr.notb'
+notb$dies$p <- 'cfr.notx'
+notb$survives$p <- '1-cfr.notx'
 print(notb,'p')
 
 ## ====== function to add outcomes & counters
@@ -54,11 +57,11 @@ AddOutcomes <- function(D){
 
   ## === merge to create final tree ===
   MergeByName(D,asymp,'Asymptomatic child contact',leavesonly = TRUE)
-  MergeByName(D,symp,'Symptomatic child contact')
-  MergeByName(D,tpt,'TPT outcomes')
+  MergeByName(D,symp,'Symptomatic child contact',leavesonly = TRUE)
+  MergeByName(D,tpt,'TPT outcomes',leavesonly = TRUE)
   # MergeByName(D,tpt,'no TPT outcomes')
-  MergeByName(D,tb,'TB outcomes')
-  MergeByName(D,notb,'no TB outcomes')
+  MergeByName(D,tb,'TB outcomes',leavesonly = TRUE)
+  MergeByName(D,notb,'no TB outcomes',leavesonly = TRUE)
   # MergeByName(D,notb,'Child HH contact not screened')
   # MergeByName(D,notb,'No clinical re(evaluation) with/without  CXR')
   
@@ -157,8 +160,7 @@ if(file.exists(fn)){
         SOC$Set(TB.treated=labz$TB.treated)
         ## save out
         tree2file(SOC,filename = here('indata/CSV/SOC2.csv'),
-                  'p','cost','deaths','lives','refers','dxc','dxb','att',
-                  'check',
+                  'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb', 'att','lives','incdeaths','deaths','check',
                   'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
                   'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
 }
@@ -190,22 +192,18 @@ if(file.exists(fn)){
         INT$Set(TB.treated=labz$TB.treated)
         ## save out
         tree2file(INT,filename = here('indata/CSV/INT2.csv'),
-                  'p','cost','deaths','lives','refers','dxc','dxb','att',
-                  'check',
+                  'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb', 'att','lives','incdeaths','deaths','check',
                   'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
                   'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
 }
 
 ## make functions
-fnmz <- c('check','cost','deaths','att',
-          'lives','refers','dxc','dxb',
-          'DH.presented','DH.screened','DH.presumed','DH.treated',
-          'PHC.presented','PHC.screened','PHC.presumed','PHC.treated')
+fnmz <- c('check','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb', 'att','lives','incdeaths','deaths','check',
+          'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
+          'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
 
 SOC.F <- makeTfuns(SOC,fnmz)
 INT.F <- makeTfuns(INT,fnmz)
-
-
 
 ## running all function
 runallfuns <- function(D,arm='all'){
@@ -265,24 +263,20 @@ makeTestData <- function(ncheck,vnames){
 
 ## checking
 vrz.soc <- showAllParmz(SOC)
-vrz.spd <- showAllParmz(IPD)
-vrz.idh <- showAllParmz(IDH)
-vrz.iph <- showAllParmz(IPH)
+vrz.int <- showAllParmz(INT)
+
 vrz <- c(vrz.soc,
-         vrz.spd,
-         vrz.idh,
-         vrz.iph
+         vrz.int
 )
 vrz <- unique(vrz)
 A <- makeTestData(50,vrz)
 
 
 ## checks
-IPD.F$checkfun(A) #NOTE OK
-IPH.F$checkfun(A) #NOTE OK
-IDH.F$checkfun(A) #NOTE OK
 SOC.F$checkfun(A) #NOTE OK
+INT.F$checkfun(A) #NOTE OK
+
 
 ## full graph out
-export_graph(ToDiagrammeRGraph(contact),
-             file_name=here('plots/contact.pdf'))
+# export_graph(ToDiagrammeRGraph(SOC),
+#              file_name=here('plots/contact_soc.pdf'))
