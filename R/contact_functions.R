@@ -103,7 +103,7 @@ progprob <- function(age,hiv=0,art=0, P){
 
 ## add CFRs to data by side-effect
 AddProgProb <- function(D, P){
-        D[,p.tbdx.1yr:=progprob(age,hiv,art,P)]
+  D[,p.tbdx.1yr:=progprob(age,hiv,art,P) * ltbi.prev(age,0)] #NOTE handling of coprev happens explicitly
 }
 
 ## progprob(c(rep(3,5),rep(10,5)), P=P)
