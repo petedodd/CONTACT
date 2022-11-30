@@ -1,7 +1,7 @@
 levelName,p,cost,tpte,tpt,inctb,tbdxc,tbdxb,prevtb,att,lives,incdeaths,deaths,check,TPT.screened,TPT.asymptomatic,TPT.eligible,TPT.treated,TB.symptoms,TB.evaluated,TB.diagnosed,TB.treated
 Facility-based model                                                            ,1,0,,,,,,,,,,,0,0,0,0,0,0,0,0,0
  °--Child TB contact                                                            ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-     ¦--Child contact screened                                                  ,int.frac.screened,c.int.screening,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+     ¦--Child contact screened                                                  ,int.frac.screened*int.enrolled_per_index_case,c.int.screening,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
      ¦   ¦--Needs re-screening                                                  ,(1-int.frac.asymp)*(1-int.frac.symp),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦--Child contact re-screened                                       ,int.frac.rescreened,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦--Symptomatic child contact                                   ,int.frac.rescr.symp,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
@@ -527,4 +527,4 @@ Facility-based model                                                            
      ¦                   °--no TB outcomes                                      ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦                       ¦--dies                                            ,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0
      ¦                       °--survives                                        ,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0
-     °--Child contact not screened                                              ,1-int.frac.screened,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0
+     °--Child contact not screened                                              ,1-int.frac.screened*int.enrolled_per_index_case,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0

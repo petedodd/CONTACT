@@ -95,6 +95,31 @@ PP <- PP %>% dplyr::filter(variable %in% keep)
 
 PP <- dcast(PP, isoz+age~variable)
 # 
+
+# load enrollment data (number of contacts per index case & fraction under 5 years)
+# also available but not currently being used: declared per household/enrolled, enrolled per household, frac declared u5, frac declared/enrolled hiv
+library(readxl)
+base_popn <- data.table(read_excel("~/Dropbox/CONTACT/indata/Baseline information .xlsx", sheet = 'Sheet1', range = 'O3:R19'))
+
+base_popn <- melt(base_popn, variable.name = 'isoz')
+
+base_popn <- base_popn[,model:=toupper(model)]
+base_popn <- base_popn[model=='INT', metric:=paste('int.', metric, sep = '')]
+base_popn <- base_popn[model=='SOC', metric:=paste('soc.', metric, sep = '')]
+contact_nmbrs <- base_popn[grepl('enrolled.per.index', metric), .(isoz, variable=metric, care_model=model, value)]
+
+contact_nmbrs <- dcast(contact_nmbrs, isoz~variable)
+PP <- merge(PP, contact_nmbrs, by='isoz')
+
+age_split <- base_popn[grepl('enrolled.u5|enrolled.hiv', metric), .(isoz, variable=metric, care_model=model, value)]
+age_split <- age_split[isoz=='CMR', variable:=paste('cmr.', variable, sep = '')]
+age_split <- age_split[isoz=='UGA', variable:=paste('uga.', variable, sep = '')]
+tmp <- data.table(matrix(NA, nrow = nrow(age_split), ncol = ncol(PD0)))
+names(tmp) <- names(PD0)
+tmp <- tmp[,NAME:=age_split$variable]
+tmp <- tmp[,DISTRIBUTION:=age_split$value]
+age_split <- copy(tmp)
+age_split <- age_split[,NAME:=gsub('enrolled.', '',NAME)]
 # load cohort data (fraction under 5 and HIV)
 load(here('indata/cohortdata.Rdata'))
 
@@ -159,13 +184,9 @@ PP <- merge(PP, popn_art, by='isoz')
 # adding study data on: frac u5, HIV prevalence and ART coverage
 # currently using CMR data
 # TODO: figure out how to add country and model of care specific data
-PD0 <- setDT(PD0)
-PD0[NAME=='F.u5',DISTRIBUTION:=popn$frac.u5[popn$isoz=='CMR']]
-PD0[NAME=='hivprev.u5',DISTRIBUTION:=popn_hiv$frac.hiv.u5[popn_hiv$isoz=='CMR']]
-PD0[NAME=='hivprev.o5',DISTRIBUTION:=popn_hiv$frac.hiv.o5[popn_hiv$isoz=='CMR']]
-PD0[NAME=='artcov',DISTRIBUTION:=popn_art$artcov.o5[popn_art$isoz=='CMR']]
 
-PD0 <- setDF(PD0)
+PD0 <- rbind(PD0, age_split)
+
 P1 <- parse.parmtable(PD0)             #convert into parameter object
 # P2 <- parse.parmtable(P2)             #convert into parameter object
 # PZ <- c(P1,P2)
@@ -185,12 +206,12 @@ D <- makePSA(nreps,P,dbls = list(c('hivartOR:mn','hivartOR:sg')))
 
 ## use these parameters to construct input data by attribute
 D <- makeAttributes(D)
-D[,sum(value),by=id] #CHECK
+D[,sum(value),by=.(isoz,id,arms)] #CHECK
 # D[tb!='noTB',sum(value),by=id] #CHECK
-D[,sum(value),by=.(id,age)] #CHECK
+D[,sum(value),by=.(isoz,arms,id,age)] #CHECK
 
-D <- rbind(D,D)
-D[,isoz:=rep(c('CMR','UGA'),each=nrow(D)/2)]
+# D <- rbind(D,D)
+# D[,isoz:=rep(c('CMR','UGA'),each=nrow(D)/2)]
 D <- merge(D,PP,by=c('isoz', 'age'),all.x = TRUE)
 
 ## read and make cost data
@@ -336,6 +357,10 @@ for(cn in isoz){
                             int=make.ceac(out[,.(Q=-DLYL.int,P=Dcost.int)],lz),
                             threshold=lz)
 }
+
+D[,..toget]
+D[,.(isoz,age,F.u5,value)]
+
 allout <- rbindlist(allout)
 allpout <- rbindlist(allpout)
 ceacl <- rbindlist(ceacl)

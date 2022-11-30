@@ -136,7 +136,13 @@ AddTPTrr <- function(D,P){
 
 ## additional labels from data (may overwrite some initial version currently)
 AddDataDrivenLabels <- function(D){
-
+        
+        # 
+        # D[,int.enrolled_per_index_case:=ifelse(age=='0-4', int.enrolled_per_index_case*int.frac.enrolled.u5, int.enrolled_per_index_case*(1-int.frac.enrolled.u5))]
+        # D[,soc.enrolled_per_index_case:=ifelse(age=='0-4', soc.enrolled_per_index_case*soc.frac.enrolled.u5, soc.enrolled_per_index_case*(1-soc.frac.enrolled.u5))]
+        #
+        D[,int.frac.screened:=soc.frac.screened]
+        
         D[,soc.frac.symp.ltfu:=(1-soc.frac.symp.attending)]
         D[,int.frac.symp.ltfu:=(1-int.frac.symp.attending)]
         
@@ -144,20 +150,23 @@ AddDataDrivenLabels <- function(D){
         D[,soc.frac.tpt.eligible:=ifelse(age=='0-4' | age=='5-14' & hiv==1, soc.frac.tpt.eligible, 0)]
         D[,int.frac.tpt.eligible:=ifelse(age=='0-4' | age=='5-14' & hiv==1, int.frac.tpt.eligible, 0)]
         
-        # D[,soc.frac.tpt.initiated:=ifelse(age=='5-14' & hiv==1, soc.frac.tpt.initiated, 0)]
-        # D[,int.frac.tpt.initiated:=ifelse(age=='5-14' & hiv==1, int.frac.tpt.initiated, 0)]
         
         # fraction under 5
-        # D[,F.u5:=ifelse(age=='5-14' & hiv==1, soc.frac.tpt.eligible, 0)]
-        # D[,F.u5:=ifelse(age=='5-14' & hiv==1, int.frac.tpt.eligible, 0)]
+        # D[,F.u5:=ifelse(isoz=='CMR' & arms=='SOC', cmr.soc.frac.u5, 0)]
+        # D[,F.u5:=ifelse(isoz=='CMR' & arms=='INT', cmr.int.frac.u5, F.u5)]
+        # D[,F.u5:=ifelse(isoz=='UGA' & arms=='SOC', uga.soc.frac.u5, F.u5)]
+        # D[,F.u5:=ifelse(isoz=='UGA' & arms=='INT', uga.int.frac.u5, F.u5)]
+        
         # 
         # D[,soc.frac.tpt.initiated:=ifelse(age=='5-14' & hiv==1, soc.frac.tpt.initiated, 0)]
         # D[,int.frac.tpt.initiated:=ifelse(age=='5-14' & hiv==1, int.frac.tpt.initiated, 0)]
         
         # frac u5, HIV prevalence and ART coverage
-        D[,F.u5:=frac.u5]
-        # D[,hivprev.u5:=ifelse(age=='0-14', hivprev.u5, hivprev.o5)]
-        # D[,artcov:=ifelse(age=='0-14', artcov.u5, artcov.o5)]
+        # D[,hivprev.u5:=ifelse(isoz=='CMR' & arms=='SOC', cmr.soc.frac.hiv, 0)]
+        # D[,hivprev.u5:=ifelse(isoz=='CMR' & arms=='INT', cmr.int.frac.hiv, hivprev.u5)]
+        # D[,hivprev.u5:=ifelse(isoz=='UGA' & arms=='SOC', uga.soc.frac.hiv, hivprev.u5)]
+        # D[,hivprev.u5:=ifelse(isoz=='UGA' & arms=='INT', uga.int.frac.hiv, hivprev.u5)]
+        # D[,hivprev.o5:=hivprev.u5]
 }
 ## combined function to add the labels to the tree prior to calculations
 MakeTreeParms <- function(D,P){
@@ -175,14 +184,26 @@ MakeTreeParms <- function(D,P){
 makeAttributes <- function(D){
     nrep <- nrow(D)
     D[,id:=1:nrep]
-    fx <- list(age=agelevels,hiv=hivlevels,art=artlevels)
+    fx <- list(age=agelevels,hiv=hivlevels,art=artlevels,isoz=isoz,arms=c('SOC','INT'))
     cofx <- expand.grid(fx)
     cat('Attribute combinations used:\n')
     print(cofx)
     D <- D[rep(1:nrow(D),each=nrow(cofx))] #expand out data
     D[,names(cofx):=cofx[rep(1:nrow(cofx),nrep),]]
     ## --- age
-    D[,value:=ifelse(age=='5-14',1-F.u5,F.u5)] #NOTE value first set here
+    D[,F.u5:=ifelse(isoz=='CMR' & arms=='SOC', cmr.soc.frac.u5, 0)]
+    D[,F.u5:=ifelse(isoz=='CMR' & arms=='INT', cmr.int.frac.u5, F.u5)]
+    D[,F.u5:=ifelse(isoz=='UGA' & arms=='SOC', uga.soc.frac.u5, F.u5)]
+    D[,F.u5:=ifelse(isoz=='UGA' & arms=='INT', uga.int.frac.u5, F.u5)]
+
+    D[,hivprev.u5:=ifelse(isoz=='CMR' & arms=='SOC', cmr.soc.frac.hiv, 0)]
+    D[,hivprev.u5:=ifelse(isoz=='CMR' & arms=='INT', cmr.int.frac.hiv, hivprev.u5)]
+    D[,hivprev.u5:=ifelse(isoz=='UGA' & arms=='SOC', uga.soc.frac.hiv, hivprev.u5)]
+    D[,hivprev.u5:=ifelse(isoz=='UGA' & arms=='INT', uga.int.frac.hiv, hivprev.u5)]
+    D[,hivprev.o5:=hivprev.u5]
+              
+    D[,value:=ifelse(age=='5-14',1-F.u5,F.u5),
+      by=.(id,isoz,arms)] #NOTE value first set here
     ## --- HIV/ART
     D[,h01:=0]
     D[age!='5-14',h10:=hivprev.u5*(1-artcov)]
