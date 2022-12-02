@@ -28,7 +28,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   ¦   ¦   ¦           ¦--no TB diagnosed                         ,soc.frac.bac.noclin.dx*(1-soc.frac.bac.clin.dx),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
      ¦   ¦   ¦   ¦   ¦   ¦           ¦   °--TPT outcomes                        ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦--Eligible for TPT                ,soc.frac.tpt.eligible,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0
-     ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦--TPT                         ,soc.frac.tpt.initiated,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+     ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦--TPT                         ,soc.frac.tpt.initiated*soc.frac.tpt.completed,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦   ¦--TB disease <1yr         ,p.tbdx.1yr*tptRR,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦   ¦   °--TB outcomes         ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦   ¦       ¦--TB tx           ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -41,7 +41,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦       °--no TB outcomes      ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦           ¦--dies            ,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦           °--survives        ,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0
-     ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦   °--no TPT                      ,1-soc.frac.tpt.initiated,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+     ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦   °--no TPT                      ,1-soc.frac.tpt.initiated*soc.frac.tpt.completed,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦       ¦--TB disease <1yr         ,p.tbdx.1yr,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦       ¦   °--TB outcomes         ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦           ¦       ¦       ¦       ¦--TB tx           ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -79,7 +79,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   ¦   ¦   ¦               ¦--no TB diagnosed                     ,soc.frac.bac.7d.noclin.dx*(1-soc.frac.bac.7d.clin.dx),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
      ¦   ¦   ¦   ¦   ¦   ¦               ¦   °--TPT outcomes                    ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦--Eligible for TPT            ,soc.frac.tpt.eligible,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0
-     ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦   ¦--TPT                     ,soc.frac.tpt.initiated,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+     ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦   ¦--TPT                     ,soc.frac.tpt.initiated*soc.frac.tpt.completed,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦   ¦   ¦--TB disease <1yr     ,p.tbdx.1yr*tptRR,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦   ¦   ¦   °--TB outcomes     ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦   ¦   ¦       ¦--TB tx       ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -92,7 +92,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦   ¦       °--no TB outcomes  ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦   ¦           ¦--dies        ,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦   ¦           °--survives    ,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0
-     ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦   °--no TPT                  ,1-soc.frac.tpt.initiated,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+     ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦   °--no TPT                  ,1-soc.frac.tpt.initiated*soc.frac.tpt.completed,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦       ¦--TB disease <1yr     ,p.tbdx.1yr,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦       ¦   °--TB outcomes     ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦   ¦               ¦       ¦       ¦       ¦--TB tx       ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -131,7 +131,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   ¦   ¦       ¦--no TB diagnosed                                 ,soc.frac.noclin.dx*(1-soc.frac.clin.dx),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
      ¦   ¦   ¦   ¦   ¦       ¦   °--TPT outcomes                                ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦       ¦       ¦--Eligible for TPT                        ,soc.frac.tpt.eligible,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0
-     ¦   ¦   ¦   ¦   ¦       ¦       ¦   ¦--TPT                                 ,soc.frac.tpt.initiated,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+     ¦   ¦   ¦   ¦   ¦       ¦       ¦   ¦--TPT                                 ,soc.frac.tpt.initiated*soc.frac.tpt.completed,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
      ¦   ¦   ¦   ¦   ¦       ¦       ¦   ¦   ¦--TB disease <1yr                 ,p.tbdx.1yr*tptRR,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦   ¦   ¦       ¦       ¦   ¦   ¦   °--TB outcomes                 ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦       ¦       ¦   ¦   ¦       ¦--TB tx                   ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -144,7 +144,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   ¦   ¦       ¦       ¦   ¦       °--no TB outcomes              ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦       ¦       ¦   ¦           ¦--dies                    ,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦       ¦       ¦   ¦           °--survives                ,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0
-     ¦   ¦   ¦   ¦   ¦       ¦       ¦   °--no TPT                              ,1-soc.frac.tpt.initiated,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+     ¦   ¦   ¦   ¦   ¦       ¦       ¦   °--no TPT                              ,1-soc.frac.tpt.initiated*soc.frac.tpt.completed,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦       ¦       ¦       ¦--TB disease <1yr                 ,p.tbdx.1yr,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦   ¦   ¦       ¦       ¦       ¦   °--TB outcomes                 ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦       ¦       ¦       ¦       ¦--TB tx                   ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -182,7 +182,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   ¦   ¦           ¦--no TB diagnosed                             ,soc.frac.clin.7d.noclin.dx*(1-soc.frac.clin.7d.clin.dx),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
      ¦   ¦   ¦   ¦   ¦           ¦   °--TPT outcomes                            ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦           ¦       ¦--Eligible for TPT                    ,soc.frac.tpt.eligible,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0
-     ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦--TPT                             ,soc.frac.tpt.initiated,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+     ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦--TPT                             ,soc.frac.tpt.initiated*soc.frac.tpt.completed,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
      ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦   ¦--TB disease <1yr             ,p.tbdx.1yr*tptRR,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦   ¦   °--TB outcomes             ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦   ¦       ¦--TB tx               ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -195,7 +195,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦       °--no TB outcomes          ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦           ¦--dies                ,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦           ¦       ¦   ¦           °--survives            ,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0
-     ¦   ¦   ¦   ¦   ¦           ¦       ¦   °--no TPT                          ,1-soc.frac.tpt.initiated,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+     ¦   ¦   ¦   ¦   ¦           ¦       ¦   °--no TPT                          ,1-soc.frac.tpt.initiated*soc.frac.tpt.completed,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦           ¦       ¦       ¦--TB disease <1yr             ,p.tbdx.1yr,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦   ¦   ¦           ¦       ¦       ¦   °--TB outcomes             ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦   ¦           ¦       ¦       ¦       ¦--TB tx               ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -226,7 +226,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   °--Asymptomatic child contact                                  ,1-soc.frac.rescr.symp,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
      ¦   ¦   ¦       °--TPT outcomes                                            ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦           ¦--Eligible for TPT                                    ,soc.frac.tpt.eligible,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0
-     ¦   ¦   ¦           ¦   ¦--TPT                                             ,soc.frac.tpt.initiated,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+     ¦   ¦   ¦           ¦   ¦--TPT                                             ,soc.frac.tpt.initiated*soc.frac.tpt.completed,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
      ¦   ¦   ¦           ¦   ¦   ¦--TB disease <1yr                             ,p.tbdx.1yr*tptRR,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦           ¦   ¦   ¦   °--TB outcomes                             ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦           ¦   ¦   ¦       ¦--TB tx                               ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -239,7 +239,7 @@ Facility-based model                                                            
      ¦   ¦   ¦           ¦   ¦       °--no TB outcomes                          ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦           ¦   ¦           ¦--dies                                ,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0
      ¦   ¦   ¦           ¦   ¦           °--survives                            ,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0
-     ¦   ¦   ¦           ¦   °--no TPT                                          ,1-soc.frac.tpt.initiated,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+     ¦   ¦   ¦           ¦   °--no TPT                                          ,1-soc.frac.tpt.initiated*soc.frac.tpt.completed,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦           ¦       ¦--TB disease <1yr                             ,p.tbdx.1yr,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦           ¦       ¦   °--TB outcomes                             ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦           ¦       ¦       ¦--TB tx                               ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -290,7 +290,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   ¦           ¦--no TB diagnosed                                 ,soc.frac.bac.noclin.dx*(1-soc.frac.bac.clin.dx),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
      ¦   ¦   ¦   ¦           ¦   °--TPT outcomes                                ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦           ¦       ¦--Eligible for TPT                        ,soc.frac.tpt.eligible,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0
-     ¦   ¦   ¦   ¦           ¦       ¦   ¦--TPT                                 ,soc.frac.tpt.initiated,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+     ¦   ¦   ¦   ¦           ¦       ¦   ¦--TPT                                 ,soc.frac.tpt.initiated*soc.frac.tpt.completed,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
      ¦   ¦   ¦   ¦           ¦       ¦   ¦   ¦--TB disease <1yr                 ,p.tbdx.1yr*tptRR,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦   ¦           ¦       ¦   ¦   ¦   °--TB outcomes                 ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦           ¦       ¦   ¦   ¦       ¦--TB tx                   ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -303,7 +303,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   ¦           ¦       ¦   ¦       °--no TB outcomes              ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦           ¦       ¦   ¦           ¦--dies                    ,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦           ¦       ¦   ¦           °--survives                ,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0
-     ¦   ¦   ¦   ¦           ¦       ¦   °--no TPT                              ,1-soc.frac.tpt.initiated,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+     ¦   ¦   ¦   ¦           ¦       ¦   °--no TPT                              ,1-soc.frac.tpt.initiated*soc.frac.tpt.completed,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦           ¦       ¦       ¦--TB disease <1yr                 ,p.tbdx.1yr,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦   ¦           ¦       ¦       ¦   °--TB outcomes                 ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦           ¦       ¦       ¦       ¦--TB tx                   ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -341,7 +341,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   ¦               ¦--no TB diagnosed                             ,soc.frac.bac.7d.noclin.dx*(1-soc.frac.bac.7d.clin.dx),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
      ¦   ¦   ¦   ¦               ¦   °--TPT outcomes                            ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦               ¦       ¦--Eligible for TPT                    ,soc.frac.tpt.eligible,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0
-     ¦   ¦   ¦   ¦               ¦       ¦   ¦--TPT                             ,soc.frac.tpt.initiated,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+     ¦   ¦   ¦   ¦               ¦       ¦   ¦--TPT                             ,soc.frac.tpt.initiated*soc.frac.tpt.completed,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
      ¦   ¦   ¦   ¦               ¦       ¦   ¦   ¦--TB disease <1yr             ,p.tbdx.1yr*tptRR,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦   ¦               ¦       ¦   ¦   ¦   °--TB outcomes             ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦               ¦       ¦   ¦   ¦       ¦--TB tx               ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -354,7 +354,7 @@ Facility-based model                                                            
      ¦   ¦   ¦   ¦               ¦       ¦   ¦       °--no TB outcomes          ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦               ¦       ¦   ¦           ¦--dies                ,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦               ¦       ¦   ¦           °--survives            ,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0
-     ¦   ¦   ¦   ¦               ¦       ¦   °--no TPT                          ,1-soc.frac.tpt.initiated,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+     ¦   ¦   ¦   ¦               ¦       ¦   °--no TPT                          ,1-soc.frac.tpt.initiated*soc.frac.tpt.completed,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦               ¦       ¦       ¦--TB disease <1yr             ,p.tbdx.1yr,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦   ¦               ¦       ¦       ¦   °--TB outcomes             ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦   ¦               ¦       ¦       ¦       ¦--TB tx               ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -393,7 +393,7 @@ Facility-based model                                                            
      ¦   ¦   ¦       ¦--no TB diagnosed                                         ,soc.frac.noclin.dx*(1-soc.frac.clin.dx),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
      ¦   ¦   ¦       ¦   °--TPT outcomes                                        ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦       ¦       ¦--Eligible for TPT                                ,soc.frac.tpt.eligible,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0
-     ¦   ¦   ¦       ¦       ¦   ¦--TPT                                         ,soc.frac.tpt.initiated,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+     ¦   ¦   ¦       ¦       ¦   ¦--TPT                                         ,soc.frac.tpt.initiated*soc.frac.tpt.completed,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
      ¦   ¦   ¦       ¦       ¦   ¦   ¦--TB disease <1yr                         ,p.tbdx.1yr*tptRR,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦       ¦       ¦   ¦   ¦   °--TB outcomes                         ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦       ¦       ¦   ¦   ¦       ¦--TB tx                           ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -406,7 +406,7 @@ Facility-based model                                                            
      ¦   ¦   ¦       ¦       ¦   ¦       °--no TB outcomes                      ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦       ¦       ¦   ¦           ¦--dies                            ,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0
      ¦   ¦   ¦       ¦       ¦   ¦           °--survives                        ,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0
-     ¦   ¦   ¦       ¦       ¦   °--no TPT                                      ,1-soc.frac.tpt.initiated,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+     ¦   ¦   ¦       ¦       ¦   °--no TPT                                      ,1-soc.frac.tpt.initiated*soc.frac.tpt.completed,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦       ¦       ¦       ¦--TB disease <1yr                         ,p.tbdx.1yr,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦       ¦       ¦       ¦   °--TB outcomes                         ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦       ¦       ¦       ¦       ¦--TB tx                           ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -444,7 +444,7 @@ Facility-based model                                                            
      ¦   ¦   ¦           ¦--no TB diagnosed                                     ,soc.frac.clin.7d.noclin.dx*(1-soc.frac.clin.7d.clin.dx),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
      ¦   ¦   ¦           ¦   °--TPT outcomes                                    ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦           ¦       ¦--Eligible for TPT                            ,soc.frac.tpt.eligible,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0
-     ¦   ¦   ¦           ¦       ¦   ¦--TPT                                     ,soc.frac.tpt.initiated,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+     ¦   ¦   ¦           ¦       ¦   ¦--TPT                                     ,soc.frac.tpt.initiated*soc.frac.tpt.completed,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
      ¦   ¦   ¦           ¦       ¦   ¦   ¦--TB disease <1yr                     ,p.tbdx.1yr*tptRR,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦           ¦       ¦   ¦   ¦   °--TB outcomes                     ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦           ¦       ¦   ¦   ¦       ¦--TB tx                       ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -457,7 +457,7 @@ Facility-based model                                                            
      ¦   ¦   ¦           ¦       ¦   ¦       °--no TB outcomes                  ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦           ¦       ¦   ¦           ¦--dies                        ,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0
      ¦   ¦   ¦           ¦       ¦   ¦           °--survives                    ,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0
-     ¦   ¦   ¦           ¦       ¦   °--no TPT                                  ,1-soc.frac.tpt.initiated,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+     ¦   ¦   ¦           ¦       ¦   °--no TPT                                  ,1-soc.frac.tpt.initiated*soc.frac.tpt.completed,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦           ¦       ¦       ¦--TB disease <1yr                     ,p.tbdx.1yr,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦   ¦   ¦           ¦       ¦       ¦   °--TB outcomes                     ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦   ¦   ¦           ¦       ¦       ¦       ¦--TB tx                       ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -488,7 +488,7 @@ Facility-based model                                                            
      ¦   °--Asymptomatic child contact                                          ,soc.frac.asymp*(1-soc.frac.symp),0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
      ¦       °--TPT outcomes                                                    ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦           ¦--Eligible for TPT                                            ,soc.frac.tpt.eligible,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0
-     ¦           ¦   ¦--TPT                                                     ,soc.frac.tpt.initiated,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+     ¦           ¦   ¦--TPT                                                     ,soc.frac.tpt.initiated*soc.frac.tpt.completed,c.soc.tpt,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
      ¦           ¦   ¦   ¦--TB disease <1yr                                     ,p.tbdx.1yr*tptRR,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦           ¦   ¦   ¦   °--TB outcomes                                     ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦           ¦   ¦   ¦       ¦--TB tx                                       ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
@@ -501,7 +501,7 @@ Facility-based model                                                            
      ¦           ¦   ¦       °--no TB outcomes                                  ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦           ¦   ¦           ¦--dies                                        ,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0
      ¦           ¦   ¦           °--survives                                    ,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0
-     ¦           ¦   °--no TPT                                                  ,1-soc.frac.tpt.initiated,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+     ¦           ¦   °--no TPT                                                  ,1-soc.frac.tpt.initiated*soc.frac.tpt.completed,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦           ¦       ¦--TB disease <1yr                                     ,p.tbdx.1yr,c.soc.inv_inc+c.soc.att_inc,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
      ¦           ¦       ¦   °--TB outcomes                                     ,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ¦           ¦       ¦       ¦--TB tx                                       ,1-frac.pre.att.ltfu,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
