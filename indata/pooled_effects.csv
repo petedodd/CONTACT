@@ -1,0 +1,12 @@
+NAME,DISTRIBUTION,MEDIAN (IQR),DESCRIPTION,SOURCE,NOTES,CATEGORY,"WORKING NOTES, QUERIES, ACTIONS",NOTES - CONTACT STUDY
+tpt.screeningOR,,,Proportion of children screened for TB among declared child contacts < 15 years old ,CONTACT study ,,,,
+tpt.resultOR,,0.42 (0.42 - 6.20),Proportion of children with a final negative screening result,CONTACT study ,Extracted from text in main draft,,,
+tpt.initiationOR,,0.79 (0.15 - 4.28),Proportion of children started on TPT among child contacts screened for TB (enrolled contacts),CONTACT study ,Extracted from text in main draft,,,
+tpt.completiongOR,,5.47 (1.68 - 17.82),Proportion of children who completed TPT among enrolled contacts started on TPT,CONTACT study ,Extracted from text in main draft,,,
+tb.screeningOR,,5.08 (2.17 - 11.90),Proportion of child contacts screened for TB among declared child contacts  < 15 years old ,CONTACT study ,Extracted from text in main draft,,,
+tb.resultOR,,1.45 (0.38 - 5.49),Proportion of enrolled child contacts with TB suggestive symptoms,CONTACT study ,,,,
+tb.investigationOR,,,Proportion of child contacts with TB suggestive symptoms investigated for TB,CONTACT study ,Extracted from text in main draft,,,
+tb.diagnosisOR,,1.82 (0.13 - 26.24),Proportion of enrolled child contacts  diagnosed with TB,CONTACT study ,Extracted from text in main draft. Different numbers in Table 4: 3.29 [0.21; 50.40],,,
+tb.attOR,,,Proportion of children started on TB treatment,CONTACT study ,,,,
+tpt.declaredOR,,3.06 (1.24 -7.53),Proportion of child contacts (< 5 years declared by the index cases or HIV infected 5 14 years enrolled) who initiate and complete the TPT,CONTACT study ,Extracted from text in main draft,,,
+tpt.enrolledOR,,5.38 (1.77 - 16.29),Proportion of child contacts (< 5 years enrolled by the index cases or HIV infected 5 14 years) who initiate and complete the TPT,CONTACT study ,Extracted from text in main draft,,,
