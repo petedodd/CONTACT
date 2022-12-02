@@ -7,6 +7,7 @@ library(tidyverse)
 source(here('R/contact_tree.R'))           #tree structure and namings: also tree functions & libraries
 source(here('R/contact_functions.R'))      #functions for tree parameters
 
+
 ## number of reps
 nreps <- 1e3
 set.seed(1234)
@@ -45,22 +46,22 @@ drop <- PD0$NAME[grepl('sens|spec', PD0$NAME)]
 PD0 <- PD0 %>% dplyr::filter(!NAME %in% drop)
 
 # # proportions from cascade data (age aggregated)
-PPA <- fread(here('indata/proportions.csv'))
+# PP <- fread(here('indata/proportions.csv'))
 # 
 # # quick renaming some variables. TODO: rename in analysis code later
-PPA[variable=='frac.clin.7d.dx', variable:='frac.clin.7d.clin.dx']
-PPA[variable=='frac.noclin.7d.dx', variable:='frac.clin.7d.noclin.dx']
-
-PPA <- melt(PPA, id.vars = c('country', 'variable'), variable.name = 'care_model')
-PPA <- PPA[care_model=='INT', variable:=paste('int.', variable, sep = '')]
-PPA <- PPA[care_model=='SOC', variable:=paste('soc.', variable, sep = '')]
-
-PPA[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
-
-keep <- vrz[grepl('soc|int', vrz)]
-PPA <- PPA %>% dplyr::filter(variable %in% keep)
-
-PPA <- dcast(PPA, isoz~variable)
+# PP[variable=='frac.clin.7d.dx', variable:='frac.clin.7d.clin.dx']
+# PP[variable=='frac.noclin.7d.dx', variable:='frac.clin.7d.noclin.dx']
+# 
+# PP <- melt(PP, id.vars = c('country', 'variable'), variable.name = 'care_model')
+# PP <- PP[care_model=='INT', variable:=paste('int.', variable, sep = '')]
+# PP <- PP[care_model=='SOC', variable:=paste('soc.', variable, sep = '')]
+# 
+# PP[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
+# 
+# keep <- vrz[grepl('soc|int', vrz)]
+# PP <- PP %>% dplyr::filter(variable %in% keep)
+# 
+# PP <- dcast(PP, isoz~variable)
 
 # load cohort data (fraction under 5 and HIV)
 # load(here('indata/cohortdata.Rdata'))
@@ -74,22 +75,6 @@ PPA <- dcast(PPA, isoz~variable)
 # popn <- dcast(popn, country+age_cat+variable~rando)
 # 
 # PP <- rbind(PP, popn)
-
-# intervention effect estimates
-INTE <- fread(gh('indata/pooled_effects.csv'))    #read cost data
-
-# INTE[, c('mid', 'lo', 'hi') := tstrsplit('MEDIAN (IQR)', "", fixed=TRUE)][]
-
-tmp <- INTE %>%
-        extract(`MEDIAN (IQR)`, into = c("mid", "lo"), "([^(]+)\\s*[^0-9]+([0-9].*).") %>%
-        separate(lo,c("lo","hi"),"-") %>%
-        mutate_at(c("mid", "lo","hi"), as.numeric)
-
-tmp1 <- getLNparms(tmp[,mid],(tmp[,hi]-tmp[,lo])^2/3.92^2,med=FALSE)
-tmp[,DISTRIBUTION:=paste0("LN(",tmp1$mu,",",tmp1$sig,")")] #LN distributions
-
-INTE[,DISTRIBUTION:=tmp$DISTRIBUTION]
-INTE[DISTRIBUTION=='LN(NA,NA)', DISTRIBUTION:=NA]
 
 # # proportions from cascade data
 PP <- fread(here('indata/proportions_age_cat.csv'))
@@ -114,101 +99,82 @@ PP <- dcast(PP, isoz+age~variable)
 # load enrollment data (number of contacts per index case & fraction under 5 years)
 # also available but not currently being used: declared per household/enrolled, enrolled per household, frac declared u5, frac declared/enrolled hiv
 library(readxl)
-base_popn <- data.table(read_excel("~/Dropbox/CONTACT/indata/Baseline information .xlsx", sheet = 'Sheet1', range = 'Z13:AB17'))
+base_popn <- data.table(read_excel("~/Dropbox/CONTACT/indata/Baseline information .xlsx", sheet = 'Sheet1', range = 'O3:R19'))
+
 base_popn <- melt(base_popn, variable.name = 'isoz')
-age_split <- base_popn[grepl('enrolled.', metric), .(isoz, variable=metric, value)]
+
+base_popn <- base_popn[,model:=toupper(model)]
+base_popn <- base_popn[model=='INT', metric:=paste('int.', metric, sep = '')]
+base_popn <- base_popn[model=='SOC', metric:=paste('soc.', metric, sep = '')]
+contact_nmbrs <- base_popn[grepl('enrolled.per.index', metric), .(isoz, variable=metric, care_model=model, value)]
+
+contact_nmbrs <- dcast(contact_nmbrs, isoz~variable)
+PP <- merge(PP, contact_nmbrs, by='isoz')
+
+age_split <- base_popn[grepl('enrolled.u5|enrolled.hiv', metric), .(isoz, variable=metric, care_model=model, value)]
 age_split <- age_split[isoz=='CMR', variable:=paste('cmr.', variable, sep = '')]
 age_split <- age_split[isoz=='UGA', variable:=paste('uga.', variable, sep = '')]
-
 tmp <- data.table(matrix(NA, nrow = nrow(age_split), ncol = ncol(PD0)))
 names(tmp) <- names(PD0)
 tmp <- tmp[,NAME:=age_split$variable]
 tmp <- tmp[,DISTRIBUTION:=age_split$value]
 age_split <- copy(tmp)
 age_split <- age_split[,NAME:=gsub('enrolled.', '',NAME)]
+# load cohort data (fraction under 5 and HIV)
+load(here('indata/cohortdata.Rdata'))
 
-# commented CODE below not working
-enrolled <- data.table(read_excel("~/Dropbox/CONTACT/indata/Baseline information .xlsx", sheet = 'Sheet1', range = 'O3:R19'))
+# fraction under 5 years
+popn <- setDT(popn_age_country)
+popn <- popn[country=='Cameroun', country:='Cameroon']
+popn <- popn[age_cat=='u5', variable:='frac.u5']
+popn <- popn[age_cat=='o5', variable:='frac.o5']
+popn[, age:=ifelse(age_cat=='u5', '0-4', '5-14')]
+popn[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
+popn <- popn[variable=='frac.u5',.(isoz, age, variable, prop)]
+# popn <- popn[rando=='ITV', rando:='INT']
+popn <- dcast(popn, isoz~variable)
 
-enrolled <- melt(enrolled, variable.name = 'isoz')
+# HIV prevalence
+popn_hiv <- setDT(popn_hiv_age_country)
+popn_hiv <- popn_hiv[country=='Cameroun', country:='Cameroon']
+popn_hiv <- popn_hiv[hiv_status=='Positive', ]
+popn_hiv <- popn_hiv[age_cat=='u5', variable:='frac.hiv.u5']
+popn_hiv <- popn_hiv[age_cat=='o5', variable:='frac.hiv.o5']
+popn_hiv[, age:=ifelse(age_cat=='u5', '0-4', '5-14')]
+popn_hiv[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
+popn_hiv <- popn_hiv[,.(isoz, age, variable, prop)]
 
-enrolled <- enrolled[,model:=toupper(model)]
-enrolled <- enrolled[model=='INT', metric:=paste('int.', metric, sep = '')]
-enrolled <- enrolled[model=='SOC', metric:=paste('soc.', metric, sep = '')]
-enrolled <- enrolled[grepl('enrolled.per.index', metric), .(isoz, variable=metric, care_model=model, value)]
+tmp <- popn_hiv[isoz=='CMR',]
+tmp <- tmp[,age:='0-4']
+tmp <- tmp[,variable:='frac.hiv.u5']
+tmp <- tmp[,prop:=0]
 
-enrolled <- dcast(enrolled, isoz~variable)
-PP <- merge(PP, enrolled, by='isoz') # age disaggregated
-PPA <- merge(PPA, enrolled, by='isoz') # aggregated
-PPA <- rbind(PPA,PPA)
-PPA[,age:=rep(agelevels,each=nrow(PPA)/2)]
+popn_hiv <- rbind(popn_hiv, tmp)
+# popn <- popn[rando=='ITV', rando:='INT']
+popn_hiv <- dcast(popn_hiv, isoz~variable)
 
-# age_split <- base_popn[grepl('enrolled.u5|enrolled.hiv', metric), .(isoz, variable=metric, care_model=model, value)]
-# age_split <- age_split[isoz=='CMR', variable:=paste('cmr.', variable, sep = '')]
-# age_split <- age_split[isoz=='UGA', variable:=paste('uga.', variable, sep = '')]
-# tmp <- data.table(matrix(NA, nrow = nrow(age_split), ncol = ncol(PD0)))
-# names(tmp) <- names(PD0)
-# tmp <- tmp[,NAME:=age_split$variable]
-# tmp <- tmp[,DISTRIBUTION:=age_split$value]
-# age_split <- copy(tmp)
-# age_split <- age_split[,NAME:=gsub('enrolled.', '',NAME)]
+# ART coverage
+popn_art <- setDT(popn_art_age_country)
+popn_art <- popn_art[country=='Cameroun', country:='Cameroon']
+popn_art <- popn_art[art_status=='Yes', ]
+popn_art <- popn_art[age_cat=='u5', variable:='artcov.u5']
+popn_art <- popn_art[age_cat=='o5', variable:='artcov.o5']
+popn_art[, age:=ifelse(age_cat=='u5', '0-4', '5-14')]
+popn_art[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
+popn_art <- popn_art[,.(isoz, age, variable, prop)]
+
+# TODO: check under 5 art coverage - looks too low. Setting it to O5 coverage for now
+# popn_art <- popn_art[age=='0-4',prop:=prop[age=='5-14']] 
+popn_art$prop[popn_art$age=='0-4'] <- popn_art$prop[popn_art$age=='5-14']
 
 
-# # load cohort data (fraction under 5 and HIV)
-# load(here('indata/cohortdata.Rdata'))
-# 
-# # fraction under 5 years
-# popn <- setDT(popn_age_country)
-# popn <- popn[country=='Cameroun', country:='Cameroon']
-# popn <- popn[age_cat=='u5', variable:='frac.u5']
-# popn <- popn[age_cat=='o5', variable:='frac.o5']
-# popn[, age:=ifelse(age_cat=='u5', '0-4', '5-14')]
-# popn[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
-# popn <- popn[variable=='frac.u5',.(isoz, age, variable, prop)]
-# # popn <- popn[rando=='ITV', rando:='INT']
-# popn <- dcast(popn, isoz~variable)
-# 
-# # HIV prevalence
-# popn_hiv <- setDT(popn_hiv_age_country)
-# popn_hiv <- popn_hiv[country=='Cameroun', country:='Cameroon']
-# popn_hiv <- popn_hiv[hiv_status=='Positive', ]
-# popn_hiv <- popn_hiv[age_cat=='u5', variable:='frac.hiv.u5']
-# popn_hiv <- popn_hiv[age_cat=='o5', variable:='frac.hiv.o5']
-# popn_hiv[, age:=ifelse(age_cat=='u5', '0-4', '5-14')]
-# popn_hiv[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
-# popn_hiv <- popn_hiv[,.(isoz, age, variable, prop)]
-# 
-# tmp <- popn_hiv[isoz=='CMR',]
-# tmp <- tmp[,age:='0-4']
-# tmp <- tmp[,variable:='frac.hiv.u5']
-# tmp <- tmp[,prop:=0]
-# 
-# popn_hiv <- rbind(popn_hiv, tmp)
-# # popn <- popn[rando=='ITV', rando:='INT']
-# popn_hiv <- dcast(popn_hiv, isoz~variable)
-# 
-# # ART coverage
-# popn_art <- setDT(popn_art_age_country)
-# popn_art <- popn_art[country=='Cameroun', country:='Cameroon']
-# popn_art <- popn_art[art_status=='Yes', ]
-# popn_art <- popn_art[age_cat=='u5', variable:='artcov.u5']
-# popn_art <- popn_art[age_cat=='o5', variable:='artcov.o5']
-# popn_art[, age:=ifelse(age_cat=='u5', '0-4', '5-14')]
-# popn_art[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
-# popn_art <- popn_art[,.(isoz, age, variable, prop)]
-# 
-# # TODO: check under 5 art coverage - looks too low. Setting it to O5 coverage for now
-# # popn_art <- popn_art[age=='0-4',prop:=prop[age=='5-14']] 
-# popn_art$prop[popn_art$age=='0-4'] <- popn_art$prop[popn_art$age=='5-14']
-# 
-# 
-# # popn <- popn[rando=='ITV', rando:='INT']
-# popn_art <- dcast(popn_art, isoz~variable)
-# 
-# 
-# PP <- merge(PP, popn, by='isoz')
-# PP <- merge(PP, popn_hiv, by='isoz')
-# PP <- merge(PP, popn_art, by='isoz')
+# popn <- popn[rando=='ITV', rando:='INT']
+popn_art <- dcast(popn_art, isoz~variable)
+
+
+PP <- merge(PP, popn, by='isoz')
+PP <- merge(PP, popn_hiv, by='isoz')
+PP <- merge(PP, popn_art, by='isoz')
 # P2 <- melt(PP)
 
 
@@ -218,10 +184,9 @@ PPA[,age:=rep(agelevels,each=nrow(PPA)/2)]
 # adding study data on: frac u5, HIV prevalence and ART coverage
 # currently using CMR data
 # TODO: figure out how to add country and model of care specific data
-names(INTE) <- names(PD0)
-PD0 <- rbind(PD0, age_split, INTE)
 
-PD0 <- PD0[!is.na(PD0$DISTRIBUTION),]
+PD0 <- rbind(PD0, age_split)
+
 P1 <- parse.parmtable(PD0)             #convert into parameter object
 # P2 <- parse.parmtable(P2)             #convert into parameter object
 # PZ <- c(P1,P2)
@@ -241,14 +206,14 @@ D <- makePSA(nreps,P,dbls = list(c('hivartOR:mn','hivartOR:sg')))
 
 ## use these parameters to construct input data by attribute
 D <- makeAttributes(D)
-D[,sum(value),by=.(isoz,id)] #CHECK
+D[,sum(value),by=.(isoz,id,arms)] #CHECK
 # D[tb!='noTB',sum(value),by=id] #CHECK
-D[,sum(value),by=.(isoz,id,age)] #CHECK
+D[,sum(value),by=.(isoz,arms,id,age)] #CHECK
 
 # D <- rbind(D,D)
 # D[,isoz:=rep(c('CMR','UGA'),each=nrow(D)/2)]
-# D <- merge(D,PP,by=c('isoz', 'age'),all.x = TRUE)
-D <- merge(D,PPA,by=c('isoz', 'age'),all.x = TRUE)
+D <- merge(D,PP,by=c('isoz', 'age'),all.x = TRUE)
+
 ## read and make cost data
 # csts <- fread(here('indata/testcosts.csv'))         #read cost data
 # rcsts <- fread(gh('indata/model_mean_total_costs_age.csv'))    #read cost data
@@ -286,8 +251,6 @@ rcsts <- rcsts[,..keeps]
 ## turn cost data into PSA
 rcsts[is.na(rcsts)] <- 0 #some quick fix >> setting NA to 0
 rcsts[cost.sd==0,cost.sd:=cost.m/40]        #SD such that 95% UI ~ 10% of mean
-# rcsts[cost.sd>100,cost.sd:=cost.m/40]
-# rcsts[cost.m>100,cost.m:=cost.m/20]
 allcosts <- rcsts[,.(iso3=isoz, cost=cascade, cost.m, cost.sd)]
 
 keep <- vrz[grepl('c.soc.|c.int.', vrz)]
@@ -304,10 +267,6 @@ C <- MakeCostData(allcosts[iso3=='CMR'],nreps)               #make cost PSA NOTE
 ## compute other parameters (adds by side-effect)
 MakeTreeParms(D,P)
 
-D[,sum(value),by=.(isoz,id)] #CHECK
-D[,sum(value),by=.(isoz,id,age)] #CHECK
-D[,.(isoz,age,F.u5,hivprev.u5)]
-D[,.(isoz,age,soc.frac.screened,tb.screeningOR,int.frac.screened)]
 ## check for leaks
 head(SOC.F$checkfun(D)) #SOC arm
 head(INT.F$checkfun(D)) #INT arm
@@ -324,8 +283,7 @@ D <- runallfuns(D,arm=arms)                      #appends anwers
 ## --- run over different countries
 cnmz <- names(C) # C=cost PSA data
 cnmz <- cnmz[cnmz!=c('id')]
-toget <- c('id',
-           'cost.soc','cost.int',
+toget <- c('id','cost.soc','cost.int',
            'tpt.soc','tpt.int',
            'att.soc','att.int',
            'deaths.soc','deaths.int',
@@ -340,7 +298,7 @@ heur <- c('id','value','deaths.int','deaths.soc')
 out <- D[,..heur]
 out <- out[,lapply(.SD,function(x) sum(x*value)),.SDcols=c('deaths.int','deaths.soc'),by=id] #sum against popn
 ## topl <- 0.25/out[,mean(deaths.soc-deaths.int)]
-topl <- 10000*50
+topl <- 300
 lz <- seq(from = 0,to=topl,length.out = 1000) #threshold vector for CEACs
 
 ## containers & loop
@@ -351,7 +309,6 @@ for(cn in isoz){
   cat('running model for:',cn,'\n')
   ## --- costs
   ## drop previous costs
-  # D <- D[age=='0-4',]
   D[,c(cnmz):=NULL]
   ## add cost data
   C <- MakeCostData(allcosts[iso3==cn],nreps) #make cost PSA
@@ -402,15 +359,7 @@ for(cn in isoz){
 }
 
 D[,..toget]
-D[,.(isoz,age,F.u5,value)] # why are some values 0?
-D[,summary(tpt.int/tpt.soc)]
-
-check1 <- names(labz)[4:14]
-check1 <- c(paste0(check1,'.soc'), paste0(check1,'.int'))
-check2 <- names(labz)[14:21]
-summary(D[,..check1])
-odds <- names(D)[grepl('OR',names(D))]
-summary(D[,..odds])
+D[,.(isoz,age,F.u5,value)]
 
 allout <- rbindlist(allout)
 allpout <- rbindlist(allpout)

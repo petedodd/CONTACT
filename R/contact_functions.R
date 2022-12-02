@@ -21,7 +21,7 @@ gh <- function(x) glue(here(x))
 
 ## ========= OUTCOMES ===============
 ## TODO - remove excess RNG here
-CFRtxY <- function(age,hiv=0,art=0){#NB optimized for clarity not speed
+CFRtxY <- function(age,hiv=0,art=0,P){#NB optimized for clarity not speed
   if(length(age)>1 & length(hiv)==1) hiv <- rep(hiv,length(age))
   if(length(age)>1 & length(art)==1) art <- rep(art,length(age))
   tmp <- P$ontx.u5$r(length(age))
@@ -42,7 +42,7 @@ CFRtxY <- function(age,hiv=0,art=0){#NB optimized for clarity not speed
 
 
 ## == CFR off tx
-CFRtxN <- function(age,hiv=0,art=0){
+CFRtxN <- function(age,hiv=0,art=0,P){
   if(length(age)>1 & length(hiv)==1) hiv <- rep(hiv,length(age))
   if(length(age)>1 & length(art)==1) art <- rep(art,length(age))
   tmp <- P$notx.u5$r(length(age))          #default a<5 and hiv=art=0
@@ -66,9 +66,9 @@ AddCFRs <- function(D,P){
   ## d.cfr.notx & d.cfr.tx
   D[,c('cfr.notx','cfr.tx'):=0] #NOTE neglect non-TB mortality
   ## CFR on  ATT
-  D[,cfr.tx:=CFRtxY(age,hiv,art)]
+  D[,cfr.tx:=CFRtxY(age,hiv,art,P)]
   ## CFR w/o ATT
-  D[,cfr.notx:=CFRtxN(age,hiv,art)]
+  D[,cfr.notx:=CFRtxN(age,hiv,art,P)]
 }
 
 ## == LTBI infection probability
@@ -85,7 +85,7 @@ ltbi.prev <- function(age,coprev,hinco=FALSE){
 # ltbi.prev(1:10,0.1,hinco=TRUE)
 
 ## progression probability
-progprob <- function(age,hiv=0,art=0){
+progprob <- function(age,hiv=0,art=0, P){
         if(length(age)>1 & length(hiv)==1) hiv <- rep(hiv,length(age))
         if(length(age)>1 & length(art)==1) art <- rep(art,length(age))
         ans <- P$prog04$r(length(age))
@@ -103,15 +103,15 @@ progprob <- function(age,hiv=0,art=0){
 
 ## add CFRs to data by side-effect
 AddProgProb <- function(D, P){
-  D[,p.tbdx.1yr:=progprob(age,hiv,art) * ltbi.prev(age,0)] #NOTE handling of coprev happens explicitly
+  D[,p.tbdx.1yr:=progprob(age,hiv,art,P) * ltbi.prev(age,0)] #NOTE handling of coprev happens explicitly
 }
 
-## progprob(c(rep(3,5),rep(10,5)))
+## progprob(c(rep(3,5),rep(10,5)), P=P)
 
 
 ## === IPT efficacy
 TPTrr <- function(age,hiv=0,
-                  tst='none'           #a flag for: given to TST+ or not
+                  tst='none'            #a flag for: given to TST+ or not
 ){
         if(length(age)>1 & length(hiv)==1) hiv <- rep(hiv,length(age))
         if(tst=='none'){
@@ -122,14 +122,14 @@ TPTrr <- function(age,hiv=0,
         }
         ans
 }
-# TPTrr(1:10, P=P)
+# TPTrr(1:10, P)
 # summary(TPTrr(runif(1e3),hiv=0)) #0.37
 # summary(TPTrr(runif(1e3),hiv=1)) #0.35
 # summary(TPTrr(runif(1e3),tst='yes')) #0.09
 AddTPTrr <- function(D,P){
         D[,tptRR0:=TPTrr(age,hiv)]  #base efficacy of IPT
         D[,tptRR1:=TPTrr(age,tst="+ve")]   #base efficacy of PT: TST+ve
-        D[,tptRR:=tptRR1] 
+        D[,tptRR:=tptRR0] 
 }
 
 ## ======= COMBINED LABELLER ===========
@@ -137,79 +137,23 @@ AddTPTrr <- function(D,P){
 ## additional labels from data (may overwrite some initial version currently)
 AddDataDrivenLabels <- function(D){
         
-        # set model entry  to per 1 child contact 
-        D[,int.enrolled_per_index_case:=1]
-        D[,soc.enrolled_per_index_case:=1]
-        
-        # intervention effects
-        # naive using OR as RR
-        # TPT cascade
-        # D[,int.frac.screened:=soc.frac.screened*5.08]
-        D[,int.frac.asymp:=soc.frac.asymp*0.42]
-        D[,int.frac.tpt.initiated:=soc.frac.tpt.initiated*0.79]
-        D[,int.frac.tpt.completed:=soc.frac.tpt.completed*5.47]
-        
-        # # ATT cascade
-        # # ilogit(D$tb.resultOR[1]*logit(PPA$soc.frac.symp))
-        D[,int.frac.symp:=(1.45 * soc.frac.symp)]
-        D[,int.frac.rescr.symp:=(1.45 * soc.frac.rescr.symp)]
-        D[,int.frac.bac.dx:=(1.82 * soc.frac.bac.dx)]
-        D[,int.frac.bac.clin.dx:=(1.82 * soc.frac.bac.clin.dx)]
-        D[,int.frac.bac.7d.clin.dx:=(1.82 * soc.frac.bac.7d.clin.dx)]
-        D[,int.frac.clin.dx:=(1.82 * soc.frac.clin.dx)]
-        D[,int.frac.clin.7d.clin.dx:=(1.82 * soc.frac.clin.7d.clin.dx)]
-        
-        # # invlogit( OR x logit(baselineP) )
-        # TPT cascade
-        # D[,int.frac.screened:=ilogit(tb.screeningOR*logit(soc.frac.screened*0.9999))] #Quick fix for soc.frac.screened=1
-        # # ilogit(D$tpt.completiongOR[1]*logit(PPA$soc.frac.tpt.completed))
-        # D[,int.frac.asymp:=ilogit(tpt.resultOR*logit(soc.frac.asymp))]
-        # D[,int.frac.tpt.initiated:=ilogit(tpt.initiationOR * logit(soc.frac.tpt.initiated*0.9999))]
-        # D[,int.frac.tpt.completed:=ilogit(tpt.completiongOR * logit(soc.frac.tpt.completed))]
         # 
-        # # ATT cascade
-        # # ilogit(D$tb.resultOR[1]*logit(PPA$soc.frac.symp))
-        # D[,int.frac.symp:=ilogit(tb.resultOR * logit(soc.frac.symp))]
-        # D[,int.frac.rescr.symp:=ilogit(tb.resultOR*logit(soc.frac.rescr.symp))]
-        # D[,int.frac.bac.dx:=ilogit(tb.diagnosisOR * logit(soc.frac.bac.dx))]
-        # D[,int.frac.bac.clin.dx:=ilogit(tb.diagnosisOR * logit(soc.frac.bac.clin.dx))]
-        # D[,int.frac.bac.7d.clin.dx:=ilogit(tb.diagnosisOR * logit(soc.frac.bac.7d.clin.dx))]
-        # D[,int.frac.clin.dx:=ilogit(tb.diagnosisOR * logit(soc.frac.clin.dx))]
-        # D[,int.frac.clin.7d.clin.dx:=ilogit(tb.diagnosisOR * logit(soc.frac.clin.7d.clin.dx))]
+        # D[,int.enrolled_per_index_case:=ifelse(age=='0-4', int.enrolled_per_index_case*int.frac.enrolled.u5, int.enrolled_per_index_case*(1-int.frac.enrolled.u5))]
+        # D[,soc.enrolled_per_index_case:=ifelse(age=='0-4', soc.enrolled_per_index_case*soc.frac.enrolled.u5, soc.enrolled_per_index_case*(1-soc.frac.enrolled.u5))]
+        #
+        D[,int.frac.screened:=soc.frac.screened]
         
-        # hard coded
-        # TPT cascade
-        # D[,int.frac.screened:=ilogit(5.08*logit(soc.frac.screened*0.9999))]
-        # ilogit(5.08*logit(PP$soc.frac.asymp*0.9999))
-        # D[,int.frac.asymp:=ilogit(0.42*logit(soc.frac.asymp))]
-        # D[,int.frac.tpt.initiated:=ilogit(0.79 * logit(soc.frac.tpt.initiated*0.9999))]
-        # D[,int.frac.tpt.completed:=ilogit(5.47 * logit(soc.frac.tpt.completed))]
-        # #
-        # # # ATT cascade
-        # # ilogit(D$tb.resultOR[1]*logit(PPA$soc.frac.symp))
-        # D[,int.frac.symp:=ilogit(1.45 * logit(soc.frac.symp))]
-        # D[,int.frac.rescr.symp:=ilogit(1.45*logit(soc.frac.rescr.symp))]
-        # D[,int.frac.bac.dx:=ilogit(1.82 * logit(soc.frac.bac.dx))]
-        # D[,int.frac.bac.clin.dx:=ilogit(1.82 * logit(soc.frac.bac.clin.dx))]
-        # D[,int.frac.bac.7d.clin.dx:=ilogit(1.82 * logit(soc.frac.bac.7d.clin.dx))]
-        # D[,int.frac.clin.dx:=ilogit(1.82 * logit(soc.frac.clin.dx))]
-        # D[,int.frac.clin.7d.clin.dx:=ilogit(1.82 * logit(soc.frac.clin.7d.clin.dx))]
-        
-        # other parameters
-        # fraction not attending facility referral
         D[,soc.frac.symp.ltfu:=(1-soc.frac.symp.attending)]
         D[,int.frac.symp.ltfu:=(1-int.frac.symp.attending)]
         
         # TPT eligibility and initiation for 5-14 years 
-        D[,soc.frac.tpt.eligible:=ifelse(age=='0-4' | (age=='5-14' & hiv==1), soc.frac.tpt.eligible, 0)]
-        D[,int.frac.tpt.eligible:=ifelse(age=='0-4' | (age=='5-14' & hiv==1), int.frac.tpt.eligible, 0)]
+        D[,soc.frac.tpt.eligible:=ifelse(age=='0-4' | age=='5-14' & hiv==1, soc.frac.tpt.eligible, 0)]
+        D[,int.frac.tpt.eligible:=ifelse(age=='0-4' | age=='5-14' & hiv==1, int.frac.tpt.eligible, 0)]
         
-        # pre-att LTFU 
-        D[,frac.pre.att.ltfu:=0]
         
         # fraction under 5
-        D[,F.u5:=ifelse(isoz=='CMR', cmr.frac.u5, 0)]
-        D[,F.u5:=ifelse(isoz=='UGA', uga.frac.u5, F.u5)]
+        # D[,F.u5:=ifelse(isoz=='CMR' & arms=='SOC', cmr.soc.frac.u5, 0)]
+        # D[,F.u5:=ifelse(isoz=='CMR' & arms=='INT', cmr.int.frac.u5, F.u5)]
         # D[,F.u5:=ifelse(isoz=='UGA' & arms=='SOC', uga.soc.frac.u5, F.u5)]
         # D[,F.u5:=ifelse(isoz=='UGA' & arms=='INT', uga.int.frac.u5, F.u5)]
         
@@ -217,11 +161,12 @@ AddDataDrivenLabels <- function(D){
         # D[,soc.frac.tpt.initiated:=ifelse(age=='5-14' & hiv==1, soc.frac.tpt.initiated, 0)]
         # D[,int.frac.tpt.initiated:=ifelse(age=='5-14' & hiv==1, int.frac.tpt.initiated, 0)]
         
-        # HIV prevalence and ART coverage
-        D[,hivprev.u5:=ifelse(isoz=='CMR', cmr.frac.hiv, 0)]
-        D[,hivprev.u5:=ifelse(isoz=='UGA', uga.frac.hiv, hivprev.u5)]
-        D[,hivprev.o5:=hivprev.u5]
-        D[,artcov:=1]
+        # frac u5, HIV prevalence and ART coverage
+        # D[,hivprev.u5:=ifelse(isoz=='CMR' & arms=='SOC', cmr.soc.frac.hiv, 0)]
+        # D[,hivprev.u5:=ifelse(isoz=='CMR' & arms=='INT', cmr.int.frac.hiv, hivprev.u5)]
+        # D[,hivprev.u5:=ifelse(isoz=='UGA' & arms=='SOC', uga.soc.frac.hiv, hivprev.u5)]
+        # D[,hivprev.u5:=ifelse(isoz=='UGA' & arms=='INT', uga.int.frac.hiv, hivprev.u5)]
+        # D[,hivprev.o5:=hivprev.u5]
 }
 ## combined function to add the labels to the tree prior to calculations
 MakeTreeParms <- function(D,P){
@@ -239,21 +184,26 @@ MakeTreeParms <- function(D,P){
 makeAttributes <- function(D){
     nrep <- nrow(D)
     D[,id:=1:nrep]
-    fx <- list(age=agelevels,hiv=hivlevels,art=artlevels, isoz=c('CMR','UGA'))
+    fx <- list(age=agelevels,hiv=hivlevels,art=artlevels,isoz=isoz,arms=c('SOC','INT'))
     cofx <- expand.grid(fx)
     cat('Attribute combinations used:\n')
     print(cofx)
     D <- D[rep(1:nrow(D),each=nrow(cofx))] #expand out data
     D[,names(cofx):=cofx[rep(1:nrow(cofx),nrep),]]
     ## --- age
-    D[,F.u5:=ifelse(isoz=='CMR', cmr.frac.u5, 0)]
-    D[,F.u5:=ifelse(isoz=='UGA', uga.frac.u5, F.u5)]
-    D[,hivprev.u5:=ifelse(isoz=='CMR', cmr.frac.hiv, 0)]
-    D[,hivprev.u5:=ifelse(isoz=='UGA', uga.frac.hiv, hivprev.u5)]
+    D[,F.u5:=ifelse(isoz=='CMR' & arms=='SOC', cmr.soc.frac.u5, 0)]
+    D[,F.u5:=ifelse(isoz=='CMR' & arms=='INT', cmr.int.frac.u5, F.u5)]
+    D[,F.u5:=ifelse(isoz=='UGA' & arms=='SOC', uga.soc.frac.u5, F.u5)]
+    D[,F.u5:=ifelse(isoz=='UGA' & arms=='INT', uga.int.frac.u5, F.u5)]
+
+    D[,hivprev.u5:=ifelse(isoz=='CMR' & arms=='SOC', cmr.soc.frac.hiv, 0)]
+    D[,hivprev.u5:=ifelse(isoz=='CMR' & arms=='INT', cmr.int.frac.hiv, hivprev.u5)]
+    D[,hivprev.u5:=ifelse(isoz=='UGA' & arms=='SOC', uga.soc.frac.hiv, hivprev.u5)]
+    D[,hivprev.u5:=ifelse(isoz=='UGA' & arms=='INT', uga.int.frac.hiv, hivprev.u5)]
     D[,hivprev.o5:=hivprev.u5]
-    D[,artcov:=1]
-    
-    D[,value:=ifelse(age=='5-14',1-F.u5,F.u5)] #NOTE value first set here
+              
+    D[,value:=ifelse(age=='5-14',1-F.u5,F.u5),
+      by=.(id,isoz,arms)] #NOTE value first set here
     ## --- HIV/ART
     D[,h01:=0]
     D[age!='5-14',h10:=hivprev.u5*(1-artcov)]
