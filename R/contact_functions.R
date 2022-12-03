@@ -7,6 +7,7 @@
 ## ========= UTILITIES ===============
 logit <- function(x) log(odds(x))
 ilogit <- function(x) iodds(exp(x))
+AOR <- function(base,OR) ilogit(OR * logit(base))
 odds <- function(x) x/(1-x)
 iodds <- function(x) x/(1+x)
 lo <- function(x) quantile(x,probs = 0.025, na.rm=TRUE)
@@ -147,17 +148,17 @@ AddDataDrivenLabels <- function(D){
         # D[,int.frac.screened:=soc.frac.screened*5.08]
         D[,int.frac.asymp:=soc.frac.asymp*0.42]
         D[,int.frac.tpt.initiated:=soc.frac.tpt.initiated*0.79]
-        D[,int.frac.tpt.completed:=soc.frac.tpt.completed*5.47]
+        D[,int.frac.tpt.completed:=AOR(soc.frac.tpt.completed,5.47)]
         
         # # ATT cascade
         # # ilogit(D$tb.resultOR[1]*logit(PPA$soc.frac.symp))
-        D[,int.frac.symp:=(1.45 * soc.frac.symp)]
-        D[,int.frac.rescr.symp:=(1.45 * soc.frac.rescr.symp)]
-        D[,int.frac.bac.dx:=(1.82 * soc.frac.bac.dx)]
-        D[,int.frac.bac.clin.dx:=(1.82 * soc.frac.bac.clin.dx)]
-        D[,int.frac.bac.7d.clin.dx:=(1.82 * soc.frac.bac.7d.clin.dx)]
-        D[,int.frac.clin.dx:=(1.82 * soc.frac.clin.dx)]
-        D[,int.frac.clin.7d.clin.dx:=(1.82 * soc.frac.clin.7d.clin.dx)]
+        D[,int.frac.symp:=AOR(soc.frac.symp,1.45)]
+        D[,int.frac.rescr.symp:=AOR(soc.frac.rescr.symp,1.45)]
+        D[,int.frac.bac.dx:=AOR(soc.frac.bac.dx,1.82)]
+        D[,int.frac.bac.clin.dx:=AOR(soc.frac.bac.clin.dx,1.82)]
+        D[,int.frac.bac.7d.clin.dx:=AOR(soc.frac.bac.7d.clin.dx,1.82)]
+        D[,int.frac.clin.dx:=AOR(soc.frac.clin.dx,1.82)]
+        D[,int.frac.clin.7d.clin.dx:=AOR(soc.frac.clin.7d.clin.dx,1.82)]
         
         # # invlogit( OR x logit(baselineP) )
         # TPT cascade
