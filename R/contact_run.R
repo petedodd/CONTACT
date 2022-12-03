@@ -108,6 +108,18 @@ PP[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
 keep <- vrz[grepl('soc|int', vrz)]
 PP <- PP %>% dplyr::filter(variable %in% keep)
 
+## PJD
+PP[,.N,by=.(isoz,age,care_model)] #missing some UGA older ages
+cmrlist <- PP[isoz=='CMR' & age=='5-14',unique(variable)]
+(missed <- setdiff(cmrlist,PP[isoz=='UGA' & age=='5-14',unique(variable)]))
+## [1] "int.frac.clin.7d.clin.dx"   "int.frac.clin.7d.noclin.dx"
+## [3] "soc.frac.clin.7d.clin.dx"   "soc.frac.clin.7d.noclin.dx"
+tmp <- PP[variable %in% missed & isoz=='UGA'] #u5 only
+tmp <- copy(tmp)
+tmp[,c('age_cat','age'):=.('o5','5-14')]
+PP <- rbind(PP,tmp) #TODO BUG correction by making some missing rows
+
+
 PP <- dcast(PP, isoz+age~variable)
 # 
 
