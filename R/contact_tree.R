@@ -236,29 +236,31 @@ runallfuns <- function(D,arm='all'){
 
 
 
-## --- CHECKS
-showAllParmz <- function(TREE){
-        B <- showParmz(TREE)
-        ## get calx
-        cx <- B$calcs
-        cx <- gsub("\\*|\\+|-|\\/|\\(|\\)"," ",cx)
-        cx <- paste(cx,collapse=" ")
-        cx <- strsplit(cx,split=" ")[[1]]
-        cx <- cx[cx!=""]
-        cx <- cx[cx!="1"]
-        ## get non calcs
-        cx <- c(cx,B$vars)
-        unique(cx)
-}
 
-makeTestData <- function(ncheck,vnames){
-        A <- data.table(vnames,value=runif(length(vnames)))
-        A <- A[rep(1:length(vnames),each=ncheck)]
-        idz <- rep(1:ncheck,length(vnames))
-        A[,id:=idz]
-        A[,value:=runif(nrow(A))]
-        dcast(A,id~vnames,value.var = 'value')
-}
+## ## --- CHECKS
+
+## NOTE these 2 now in HEdtree
+## showAllParmz <- function(TREE){
+##         B <- showParmz(TREE)
+##         ## get calx
+##         cx <- B$calcs
+##         cx <- gsub("\\*|\\+|-|\\/|\\(|\\)"," ",cx)
+##         cx <- paste(cx,collapse=" ")
+##         cx <- strsplit(cx,split=" ")[[1]]
+##         cx <- cx[cx!=""]
+##         cx <- cx[cx!="1"]
+##         ## get non calcs
+##         cx <- c(cx,B$vars)
+##         unique(cx)
+## }
+## makeTestData <- function(ncheck,vnames){
+##         A <- data.table(vnames,value=runif(length(vnames)))
+##         A <- A[rep(1:length(vnames),each=ncheck)]
+##         idz <- rep(1:ncheck,length(vnames))
+##         A[,id:=idz]
+##         A[,value:=runif(nrow(A))]
+##         dcast(A,id~vnames,value.var = 'value')
+## }
 
 
 ## checking
@@ -269,13 +271,13 @@ vrz <- c(vrz.soc,
          vrz.int
 )
 vrz <- unique(vrz)
-A <- makeTestData(50,vrz)
+A <- makeTestData(5e3,vrz)
 
 
 ## checks
-SOC.F$checkfun(A) #NOTE OK
-INT.F$checkfun(A) #NOTE OK
-
+all(abs(SOC.F$checkfun(A)-1)<1e-10) #NOTE OK
+all(abs(INT.F$checkfun(A)-1)<1e-10) #NOTE OK
+all(INT.F$attfun(A)>0)
 
 ## full graph out
 # export_graph(ToDiagrammeRGraph(SOC),
