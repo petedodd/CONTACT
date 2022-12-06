@@ -126,7 +126,7 @@ PP <- dcast(PP, isoz+age~variable)
 # load enrollment data (number of contacts per index case & fraction under 5 years)
 # also available but not currently being used: declared per household/enrolled, enrolled per household, frac declared u5, frac declared/enrolled hiv
 library(readxl)
-base_popn <- data.table(read_excel("~/Dropbox/CONTACT/indata/Baseline information .xlsx", sheet = 'Sheet1', range = 'Z13:AB17'))
+base_popn <- data.table(read_excel(here("indata/Baseline information.xlsx"), sheet = 'Sheet1', range = 'Z13:AB17'))
 base_popn <- melt(base_popn, variable.name = 'isoz')
 age_split <- base_popn[grepl('enrolled.', metric), .(isoz, variable=metric, value)]
 age_split <- age_split[isoz=='CMR', variable:=paste('cmr.', variable, sep = '')]
@@ -140,7 +140,7 @@ age_split <- copy(tmp)
 age_split <- age_split[,NAME:=gsub('enrolled.', '',NAME)]
 
 # commented CODE below not working
-enrolled <- data.table(read_excel("~/Dropbox/CONTACT/indata/Baseline information .xlsx", sheet = 'Sheet1', range = 'O3:R19'))
+enrolled <- data.table(read_excel(here("indata/Baseline information.xlsx"), sheet = 'Sheet1', range = 'O3:R19'))
 
 enrolled <- melt(enrolled, variable.name = 'isoz')
 
@@ -286,11 +286,11 @@ D <- merge(D,PPA,by=c('isoz', 'age'),all.x = TRUE)
 rcsts <- fread(gh('indata/model_mean_total_costs.csv'))    #read cost data
 names(rcsts)
 
-rcsts <- rcsts[rando=='INT', cascade:=paste('c.int.', cascade, sep = '')]
-rcsts <- rcsts[rando=='SOC', cascade:=paste('c.soc.', cascade, sep = '')]
-
 # rcsts[, age:=ifelse(age_cat=='u5', '0-4', '5-14')]
 rcsts[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
+
+rcsts <- rcsts[rando=='INT', cascade:=paste('c.int.', cascade, sep = '')]
+rcsts <- rcsts[rando=='SOC', cascade:=paste('c.soc.', cascade, sep = '')]
 
 keeps <- c('isoz', 'rando', 'cascade','cost.m', 'cost.sd')
 rcsts <- rcsts[,..keeps]
@@ -300,6 +300,8 @@ rcsts[is.na(rcsts)] <- 0 #some quick fix >> setting NA to 0
 rcsts[cost.sd==0,cost.sd:=cost.m/40]        #SD such that 95% UI ~ 10% of mean
 # rcsts[cost.sd>100,cost.sd:=cost.m/40]
 # rcsts[cost.m>100,cost.m:=cost.m/20]
+# rcsts[,cost.m:=cost.m/10]
+# rcsts[cascade %in% cascade[grepl('tpt', cascade)],cost.m:=cost.m/20]
 allcosts <- rcsts[,.(iso3=isoz, cost=cascade, cost.m, cost.sd)]
 
 keep <- vrz[grepl('c.soc.|c.int.', vrz)]
@@ -311,7 +313,7 @@ setdiff(unique(allcosts$cost[allcosts$iso3=='UGA']),
 setdiff(unique(keep),
         unique(allcosts$cost[allcosts$iso3=='UGA']))
 
-allcosts[24,cost:='c.soc.inv_inc']
+# allcosts[24,cost:='c.soc.inv_inc']
 C <- MakeCostData(allcosts[iso3=='CMR'],nreps)               #make cost PSA NOTE using CMR cost data
 ## compute other parameters (adds by side-effect)
 MakeTreeParms(D,P)

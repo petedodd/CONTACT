@@ -130,7 +130,7 @@ TPTrr <- function(age,hiv=0,
 AddTPTrr <- function(D,P){
         D[,tptRR0:=TPTrr(age,hiv)]  #base efficacy of IPT
         D[,tptRR1:=TPTrr(age,tst="+ve")]   #base efficacy of PT: TST+ve
-        D[,tptRR:=tptRR1] 
+        D[,tptRR:=tptRR0] 
 }
 
 ## ======= COMBINED LABELLER ===========
@@ -146,10 +146,10 @@ AddDataDrivenLabels <- function(D){
         # naive using OR as RR
         # TPT cascade
         # D[,int.frac.screened:=soc.frac.screened*5.08]
-        D[,int.frac.asymp:=soc.frac.asymp*0.42]
-        D[,int.frac.tpt.initiated:=soc.frac.tpt.initiated*0.79]
+        D[,int.frac.asymp:=AOR(soc.frac.asymp,0.42)]
+        D[,int.frac.tpt.initiated:=AOR(soc.frac.tpt.initiated*0.999,0.79)]
         D[,int.frac.tpt.completed:=AOR(soc.frac.tpt.completed,5.47)]
-        
+
         # # ATT cascade
         # # ilogit(D$tb.resultOR[1]*logit(PPA$soc.frac.symp))
         D[,int.frac.symp:=AOR(soc.frac.symp,1.45)]
@@ -163,20 +163,20 @@ AddDataDrivenLabels <- function(D){
         # # invlogit( OR x logit(baselineP) )
         # TPT cascade
         # D[,int.frac.screened:=ilogit(tb.screeningOR*logit(soc.frac.screened*0.9999))] #Quick fix for soc.frac.screened=1
-        # # ilogit(D$tpt.completiongOR[1]*logit(PPA$soc.frac.tpt.completed))
-        # D[,int.frac.asymp:=ilogit(tpt.resultOR*logit(soc.frac.asymp))]
-        # D[,int.frac.tpt.initiated:=ilogit(tpt.initiationOR * logit(soc.frac.tpt.initiated*0.9999))]
-        # D[,int.frac.tpt.completed:=ilogit(tpt.completiongOR * logit(soc.frac.tpt.completed))]
-        # 
-        # # ATT cascade
-        # # ilogit(D$tb.resultOR[1]*logit(PPA$soc.frac.symp))
-        # D[,int.frac.symp:=ilogit(tb.resultOR * logit(soc.frac.symp))]
-        # D[,int.frac.rescr.symp:=ilogit(tb.resultOR*logit(soc.frac.rescr.symp))]
-        # D[,int.frac.bac.dx:=ilogit(tb.diagnosisOR * logit(soc.frac.bac.dx))]
-        # D[,int.frac.bac.clin.dx:=ilogit(tb.diagnosisOR * logit(soc.frac.bac.clin.dx))]
-        # D[,int.frac.bac.7d.clin.dx:=ilogit(tb.diagnosisOR * logit(soc.frac.bac.7d.clin.dx))]
-        # D[,int.frac.clin.dx:=ilogit(tb.diagnosisOR * logit(soc.frac.clin.dx))]
-        # D[,int.frac.clin.7d.clin.dx:=ilogit(tb.diagnosisOR * logit(soc.frac.clin.7d.clin.dx))]
+        # ilogit(D$tpt.completionOR[1]*logit(PPA$soc.frac.tpt.completed))
+        # D[,int.frac.asymp:=AOR(soc.frac.asymp, tpt.resultOR)]
+        # D[,int.frac.tpt.initiated:=AOR(soc.frac.tpt.initiated*0.9999, tpt.initiationOR)]
+        # D[,int.frac.tpt.completed:=AOR(soc.frac.tpt.completed, tpt.completionOR)]
+        # # # 
+        # # # # ATT cascade
+        # # # # AOR(D$tb.resultOR[1]*logit(PPA$soc.frac.symp))
+        # D[,int.frac.symp:=AOR(soc.frac.symp, tb.resultOR)]
+        # D[,int.frac.rescr.symp:=AOR(soc.frac.rescr.symp, tb.resultOR)]
+        # D[,int.frac.bac.dx:=AOR(soc.frac.bac.dx, tb.diagnosisOR)]
+        # D[,int.frac.bac.clin.dx:=AOR(soc.frac.bac.clin.dx, tb.diagnosisOR)]
+        # D[,int.frac.bac.7d.clin.dx:=AOR(soc.frac.bac.7d.clin.dx, tb.diagnosisOR)]
+        # D[,int.frac.clin.dx:=AOR(soc.frac.clin.dx, tb.diagnosisOR)]
+        # D[,int.frac.clin.7d.clin.dx:=AOR(soc.frac.clin.7d.clin.dx, tb.diagnosisOR)]
         
         # hard coded
         # TPT cascade
