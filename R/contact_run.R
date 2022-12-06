@@ -140,18 +140,31 @@ age_split <- copy(tmp)
 age_split <- age_split[,NAME:=gsub('enrolled.', '',NAME)]
 
 # commented CODE below not working
-enrolled <- data.table(read_excel(here("indata/Baseline information.xlsx"), sheet = 'Sheet1', range = 'O3:R19'))
+DENR <- data.table(read_excel(here("indata/Baseline information.xlsx"), sheet = 'Sheet1', range = 'O3:R19'))
+DENR <- melt(DENR, variable.name = 'isoz')
 
-enrolled <- melt(enrolled, variable.name = 'isoz')
+# declared/enrolled plot
+DENRP <- DENR[grepl('per_index_case', metric), .(isoz, model,variable=metric, value)]
 
-enrolled <- enrolled[,model:=toupper(model)]
-enrolled <- enrolled[model=='INT', metric:=paste('int.', metric, sep = '')]
-enrolled <- enrolled[model=='SOC', metric:=paste('soc.', metric, sep = '')]
-enrolled <- enrolled[grepl('enrolled.per.index', metric), .(isoz, variable=metric, care_model=model, value)]
+DENRP <- DENRP[,variable:=gsub('_per_index_case', '',variable)]
 
-enrolled <- dcast(enrolled, isoz~variable)
-PP <- merge(PP, enrolled, by='isoz') # age disaggregated
-PPA <- merge(PPA, enrolled, by='isoz') # aggregated
+# ggplot(DENRP, aes(variable,value,fill=model)) +
+#         geom_bar(stat="identity",position = position_dodge2(width = .9, preserve = "single")) +
+#         facet_grid(~isoz,scales='free')+
+#         ggthemes::scale_fill_colorblind() +
+#         # scale_y_log10(label=comma)+
+#         ylab('Child contacts per index case')+
+#         xlab('') +
+#         theme(axis.text.x = element_text(angle = 45, vjust = 1.0, hjust=1))
+
+DENR <- DENR[,model:=toupper(model)]
+DENR <- DENR[model=='INT', metric:=paste('int.', metric, sep = '')]
+DENR <- DENR[model=='SOC', metric:=paste('soc.', metric, sep = '')]
+DENR <- DENR[grepl('enrolled.per.index', metric), .(isoz, variable=metric, care_model=model, value)]
+
+DENR <- dcast(DENR, isoz~variable)
+PP <- merge(PP, DENR, by='isoz') # age disaggregated
+PPA <- merge(PPA, DENR, by='isoz') # aggregated
 PPA <- rbind(PPA,PPA)
 PPA[,age:=rep(agelevels,each=nrow(PPA)/2)]
 
