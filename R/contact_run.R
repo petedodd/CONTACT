@@ -108,6 +108,18 @@ PP[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
 keep <- vrz[grepl('soc|int', vrz)]
 PP <- PP %>% dplyr::filter(variable %in% keep)
 
+## PJD
+PP[,.N,by=.(isoz,age,care_model)] #missing some UGA older ages
+cmrlist <- PP[isoz=='CMR' & age=='5-14',unique(variable)]
+(missed <- setdiff(cmrlist,PP[isoz=='UGA' & age=='5-14',unique(variable)]))
+## [1] "int.frac.clin.7d.clin.dx"   "int.frac.clin.7d.noclin.dx"
+## [3] "soc.frac.clin.7d.clin.dx"   "soc.frac.clin.7d.noclin.dx"
+tmp <- PP[variable %in% missed & isoz=='UGA'] #u5 only
+tmp <- copy(tmp)
+tmp[,c('age_cat','age'):=.('o5','5-14')]
+PP <- rbind(PP,tmp) #TODO BUG correction by making some missing rows
+
+
 PP <- dcast(PP, isoz+age~variable)
 # 
 
@@ -320,6 +332,24 @@ D <- merge(D,C,by=c('id'),all.x=TRUE)       #merge into PSA
 ## run model
 arms <- c('SOC','INT')
 D <- runallfuns(D,arm=arms)                      #appends anwers
+
+## ## PJD - BUG now fixed, have left this just to show how I found
+## any(D$att.int<0)
+## D[att.int<0] #no obvious patterns wrt attributes
+## test <- D[,lapply(.SD,function(x)any(x<0))]
+## v <- unlist(test)
+## v[v==TRUE]##values <0
+## ## [1] "hivartOR:sg"      "cost.int"         "inctb.int"        "att.int"         
+## ## [5] "incdeaths.int"    "deaths.int"       "TB.diagnosed.int" "TB.treated.int"  
+
+## test <- D[,lapply(.SD,function(x)any(x>1))]
+## v <- unlist(test) #values
+## v[v==TRUE]##values >1
+
+## ## int.frac.tpt.completed - looks like it should be <1
+## D[,summary(int.frac.tpt.completed)] #>4
+
+summary(D)
 
 ## --- run over different countries
 cnmz <- names(C) # C=cost PSA data
