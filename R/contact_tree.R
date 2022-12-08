@@ -137,6 +137,27 @@ SOC$AddChildNode(tempTree)
 
 SOC$name <- 'Facility-based model'
 
+# defining tree quantities 
+# p = probability/proportion
+# cost = cost
+# tpte = eligibility for TPT. (probably not useful?)
+# tpt = tpt initiation & completion (should these be separated?)#
+# inctb = incident TB diagnosed
+# prevtb = coprevalent TB diagnosed
+# tbdxb = bacteriologically confirmed TB. (probably not useful?)
+# tbdxc = clinical TB diagnosed. (probably not useful?)
+# att = anti-TB treatments
+# incdeaths = deaths from incident TB
+# deaths = total deaths
+# TPT.screened = screened for TB symptoms
+# TPT.asymptomatic = Negative TB symptom screening 
+# TPT.eligible = eligibility for TPT
+# TPT.treated = initiated and completing TPT
+# TB.symptoms = Psotive TB symptom screening
+# TB.evaluated = evaluated for TB
+# TB.diagnosed = TB diagnosed
+# TB.treated anti-TB treatments
+
 tree2file(SOC,filename = here('indata/CSV/SOC.csv'),
           'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb', 'att','lives','incdeaths','deaths','check',
           'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
@@ -240,7 +261,7 @@ runallfuns <- function(D,arm='all'){
 ## ## --- CHECKS
 
 ## NOTE these 2 now in HEdtree
-## Getting error:Error in showAllParmz(SOC) : could not find function "showAllParmz"
+## Getting this error:Error in showAllParmz(SOC) : could not find function "showAllParmz"
 showAllParmz <- function(TREE){
         B <- showParmz(TREE)
         ## get calx

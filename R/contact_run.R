@@ -296,7 +296,8 @@ D <- merge(D,PPA,by=c('isoz', 'age'),all.x = TRUE)
 # allcosts[is.na(allcosts)] <- 0 #some quick fix >> setting NA to 0
 # C <- MakeCostData(allcosts[iso3=='CMR'],nreps)               #make cost PSA NOTE using CMR cost data
 
-rcsts <- fread(gh('indata/model_mean_total_costs.csv'))    #read cost data
+# rcsts <- fread(gh('indata/model_mean_total_costs.csv'))    #read cost data
+rcsts <- fread(gh('indata/model_mean_total_costs_2.csv'))    #read revised cost data
 names(rcsts)
 
 # rcsts[, age:=ifelse(age_cat=='u5', '0-4', '5-14')]
@@ -314,7 +315,7 @@ rcsts[cost.sd==0,cost.sd:=cost.m/40]        #SD such that 95% UI ~ 10% of mean
 # rcsts[cost.sd>100,cost.sd:=cost.m/40]
 # rcsts[cost.m>100,cost.m:=cost.m/20]
 # rcsts[,cost.m:=cost.m/10]
-# rcsts[cascade %in% cascade[grepl('tpt', cascade)],cost.m:=cost.m/20]
+# rcsts[cascade %in% cascade[grepl('tpt', cascade)],cost.m:=cost.m/10]
 allcosts <- rcsts[,.(iso3=isoz, cost=cascade, cost.m, cost.sd)]
 
 keep <- vrz[grepl('c.soc.|c.int.', vrz)]
@@ -385,7 +386,7 @@ heur <- c('id','value','deaths.int','deaths.soc')
 out <- D[,..heur]
 out <- out[,lapply(.SD,function(x) sum(x*value)),.SDcols=c('deaths.int','deaths.soc'),by=id] #sum against popn
 ## topl <- 0.25/out[,mean(deaths.soc-deaths.int)]
-topl <- 10000*50
+topl <- 1000*50
 lz <- seq(from = 0,to=topl,length.out = 1000) #threshold vector for CEACs
 
 ## containers & loop
@@ -446,7 +447,7 @@ for(cn in isoz){
                             threshold=lz)
 }
 
-D[,..toget]
+summary(D[,..toget])
 D[,.(isoz,age,F.u5,value)] # why are some values 0?
 D[,summary(tpt.int/tpt.soc)]
 
@@ -507,7 +508,7 @@ GP <- ggplot(ceaclm[variable=='int'],aes(threshold,value,
   scale_colour_manual(values=cbPalette) ## + xlim(x=c(0,1500))
 GP
 
-ggsave(GP,file=gh('plot/CEAC1.png'),w=7,h=5)
+ggsave(GP,file=gh('plots/CEAC1.png'),w=7,h=5)
 
 
 
