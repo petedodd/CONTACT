@@ -141,42 +141,49 @@ AddDataDrivenLabels <- function(D){
         # set model entry  to per 1 child contact 
         D[,int.enrolled_per_index_case:=1]
         D[,soc.enrolled_per_index_case:=1]
-        
-        # intervention effects
-        # naive using OR as RR
-        # TPT cascade
-        # D[,int.frac.screened:=soc.frac.screened*5.08]
-        D[,int.frac.asymp:=AOR(soc.frac.asymp,0.42)]
-        D[,int.frac.tpt.initiated:=AOR(soc.frac.tpt.initiated*0.999,0.79)]
-        D[,int.frac.tpt.completed:=AOR(soc.frac.tpt.completed,5.47)]
-
-        # # ATT cascade
-        # # ilogit(D$tb.resultOR[1]*logit(PPA$soc.frac.symp))
-        D[,int.frac.symp:=AOR(soc.frac.symp,1.45)]
-        D[,int.frac.rescr.symp:=AOR(soc.frac.rescr.symp,1.45)]
-        D[,int.frac.bac.dx:=AOR(soc.frac.bac.dx,1.82)]
-        D[,int.frac.bac.clin.dx:=AOR(soc.frac.bac.clin.dx,1.82)]
-        D[,int.frac.bac.7d.clin.dx:=AOR(soc.frac.bac.7d.clin.dx,1.82)]
-        D[,int.frac.clin.dx:=AOR(soc.frac.clin.dx,1.82)]
-        D[,int.frac.clin.7d.clin.dx:=AOR(soc.frac.clin.7d.clin.dx,1.82)]
+        # D[,int.enrolled_per_declared:=ifelse(age=='0-4', 0.91, 0.78)] # basically enrolled/(declared + not declared but identified)
+        # D[,soc.enrolled_per_declared:=ifelse(age=='0-4', 0.82, 0.2)]
+        # D[,soc.enrolled_per_declared:=ifelse(isoz=='CMR', 0.40, 0.67)]
+        # D[,soc.enrolled_per_declared:=0.48]
+        # D[,soc.frac.screened:=soc.frac.screened*soc.enrolled_per_declared]
+        # 
+        # # intervention effects
+        # # naive using OR as RR
+        # # TPT cascade
+        # # D[,int.frac.screened:=soc.frac.screened*5.08]
+        # D[,int.enrolled_per_index_case:=AOR(soc.enrolled_per_index_case,tb.screeningOR)]
+        # summary(AOR(D$soc.enrolled_per_index_case,D$tb.screeningOR))
+        # D[,int.frac.asymp:=AOR(soc.frac.asymp,0.42)]
+        # D[,int.frac.tpt.initiated:=AOR(soc.frac.tpt.initiated*0.999,0.79)]
+        # D[,int.frac.tpt.completed:=AOR(soc.frac.tpt.completed,5.47)]
+        # 
+        # # # ATT cascade
+        # # # ilogit(D$tb.resultOR[1]*logit(PPA$soc.frac.symp))
+        # D[,int.frac.symp:=AOR(soc.frac.symp,1.45)]
+        # D[,int.frac.rescr.symp:=AOR(soc.frac.rescr.symp,1.45)]
+        # D[,int.frac.bac.dx:=AOR(soc.frac.bac.dx,1.82)]
+        # D[,int.frac.bac.clin.dx:=AOR(soc.frac.bac.clin.dx,1.82)]
+        # D[,int.frac.bac.7d.clin.dx:=AOR(soc.frac.bac.7d.clin.dx,1.82)]
+        # D[,int.frac.clin.dx:=AOR(soc.frac.clin.dx,1.82)]
+        # D[,int.frac.clin.7d.clin.dx:=AOR(soc.frac.clin.7d.clin.dx,1.82)]
         
         # # invlogit( OR x logit(baselineP) )
         # TPT cascade
-        # D[,int.frac.screened:=ilogit(tb.screeningOR*logit(soc.frac.screened*0.9999))] #Quick fix for soc.frac.screened=1
+        # D[,int.frac.screened:=ilogit(tb.screeningOR*logit(soc.frac.screened))]
         # ilogit(D$tpt.completionOR[1]*logit(PPA$soc.frac.tpt.completed))
-        # D[,int.frac.asymp:=AOR(soc.frac.asymp, tpt.resultOR)]
-        # D[,int.frac.tpt.initiated:=AOR(soc.frac.tpt.initiated*0.9999, tpt.initiationOR)]
-        # D[,int.frac.tpt.completed:=AOR(soc.frac.tpt.completed, tpt.completionOR)]
-        # # # 
-        # # # # ATT cascade
-        # # # # AOR(D$tb.resultOR[1]*logit(PPA$soc.frac.symp))
-        # D[,int.frac.symp:=AOR(soc.frac.symp, tb.resultOR)]
-        # D[,int.frac.rescr.symp:=AOR(soc.frac.rescr.symp, tb.resultOR)]
-        # D[,int.frac.bac.dx:=AOR(soc.frac.bac.dx, tb.diagnosisOR)]
-        # D[,int.frac.bac.clin.dx:=AOR(soc.frac.bac.clin.dx, tb.diagnosisOR)]
-        # D[,int.frac.bac.7d.clin.dx:=AOR(soc.frac.bac.7d.clin.dx, tb.diagnosisOR)]
-        # D[,int.frac.clin.dx:=AOR(soc.frac.clin.dx, tb.diagnosisOR)]
-        # D[,int.frac.clin.7d.clin.dx:=AOR(soc.frac.clin.7d.clin.dx, tb.diagnosisOR)]
+        D[,int.frac.asymp:=AOR(soc.frac.asymp, tpt.resultOR)]
+        D[,int.frac.tpt.initiated:=AOR(soc.frac.tpt.initiated*0.99999, tpt.initiationOR)]  #Quick fix for soc.frac.screened=1
+        D[,int.frac.tpt.completed:=AOR(soc.frac.tpt.completed, tpt.completionOR)]
+        # #
+        # # # ATT cascade
+        # # # AOR(D$tb.resultOR[1]*logit(PPA$soc.frac.symp))
+        D[,int.frac.symp:=AOR(soc.frac.symp, tb.resultOR)]
+        D[,int.frac.rescr.symp:=AOR(soc.frac.rescr.symp, tb.resultOR)]
+        D[,int.frac.bac.dx:=AOR(soc.frac.bac.dx, tb.diagnosisOR)]
+        D[,int.frac.bac.clin.dx:=AOR(soc.frac.bac.clin.dx, tb.diagnosisOR)]
+        D[,int.frac.bac.7d.clin.dx:=AOR(soc.frac.bac.7d.clin.dx, tb.diagnosisOR)]
+        D[,int.frac.clin.dx:=AOR(soc.frac.clin.dx, tb.diagnosisOR)]
+        D[,int.frac.clin.7d.clin.dx:=AOR(soc.frac.clin.7d.clin.dx, tb.diagnosisOR)]
         
         # hard coded
         # TPT cascade
@@ -355,11 +362,12 @@ GetLifeYears <- function(isolist,discount.rate,yearfrom){
 ## NOTE this is more illustrative for now
 ## NOTE needs a folder called graphs/ creating (which is currently excluded from the repo)
 ## some automatic CEA outputs
+file.id='';Kmax=5e3;wtp=5e3;
 MakeCEAoutputs <- function(data,LY,
                            file.id='',Kmax=5e3,wtp=5e3,
                            arms=c('SOC','INT')){
   data <- merge(data,LY,by='age') #add age
-  DS <- data[,.(cost.SOC=sum(cost.soc*value),
+  DS <- D[isoz=='UGA',.(cost.SOC=sum(cost.soc*value),
                 cost.INT=sum(cost.int*value),
                 lyl.SOC=sum(deaths.soc*value*LYS),
                 lyl.INT=sum(deaths.int*value*LYS)),

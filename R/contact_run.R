@@ -273,7 +273,7 @@ D[,sum(value),by=.(isoz,id,age)] #CHECK
 # D <- rbind(D,D)
 # D[,isoz:=rep(c('CMR','UGA'),each=nrow(D)/2)]
 # D <- merge(D,PP,by=c('isoz', 'age'),all.x = TRUE)
-D <- merge(D,PPA,by=c('isoz', 'age'),all.x = TRUE)
+D <- merge(D,PP,by=c('isoz', 'age'),all.x = TRUE)
 ## read and make cost data
 # csts <- fread(here('indata/testcosts.csv'))         #read cost data
 # rcsts <- fread(gh('indata/model_mean_total_costs_age.csv'))    #read cost data
@@ -394,6 +394,7 @@ allout <- allpout <- list() #tabular outputs
 ceacl <- NMB <- list()             #CEAC outputs etc
 ## cn <- isoz[1]
 for(cn in isoz){
+  D[age=='0-4',]
   cat('running model for:',cn,'\n')
   ## --- costs
   ## drop previous costs
