@@ -49,6 +49,9 @@ notb$dies$p <- 'cfr.notx'
 notb$survives$p <- '1-cfr.notx'
 print(notb,'p')
 
+
+## TODO add in outcomes for not screened and doesn't reach facility
+
 ## ====== function to add outcomes & counters
 AddOutcomes <- function(D){
   ## === cost and probs (defaults)
@@ -304,5 +307,4 @@ all(abs(INT.F$checkfun(A)-1)<1e-10) #NOTE OK
 all(INT.F$attfun(A)>0)
 
 ## full graph out
-# export_graph(ToDiagrammeRGraph(SOC),
-#              file_name=here('plots/contact_soc.pdf'))
+## plotter(INT)
