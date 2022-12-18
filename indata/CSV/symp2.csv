@@ -1,0 +1,30 @@
+levelName,p,tbtot
+Symptomatic child contact                             ,1,0
+ ¦--Symptomatic child contact @facility               ,int.frac.bac.assess,0
+ ¦   ¦--clinical and bacteriological assessment       ,int.frac.bac.dx,1
+ ¦   ¦   ¦--TB diagnosed (bacteriological)            ,1,0
+ ¦   ¦   ¦   °--TB outcomes                           ,1,0
+ ¦   ¦   °--no TB diagnosed                           ,1-int.frac.bac.dx,0
+ ¦   ¦       °--clinical assessment + with/without CXR,1,0
+ ¦   ¦           ¦--TB diagnosed (clinical)           ,int.frac.bac.clin.dx,1
+ ¦   ¦           ¦   °--TB outcomes                   ,1,0
+ ¦   ¦           ¦--no TB diagnosed                   ,int.frac.bac.noclin.dx*(1-int.frac.bac.clin.dx),0
+ ¦   ¦           ¦   °--TPT outcomes                  ,1,0
+ ¦   ¦           °--Invited for reassessment          ,(1-int.frac.bac.clin.dx)*(1-int.frac.bac.noclin.dx),0
+ ¦   ¦               ¦--TB diagnosed (clinical)       ,int.frac.bac.7d.clin.dx,1
+ ¦   ¦               ¦   °--TB outcomes               ,1,0
+ ¦   ¦               ¦--no TB diagnosed               ,int.frac.bac.7d.noclin.dx*(1-int.frac.bac.7d.clin.dx),0
+ ¦   ¦               ¦   °--TPT outcomes              ,1,0
+ ¦   ¦               °--Not reassessed at 7 days      ,(1-int.frac.bac.7d.clin.dx)*(1-int.frac.bac.7d.noclin.dx),0
+ ¦   °--clinical assessment only + with/without CXR   ,1-int.frac.bac.assess,0
+ ¦       ¦--TB diagnosed (clinical)                   ,int.frac.clin.dx,1
+ ¦       ¦   °--TB outcomes                           ,1,0
+ ¦       ¦--no TB diagnosed                           ,int.frac.noclin.dx*(1-int.frac.clin.dx),0
+ ¦       ¦   °--TPT outcomes                          ,1,0
+ ¦       °--Invited for reassessment                  ,(1-int.frac.clin.dx)*(1-int.frac.noclin.dx),0
+ ¦           ¦--TB diagnosed (clinical)               ,int.frac.clin.7d.clin.dx,1
+ ¦           ¦   °--TB outcomes                       ,1,0
+ ¦           ¦--no TB diagnosed                       ,int.frac.clin.7d.noclin.dx*(1-int.frac.clin.7d.clin.dx),0
+ ¦           ¦   °--TPT outcomes                      ,1,0
+ ¦           °--Not reassessed at 7 days              ,(1-int.frac.clin.7d.clin.dx)*(1-int.frac.clin.7d.noclin.dx),0
+ °--Child contact did not reach facility              ,1-int.frac.symp.attending,0

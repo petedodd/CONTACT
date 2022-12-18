@@ -1,0 +1,14 @@
+Child contact not screened
+	Symptomatic child contact
+		TB outcomes
+		Symptomatic but not TB
+			TB disease <1yr
+				TB outcomes
+			no TB disease <1yr
+				no TB outcomes
+	Asymptomatic child contact
+		no TPT
+			TB disease <1yr
+				TB outcomes
+			no TB disease <1yr
+				no TB outcomes
