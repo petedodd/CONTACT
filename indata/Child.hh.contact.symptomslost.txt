@@ -1,0 +1,7 @@
+Symptomatic child contact LTFU
+	TB outcomes
+	Symptomatic but not TB
+		TB disease <1yr
+			TB outcomes
+		no TB disease <1yr
+			no TB outcomes

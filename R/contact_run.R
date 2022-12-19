@@ -148,15 +148,6 @@ DENRP <- DENR[grepl('per_index_case', metric), .(isoz, model,variable=metric, va
 
 DENRP <- DENRP[,variable:=gsub('_per_index_case', '',variable)]
 
-# ggplot(DENRP, aes(variable,value,fill=model)) +
-#         geom_bar(stat="identity",position = position_dodge2(width = .9, preserve = "single")) +
-#         facet_grid(~isoz,scales='free')+
-#         ggthemes::scale_fill_colorblind() +
-#         # scale_y_log10(label=comma)+
-#         ylab('Child contacts per index case')+
-#         xlab('') +
-#         theme(axis.text.x = element_text(angle = 45, vjust = 1.0, hjust=1))
-
 DENR <- DENR[,model:=toupper(model)]
 DENR <- DENR[model=='INT', metric:=paste('int.', metric, sep = '')]
 DENR <- DENR[model=='SOC', metric:=paste('soc.', metric, sep = '')]
@@ -167,78 +158,6 @@ PP <- merge(PP, DENR, by='isoz') # age disaggregated
 PPA <- merge(PPA, DENR, by='isoz') # aggregated
 PPA <- rbind(PPA,PPA)
 PPA[,age:=rep(agelevels,each=nrow(PPA)/2)]
-
-# age_split <- base_popn[grepl('enrolled.u5|enrolled.hiv', metric), .(isoz, variable=metric, care_model=model, value)]
-# age_split <- age_split[isoz=='CMR', variable:=paste('cmr.', variable, sep = '')]
-# age_split <- age_split[isoz=='UGA', variable:=paste('uga.', variable, sep = '')]
-# tmp <- data.table(matrix(NA, nrow = nrow(age_split), ncol = ncol(PD0)))
-# names(tmp) <- names(PD0)
-# tmp <- tmp[,NAME:=age_split$variable]
-# tmp <- tmp[,DISTRIBUTION:=age_split$value]
-# age_split <- copy(tmp)
-# age_split <- age_split[,NAME:=gsub('enrolled.', '',NAME)]
-
-
-# # load cohort data (fraction under 5 and HIV)
-# load(here('indata/cohortdata.Rdata'))
-# 
-# # fraction under 5 years
-# popn <- setDT(popn_age_country)
-# popn <- popn[country=='Cameroun', country:='Cameroon']
-# popn <- popn[age_cat=='u5', variable:='frac.u5']
-# popn <- popn[age_cat=='o5', variable:='frac.o5']
-# popn[, age:=ifelse(age_cat=='u5', '0-4', '5-14')]
-# popn[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
-# popn <- popn[variable=='frac.u5',.(isoz, age, variable, prop)]
-# # popn <- popn[rando=='ITV', rando:='INT']
-# popn <- dcast(popn, isoz~variable)
-# 
-# # HIV prevalence
-# popn_hiv <- setDT(popn_hiv_age_country)
-# popn_hiv <- popn_hiv[country=='Cameroun', country:='Cameroon']
-# popn_hiv <- popn_hiv[hiv_status=='Positive', ]
-# popn_hiv <- popn_hiv[age_cat=='u5', variable:='frac.hiv.u5']
-# popn_hiv <- popn_hiv[age_cat=='o5', variable:='frac.hiv.o5']
-# popn_hiv[, age:=ifelse(age_cat=='u5', '0-4', '5-14')]
-# popn_hiv[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
-# popn_hiv <- popn_hiv[,.(isoz, age, variable, prop)]
-# 
-# tmp <- popn_hiv[isoz=='CMR',]
-# tmp <- tmp[,age:='0-4']
-# tmp <- tmp[,variable:='frac.hiv.u5']
-# tmp <- tmp[,prop:=0]
-# 
-# popn_hiv <- rbind(popn_hiv, tmp)
-# # popn <- popn[rando=='ITV', rando:='INT']
-# popn_hiv <- dcast(popn_hiv, isoz~variable)
-# 
-# # ART coverage
-# popn_art <- setDT(popn_art_age_country)
-# popn_art <- popn_art[country=='Cameroun', country:='Cameroon']
-# popn_art <- popn_art[art_status=='Yes', ]
-# popn_art <- popn_art[age_cat=='u5', variable:='artcov.u5']
-# popn_art <- popn_art[age_cat=='o5', variable:='artcov.o5']
-# popn_art[, age:=ifelse(age_cat=='u5', '0-4', '5-14')]
-# popn_art[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
-# popn_art <- popn_art[,.(isoz, age, variable, prop)]
-# 
-# # TODO: check under 5 art coverage - looks too low. Setting it to O5 coverage for now
-# # popn_art <- popn_art[age=='0-4',prop:=prop[age=='5-14']] 
-# popn_art$prop[popn_art$age=='0-4'] <- popn_art$prop[popn_art$age=='5-14']
-# 
-# 
-# # popn <- popn[rando=='ITV', rando:='INT']
-# popn_art <- dcast(popn_art, isoz~variable)
-# 
-# 
-# PP <- merge(PP, popn, by='isoz')
-# PP <- merge(PP, popn_hiv, by='isoz')
-# PP <- merge(PP, popn_art, by='isoz')
-# P2 <- melt(PP)
-
-
-## combine different parameter types
-# drop <- c(names(popn)[2], names(popn_hiv)[2:3])
 
 # adding study data on: frac u5, HIV prevalence and ART coverage
 # currently using CMR data
@@ -329,9 +248,12 @@ setdiff(unique(keep),
 
 # allcosts[24,cost:='c.soc.inv_inc']
 C <- MakeCostData(allcosts[iso3=='CMR'],nreps)               #make cost PSA NOTE using CMR cost data
+
 ## compute other parameters (adds by side-effect)
 MakeTreeParms(D,P)
+## soc and int frac.screened
 
+## checks
 D[,sum(value),by=.(isoz,id)] #CHECK
 D[,sum(value),by=.(isoz,id,age)] #CHECK
 D[,.(isoz,age,F.u5,hivprev.u5)]
@@ -340,30 +262,28 @@ D[,.(isoz,age,soc.frac.screened,tb.screeningOR,int.frac.screened)]
 head(SOC.F$checkfun(D)) #SOC arm
 head(INT.F$checkfun(D)) #INT arm
 
+
+## === REACH LOGIC
+## Logic for coverage etc:
+## index: 558, 341 (int/soc)
+## declared: 1889, 1005
+## enrolled: 1835, 498
+## declared/index = c(1889/558, 1005/241) #3.4, 4.2
+## enrolled/index = c(1835/558, 498/241) #3.4, 2.0
+
+## 1) multiply value by 3.4 (or logical equivalent)
+D[,value:=value * 3.4]
+## 2) set int.frac.screened = 1, and soc.frac.screened = 2.0/3.4
+D[,c('soc.frac.screened','int.frac.screened'):=.(2.0/3.4,1.0)]
+
 names(SOC.F)
 
 ## add cost data
 D <- merge(D,C,by=c('id'),all.x=TRUE)       #merge into PSA
 
-## run model
+## === RUN MODEL
 arms <- c('SOC','INT')
 D <- runallfuns(D,arm=arms)                      #appends anwers
-
-## ## PJD - BUG now fixed, have left this just to show how I found
-## any(D$att.int<0)
-## D[att.int<0] #no obvious patterns wrt attributes
-## test <- D[,lapply(.SD,function(x)any(x<0))]
-## v <- unlist(test)
-## v[v==TRUE]##values <0
-## ## [1] "hivartOR:sg"      "cost.int"         "inctb.int"        "att.int"         
-## ## [5] "incdeaths.int"    "deaths.int"       "TB.diagnosed.int" "TB.treated.int"  
-
-## test <- D[,lapply(.SD,function(x)any(x>1))]
-## v <- unlist(test) #values
-## v[v==TRUE]##values >1
-
-## ## int.frac.tpt.completed - looks like it should be <1
-## D[,summary(int.frac.tpt.completed)] #>4
 
 summary(D)
 
@@ -386,7 +306,7 @@ heur <- c('id','value','deaths.int','deaths.soc')
 out <- D[,..heur]
 out <- out[,lapply(.SD,function(x) sum(x*value)),.SDcols=c('deaths.int','deaths.soc'),by=id] #sum against popn
 ## topl <- 0.25/out[,mean(deaths.soc-deaths.int)]
-topl <- 1000*50
+topl <- 5e3
 lz <- seq(from = 0,to=topl,length.out = 1000) #threshold vector for CEACs
 
 ## containers & loop
