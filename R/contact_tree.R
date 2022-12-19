@@ -171,6 +171,8 @@ if(file.exists(fn)){
 }
 cat(getAQ(symp,'tbtot'),file=here('indata/CSV/TBinSymptomatic.txt'))
 
+INTtbprev <- getAQ(symp,'tbtot')
+
 
 
 ## merge in extras, make model of care branches, write out

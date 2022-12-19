@@ -133,6 +133,21 @@ AddTPTrr <- function(D,P){
         D[,tptRR:=tptRR0] 
 }
 
+## new parameters as part of reach work
+AddDetectionLabels <- function(D){
+  D[,CDR:=0.4] #TODO placeholder for background TB detection
+  D[,CDRi:=0.6] #TODO placeholder for TB detection if household visited
+  tmp <- eval(parse(text=INTtbprev),envir=D) #TODO unclear why 0?!
+  tmp <- rep(0.03,length(tmp))               #TODO for testing - made up
+  D[,int.tbprev.symptomatic:=tmp] #TB prev in symptomatics, based on INT
+  D[,soc.tbprev.symptomatic := tmp]
+}
+
+## test <- eval(parse(text=INTtbprev),envir=D)
+## tail(test)
+
+## D[,tmp:=0+(int.frac.bac.assess)*(0+(int.frac.bac.dx)*(1+(1)*(0+(1)*(0))+(1-int.frac.bac.dx)*(0+(1)*(0+(int.frac.bac.clin.dx)*(1+(1)*(0))+(int.frac.bac.noclin.dx*(1-int.frac.bac.clin.dx))*(0+(1)*(0))+((1-int.frac.bac.clin.dx)*(1-int.frac.bac.noclin.dx))*(0+(int.frac.bac.7d.clin.dx)*(1+(1)*(0))+(int.frac.bac.7d.noclin.dx*(1-int.frac.bac.7d.clin.dx))*(0+(1)*(0))+((1-int.frac.bac.7d.clin.dx)*(1-int.frac.bac.7d.noclin.dx))*(0)))))+(1-int.frac.bac.assess)*(0+(int.frac.clin.dx)*(1+(1)*(0))+(int.frac.noclin.dx*(1-int.frac.clin.dx))*(0+(1)*(0))+((1-int.frac.clin.dx)*(1-int.frac.noclin.dx))*(0+(int.frac.clin.7d.clin.dx)*(1+(1)*(0))+(int.frac.clin.7d.noclin.dx*(1-int.frac.clin.7d.clin.dx))*(0+(1)*(0))+((1-int.frac.clin.7d.clin.dx)*(1-int.frac.clin.7d.noclin.dx))*(0))))+(1-int.frac.symp.attending)*(0)]
+
 ## ======= COMBINED LABELLER ===========
 
 ## additional labels from data (may overwrite some initial version currently)
@@ -240,6 +255,7 @@ MakeTreeParms <- function(D,P){
   AddProgProb(D, P)
   ## new labels from data
   AddDataDrivenLabels(D)
+  AddDetectionLabels(D)
 }
 
 ## ======= EPIDEMIOLOGY ===========
