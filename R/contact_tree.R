@@ -56,12 +56,18 @@ print(notb,'p')
 ## Child contact not re-screened
 notscreened <- txt2tree(here('indata/Child.hh.contact.notscreened.txt')) #
 
-## TODO not 1-frac.pre.att.ltfu for TPT
+
 ## TODO int.tbprev.symptomatic
+## TODO CDR, CDRi
 ## TODO check TB tx costs
 ## TODO check non-highlighted stuff
+## incdeath was including background - but doesn't matter as prob 0 - missing stuff
+## soc.tbprev.symptomatic - same as int calculated from subtree
 
-## NOTE these apply only to symptomatic children: assume as per other symp children
+## soc.frac.symp
+## soc.tbprev.symptomatic
+
+## note these apply only to symptomatic children: assume as per other symp children
 ## Child contact did not reach facility
 ## Not reassessed at 7 days
 symptolost <- txt2tree(here('indata/Child.hh.contact.symptomslost.txt'))
@@ -176,93 +182,115 @@ SOC$AddChildNode(tempTree)
 
 SOC$name <- 'Facility-based model'
 
-# defining tree quantities 
-# p = probability/proportion
-# cost = cost
-# tpte = eligibility for TPT. (probably not useful?)
-# tpt = tpt initiation & completion (should these be separated?)#
-# inctb = incident TB diagnosed
-# prevtb = coprevalent TB diagnosed
-# tbdxb = bacteriologically confirmed TB. (probably not useful?)
-# tbdxc = clinical TB diagnosed. (probably not useful?)
-# att = anti-TB treatments
-# incdeaths = deaths from incident TB
-# deaths = total deaths
-# TPT.screened = screened for TB symptoms
-# TPT.asymptomatic = Negative TB symptom screening 
-# TPT.eligible = eligibility for TPT
-# TPT.treated = initiated and completing TPT
-# TB.symptoms = Psotive TB symptom screening
-# TB.evaluated = evaluated for TB
-# TB.diagnosed = TB diagnosed
-# TB.treated anti-TB treatments
+
+## # defining tree quantities 
+## # p = probability/proportion
+## # cost = cost
+## # tpte = eligibility for TPT. (probably not useful?)
+## # tpt = tpt initiation & completion (should these be separated?)#
+## # inctb = incident TB diagnosed
+## # prevtb = coprevalent TB diagnosed
+## # tbdxb = bacteriologically confirmed TB. (probably not useful?)
+## # tbdxc = clinical TB diagnosed. (probably not useful?)
+## # att = anti-TB treatments
+## # incdeaths = deaths from incident TB
+## # deaths = total deaths
+## # TPT.screened = screened for TB symptoms
+## # TPT.asymptomatic = Negative TB symptom screening 
+## # TPT.eligible = eligibility for TPT
+## # TPT.treated = initiated and completing TPT
+## # TB.symptoms = Psotive TB symptom screening
+## # TB.evaluated = evaluated for TB
+## # TB.diagnosed = TB diagnosed
+## # TB.treated anti-TB treatments
 
 tree2file(SOC,filename = here('indata/CSV/SOC.csv'),
-          'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb', 'att','lives','incdeaths','deaths','check',
+          'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb',
+          'att','lives','incdeaths','deaths','check',
           'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
           'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
 
-## # ## create version with probs/costs
-## fn <- here('indata/CSV/SOC1.csv')
-## if(file.exists(fn)){
-##         ## read
-##         labz <- fread(fn)
-## LabelFromData(SOC,labz[,..labdat]) #add label data
-##         SOC$Set(p=labz$p)
-##         SOC$Set(cost=labz$cost)
-##         ## TPT/TB cascade counters
-##         SOC$Set(TPT.screened=labz$TPT.screened)
-##         SOC$Set(TPT.asymptomatic=labz$TPT.asymptomatic)
-##         SOC$Set(TPT.eligible=labz$TPT.eligible)
-##         SOC$Set(TPT.treated=labz$TPT.treated)
-##         SOC$Set(TB.symptoms=labz$TB.symptoms)
-##         SOC$Set(TB.evaluated=labz$TB.evaluated)
-##         SOC$Set(TB.diagnosed=labz$TB.diagnosed)
-##         SOC$Set(TB.treated=labz$TB.treated)
-##         ## save out
-##         tree2file(SOC,filename = here('indata/CSV/SOC2.csv'),
-##                   'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb', 'att','lives','incdeaths','deaths','check',
-##                   'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
-##                   'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
-## }
+labdat <- c('p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb',
+            'att','lives','incdeaths','deaths','check',
+            'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
+            'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
+
+
+## create version with probs/costs
+fn <- here('indata/CSV/SOC1.csv')
+if(file.exists(fn)){
+  ## read
+  labz <- fread(fn)
+  LabelFromData(SOC,labz[,..labdat]) #add label data
+  ## NOTE checks need redoing
+  SOC$Set(check=1)
+  SOC$Set(check=0,filterFun=function(x) length(x$children)>0)
+        ## SOC$Set(p=labz$p)
+        ## SOC$Set(cost=labz$cost)
+        ## ## TPT/TB cascade counters
+        ## SOC$Set(TPT.screened=labz$TPT.screened)
+        ## SOC$Set(TPT.asymptomatic=labz$TPT.asymptomatic)
+        ## SOC$Set(TPT.eligible=labz$TPT.eligible)
+        ## SOC$Set(TPT.treated=labz$TPT.treated)
+        ## SOC$Set(TB.symptoms=labz$TB.symptoms)
+        ## SOC$Set(TB.evaluated=labz$TB.evaluated)
+        ## SOC$Set(TB.diagnosed=labz$TB.diagnosed)
+        ## SOC$Set(TB.treated=labz$TB.treated)
+  ## save out
+  tree2file(SOC,filename = here('indata/CSV/SOC2.csv'),
+            'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb',
+            'att','lives','incdeaths','deaths','check',
+            'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
+            'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
+}
+
 
 ## === INT
 INT <- Clone(SOC)
 INT$name <- 'Community-based model'
 
 tree2file(INT,filename = here('indata/CSV/INT.csv'),
-          'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb', 'att','lives','incdeaths','deaths','check',
+          'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb',
+          'att','lives','incdeaths','deaths','check',
           'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
           'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
 
-## ## create version with probs/costs
-## fn <- here('indata/CSV/INT1.csv')
-## if(file.exists(fn)){
-##         ## read
-##         labz <- fread(fn)
-## LabelFromData(SOC,labz[,..labdat]) #add label data
-##         INT$Set(p=labz$p)
-##         INT$Set(cost=labz$cost)
-##         ## TPT/TB cascade counters
-##         INT$Set(TPT.screened=labz$TPT.screened)
-##         INT$Set(TPT.asymptomatic=labz$TPT.asymptomatic)
-##         INT$Set(TPT.eligible=labz$TPT.eligible)
-##         INT$Set(TPT.treated=labz$TPT.treated)
-##         INT$Set(TB.symptoms=labz$TB.symptoms)
-##         INT$Set(TB.evaluated=labz$TB.evaluated)
-##         INT$Set(TB.diagnosed=labz$TB.diagnosed)
-##         INT$Set(TB.treated=labz$TB.treated)
-##         ## save out
-##         tree2file(INT,filename = here('indata/CSV/INT2.csv'),
-##                   'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb', 'att','lives','incdeaths','deaths','check',
-##                   'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
-##                   'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
-## }
+
+
+
+
+## create version with probs/costs
+fn <- here('indata/CSV/INT1.csv')
+if(file.exists(fn)){
+  ## read
+  labz <- fread(fn)
+  labz[,cost:=q]; labz[,q:=NULL]     #rename
+  LabelFromData(INT,labz[,..labdat]) #add label data
+  ## NOTE checks need redoing
+  INT$Set(check=1)
+  INT$Set(check=0,filterFun=function(x) length(x$children)>0)
+        ## INT$Set(p=labz$p)
+        ## INT$Set(cost=labz$cost)
+        ## ## TPT/TB cascade counters
+        ## INT$Set(TPT.screened=labz$TPT.screened)
+        ## INT$Set(TPT.asymptomatic=labz$TPT.asymptomatic)
+        ## INT$Set(TPT.eligible=labz$TPT.eligible)
+        ## INT$Set(TPT.treated=labz$TPT.treated)
+        ## INT$Set(TB.symptoms=labz$TB.symptoms)
+        ## INT$Set(TB.evaluated=labz$TB.evaluated)
+        ## INT$Set(TB.diagnosed=labz$TB.diagnosed)
+        ## INT$Set(TB.treated=labz$TB.treated)
+  ## save out
+  tree2file(INT,filename = here('indata/CSV/INT2.csv'),
+            'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb',
+            'att','lives','incdeaths','deaths','check',
+            'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
+            'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
+}
+
 
 ## make functions
-fnmz <- c('check','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb', 'att','lives','incdeaths','deaths','check',
-          'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
-          'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
+fnmz <- labdat[-1]
 
 SOC.F <- makeTfuns(SOC,fnmz)
 INT.F <- makeTfuns(INT,fnmz)
@@ -333,9 +361,9 @@ vrz.int <- showAllParmz(INT)
 vrz <- c(vrz.soc,
          vrz.int
 )
-vrz <- unique(vrz)
-A <- makeTestData(5e3,vrz)
 
+vrz <- unique(vrz) #NOTE
+A <- makeTestData(5e3,vrz)
 
 ## checks
 # SOC.F$checkfun(A) #NOTE OK
