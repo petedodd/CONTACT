@@ -519,3 +519,86 @@ make.ceac <- function(CEA,lamz){
     for(i in 1:length(crv)) crv[i] <- CEA[,mean(lamz[i]*Q-P>0)]
     crv
 }
+
+
+## additional table 2
+## --- cols:
+## CMR, UGA x SOC, INT
+## --- rows:
+## contacts = value //
+## TPT courses = tpt //
+## ATT courses = att //
+## prev TB = prevtb
+## inc TB = inctb
+## prev deaths = deaths-incdeaths
+## inc tb deaths = incdeaths
+## discounted LYL TODO //
+## ATT cost TODO
+## TPT cost TODO
+## total cost TODO //
+## ICER TODO
+
+
+
+## =========== output formatters
+Table2 <- function(dat){
+
+  ## mid/lo/hi
+  outa <- MLH(dat[,.(
+    Dcontacts,contacts.int,contacts.soc,
+    Dtpt,tpt.int,tpt.soc,
+    Datt,att.int,att.soc,
+    DLYL,LYL.int,LYL.soc,
+    Dprevtb,prevtb.int,prevtb.soc,
+    Dinctb,inctb.int,inctb.soc,
+    Dincdeaths,incdeaths.int,incdeaths.soc,
+    Dprevdeaths,prevdeaths.int,prevdeaths.soc,
+    Ddeaths,deaths.int,deaths.soc,
+    Dcost,cost.int,cost.soc
+  )])
+
+  ## more bespoke statistics
+  outi <- dat[,.(ICER.int= -mean(Dcost) / mean(DLYL))]
+
+  ## join
+  outs <- do.call(cbind,list(outa$M,outa$L,outa$H,outi)) #combine
+
+  ## pretty version
+  fac <- 1e3 #per fac index cases
+  pouts <- outs[,.(
+    Dcontacts = brkt(fac*Dcontacts.mid,fac*Dcontacts.lo,fac*Dcontacts.hi),
+    contacts.int = brkt(fac*contacts.int.mid,fac*contacts.int.lo,fac*contacts.int.hi),
+    contacts.soc = brkt(fac*contacts.soc.mid,fac*contacts.soc.lo,fac*contacts.soc.hi),
+    Dtpt = brkt(fac*Dtpt.mid,fac*Dtpt.lo,fac*Dtpt.hi),
+    tpt.int = brkt(fac*tpt.int.mid,fac*tpt.int.lo,fac*tpt.int.hi),
+    tpt.soc = brkt(fac*tpt.soc.mid,fac*tpt.soc.lo,fac*tpt.soc.hi),
+    Datt = brkt(fac*Datt.mid,fac*Datt.lo,fac*Datt.hi),
+    att.int = brkt(fac*att.int.mid,fac*att.int.lo,fac*att.int.hi),
+    att.soc = brkt(fac*att.soc.mid,fac*att.soc.lo,fac*att.soc.hi),
+    DLYL = brkt(fac*DLYL.mid,fac*DLYL.lo,fac*DLYL.hi),
+    LYL.int = brkt(fac*LYL.int.mid,fac*LYL.int.lo,fac*LYL.int.hi),
+    LYL.soc = brkt(fac*LYL.soc.mid,fac*LYL.soc.lo,fac*LYL.soc.hi),
+    Dprevtb = brkt(fac*Dprevtb.mid,fac*Dprevtb.lo,fac*Dprevtb.hi),
+    prevtb.int = brkt(fac*prevtb.int.mid,fac*prevtb.int.lo,fac*prevtb.int.hi),
+    prevtb.soc = brkt(fac*prevtb.soc.mid,fac*prevtb.soc.lo,fac*prevtb.soc.hi),
+    Dinctb = brkt(fac*Dinctb.mid,fac*Dinctb.lo,fac*Dinctb.hi),
+    inctb.int = brkt(fac*inctb.int.mid,fac*inctb.int.lo,fac*inctb.int.hi),
+    inctb.soc = brkt(fac*inctb.soc.mid,fac*inctb.soc.lo,fac*inctb.soc.hi),
+    Dincdeaths = brkt(fac*Dincdeaths.mid,fac*Dincdeaths.lo,fac*Dincdeaths.hi),
+    incdeaths.int = brkt(fac*incdeaths.int.mid,fac*incdeaths.int.lo,fac*incdeaths.int.hi),
+    incdeaths.soc = brkt(fac*incdeaths.soc.mid,fac*incdeaths.soc.lo,fac*incdeaths.soc.hi),
+    Dprevdeaths = brkt(fac*Dprevdeaths.mid,fac*Dprevdeaths.lo,fac*Dprevdeaths.hi),
+    prevdeaths.int = brkt(fac*prevdeaths.int.mid,fac*prevdeaths.int.lo,fac*prevdeaths.int.hi),
+    prevdeaths.soc = brkt(fac*prevdeaths.soc.mid,fac*prevdeaths.soc.lo,fac*prevdeaths.soc.hi),
+    Ddeaths = brkt(fac*Ddeaths.mid,fac*Ddeaths.lo,fac*Ddeaths.hi),
+    deaths.int = brkt(fac*deaths.int.mid,fac*deaths.int.lo,fac*deaths.int.hi),
+    deaths.soc = brkt(fac*deaths.soc.mid,fac*deaths.soc.lo,fac*deaths.soc.hi),
+    Dcost = brkt(fac*Dcost.mid,fac*Dcost.lo,fac*Dcost.hi),
+    cost.int = brkt(fac*cost.int.mid,fac*cost.int.lo,fac*cost.int.hi),
+    cost.soc = brkt(fac*cost.soc.mid,fac*cost.soc.lo,fac*cost.soc.hi)
+    )]
+
+  ## return value
+  list(outs=outs,pouts=pouts)
+}
+

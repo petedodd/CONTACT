@@ -56,14 +56,12 @@ print(notb,'p')
 ## Child contact not re-screened
 notscreened <- txt2tree(here('indata/Child.hh.contact.notscreened.txt')) #
 
-
-## TODO int.tbprev.symptomatic
-## TODO CDR, CDRi
-## TODO check TB tx costs
-## TODO check non-highlighted stuff
+## TODO parameters that need basing on trial data
+## int.tbprev.symptomatic
+## CDR, CDRi - WHO data, check the CDRi
+## check TB tx costs - these are currently inconsistently placed
 ## incdeath was including background - but doesn't matter as prob 0 - missing stuff
 ## soc.tbprev.symptomatic - same as int calculated from subtree
-
 ## soc.frac.symp
 ## soc.tbprev.symptomatic
 
@@ -190,7 +188,7 @@ SOC$name <- 'Facility-based model'
 ## # cost = cost
 ## # tpte = eligibility for TPT. (probably not useful?)
 ## # tpt = tpt initiation & completion (should these be separated?)#
-## # inctb = incident TB diagnosed
+## # inctb = incident TB diagnosed NOTE now assuming includes non-diagnosed
 ## # prevtb = coprevalent TB diagnosed
 ## # tbdxb = bacteriologically confirmed TB. (probably not useful?)
 ## # tbdxc = clinical TB diagnosed. (probably not useful?)
@@ -330,6 +328,7 @@ runallfuns <- function(D,arm='all'){
 
 
 ## ## --- CHECKS
+## NOTE these parts commented out are included in a newer version of HEdtree - install from github if experiencing errors
 
 ## ## NOTE these 2 now in HEdtree
 ## ## Getting this error:Error in showAllParmz(SOC) : could not find function "showAllParmz"

@@ -276,6 +276,8 @@ D[,value:=value * 3.4]
 ## 2) set int.frac.screened = 1, and soc.frac.screened = 2.0/3.4
 D[,c('soc.frac.screened','int.frac.screened'):=.(2.0/3.4,1.0)]
 
+## TODO approximate for now
+
 names(SOC.F)
 
 ## add cost data
@@ -287,6 +289,8 @@ D <- runallfuns(D,arm=arms)                      #appends anwers
 
 summary(D)
 
+
+
 ## --- run over different countries
 cnmz <- names(C) # C=cost PSA data
 cnmz <- cnmz[cnmz!=c('id')]
@@ -297,10 +301,18 @@ toget <- c('id',
            'deaths.soc','deaths.int',
            'LYS','LYS0','value'
            )
+toget2 <- c(toget,
+            'prevtb.soc','prevtb.int',
+            'inctb.soc','inctb.int',
+            'incdeaths.soc','incdeaths.int')
 notwt <- c('id','LYS','LYS0','value') #variables not to weight against value
 lyarm <- c('LYL.soc','LYL.int')
 lyarm <- c(lyarm,gsub('\\.','0\\.',lyarm)) #include undiscounted
 tosum <- c(setdiff(toget,notwt),lyarm)
+tosum2 <- c(tosum,
+            'prevtb.soc','prevtb.int',
+            'inctb.soc','inctb.int',
+            'incdeaths.soc','incdeaths.int')
 ## heuristic to scale top value for thresholds:
 heur <- c('id','value','deaths.int','deaths.soc')
 out <- D[,..heur]
@@ -311,26 +323,30 @@ lz <- seq(from = 0,to=topl,length.out = 1000) #threshold vector for CEACs
 
 ## containers & loop
 allout <- allpout <- list() #tabular outputs
+allout2 <- allpout2 <- list() #tabular outputs
 ceacl <- NMB <- list()             #CEAC outputs etc
+## NOTE I think there was an additional problem here -
+## because countries are contained as separate rows we were summing over both in the below computations
+## ie we were looping but then operating over data for both countries
 ## cn <- isoz[1]
 for(cn in isoz){
-  D[age=='0-4',]
+  dc <- D[isoz==cn]
   cat('running model for:',cn,'\n')
   ## --- costs
   ## drop previous costs
   # D <- D[age=='0-4',]
-  D[,c(cnmz):=NULL]
+  dc[,c(cnmz):=NULL]
   ## add cost data
   C <- MakeCostData(allcosts[iso3==cn],nreps) #make cost PSA
-  D <- merge(D,C,c('id'),all.x=TRUE)        #merge into PSA
+  dc <- merge(dc,C,c('id'),all.x=TRUE)        #merge into PSA
   ## --- DALYs
   ## drop any that are there
-  if('LYS' %in% names(D)) D[,c('LYS','LYS0'):=NULL]
-  D <- merge(D,LYKc[iso3==cn,.(age,LYS,LYS0)],by='age',all.x = TRUE)        #merge into PSA
+  if('LYS' %in% names(D)) dc[,c('LYS','LYS0'):=NULL]
+  dc <- merge(dc,LYKc[iso3==cn,.(age,LYS,LYS0)],by='age',all.x = TRUE)        #merge into PSA
   ## --- run model (quietly)
-  invisible(capture.output(D <- runallfuns(D,arm=arms)))
+  invisible(capture.output(dc <- runallfuns(dc,arm=arms)))
   ## --- grather outcomes
-  out <- D[,..toget]
+  out <- dc[,..toget]
   out[,c(lyarm):=.(LYS*deaths.soc,LYS*deaths.int,
                    LYS0*deaths.soc,LYS0*deaths.int)] #LYL per pop by arm
   ## out[,sum(value),by=id]                                       #CHECK
@@ -366,10 +382,40 @@ for(cn in isoz){
   ceacl[[cn]] <- data.table(iso3=cn,
                             int=make.ceac(out[,.(Q=-DLYL.int,P=Dcost.int)],lz),
                             threshold=lz)
+  ## --- grather outcomes for Table 2
+  out2 <- dc[,..toget2]
+  out2[,c(lyarm):=.(LYS*deaths.soc,LYS*deaths.int,
+                    LYS0*deaths.soc,LYS0*deaths.int)] #LYL per pop by arm
+  ## out[,sum(value),by=id]                                       #CHECK
+  ## TODO: check why the above is generating some NAs. Quick fix is using na.rm=TRUE
+  cntcts <- out2[,sum(value),by=id]
+  out2 <- out2[,lapply(.SD,function(x) sum(x*value, na.rm = T)),.SDcols=tosum2,by=id] #sum against popn
+  out2[,contacts.int:=cntcts$V1]
+  out2[,contacts.soc:=2.0] #TODO needs changing
+  out2[,c('LYL0.soc','LYL0.int'):=NULL] #drop
+  out2[,c('prevdeaths.soc','prevdeaths.int'):=.(deaths.soc-incdeaths.soc,deaths.int-incdeaths.int)]
+  ## increments
+  out2[,Dtpt:=tpt.int-tpt.soc]
+  out2[,Datt:=att.int-att.soc]
+  out2[,DLYL:=LYL.int-LYL.soc]
+  out2[,Dprevtb:=prevtb.int-prevtb.soc]
+  out2[,Dinctb:=inctb.int-inctb.soc]
+  out2[,Dincdeaths:=incdeaths.int-incdeaths.soc]
+  out2[,Dprevdeaths:=prevdeaths.int-prevdeaths.soc]
+  out2[,Ddeaths:=deaths.int-deaths.soc]
+  out2[,Dcontacts:=contacts.int-contacts.soc]
+  out2[,Dcost:=cost.int-cost.soc]
+  out2[,Dcontacts:=contacts.int-contacts.soc]
+  ## summarize
+  smy2 <- Table2(out2) #NOTE set per 1000 index cases or HHs - adjust fac in contact_functions.R
+  outs2 <- smy2$outs; pouts2 <- smy2$pouts;
+  outs2[,iso3:=cn]; pouts2[,iso3:=cn]
+  ## capture tabular
+  allout2[[cn]] <- outs2; allpout2[[cn]] <- pouts2
 }
 
 summary(D[,..toget])
-D[,.(isoz,age,F.u5,value)] # why are some values 0?
+D[,.(isoz,age,F.u5,value)] # why are some values 0? TODO BUG ?
 D[,summary(tpt.int/tpt.soc)]
 
 check1 <- names(labz)[4:14]
@@ -381,11 +427,16 @@ summary(D[,..odds])
 
 allout <- rbindlist(allout)
 allpout <- rbindlist(allpout)
+allout2 <- rbindlist(allout2)
+allpout2 <- rbindlist(allpout2)
+
 ceacl <- rbindlist(ceacl)
 NMB <- rbindlist(NMB)
 
 fwrite(allout,file=gh('outdata/allout.csv'))
 fwrite(allpout,file=gh('outdata/allpout.csv'))
+fwrite(allout2,file=gh('outdata/allout2.csv'))
+fwrite(allpout2,file=gh('outdata/allpout2.csv'))
 save(ceacl,file=gh('outdata/ceacl.Rdata'))
 save(NMB,file=gh('outdata/NMB.Rdata'))
 
