@@ -145,13 +145,14 @@ DENR <- melt(DENR, variable.name = 'isoz')
 
 # declared/enrolled plot
 DENRP <- DENR[grepl('per_index_case', metric), .(isoz, model,variable=metric, value)]
-
 DENRP <- DENRP[,variable:=gsub('_per_index_case', '',variable)]
+
 
 DENR <- DENR[,model:=toupper(model)]
 DENR <- DENR[model=='INT', metric:=paste('int.', metric, sep = '')]
 DENR <- DENR[model=='SOC', metric:=paste('soc.', metric, sep = '')]
 DENR <- DENR[grepl('enrolled.per.index', metric), .(isoz, variable=metric, care_model=model, value)]
+DENR <- DENR[,variable:=gsub('olled', '',variable)]
 
 DENR <- dcast(DENR, isoz~variable)
 PP <- merge(PP, DENR, by='isoz') # age disaggregated
@@ -272,9 +273,14 @@ head(INT.F$checkfun(D)) #INT arm
 ## enrolled/index = c(1835/558, 498/241) #3.4, 2.0
 
 ## 1) multiply value by 3.4 (or logical equivalent)
-D[,value:=value * 3.4]
+# D[,value:=value * 3.4]
+D[,value:=value * int.enr_per_index_case]  # applying coverage by country
+DENR  # child contacts enrolled per index by country. Huge difference in SOC
+DENR[,.(soc.screened=soc.enr_per_index_case/int.enr_per_index_case), by=.(isoz)]     # pooled data close to UGA specific hence no change to UGA result  
 ## 2) set int.frac.screened = 1, and soc.frac.screened = 2.0/3.4
-D[,c('soc.frac.screened','int.frac.screened'):=.(2.0/3.4,1.0)]
+# D[,c('soc.frac.screened','int.frac.screened'):=.(2.0/3.4,1.0)]
+D[,c('soc.frac.screened','int.frac.screened'):=.(soc.enr_per_index_case/int.enr_per_index_case,1.0)]
+
 
 ## TODO approximate for now
 
@@ -391,8 +397,9 @@ for(cn in isoz){
   cntcts <- out2[,sum(value),by=id]
   out2 <- out2[,lapply(.SD,function(x) sum(x*value, na.rm = T)),.SDcols=tosum2,by=id] #sum against popn
   out2[,contacts.int:=cntcts$V1]
-  out2[,contacts.soc:=2.0] #TODO needs changing
-  out2[,c('LYL0.soc','LYL0.int'):=NULL] #drop
+  # out2[,contacts.soc:=2.0] #TODO needs changing
+  out2[,contacts.soc:=ifelse(cn=='CMR', 1.202703, 1.941176)] # by country TODO needs checking
+    out2[,c('LYL0.soc','LYL0.int'):=NULL] #drop
   out2[,c('prevdeaths.soc','prevdeaths.int'):=.(deaths.soc-incdeaths.soc,deaths.int-incdeaths.int)]
   ## increments
   out2[,Dtpt:=tpt.int-tpt.soc]
@@ -414,16 +421,16 @@ for(cn in isoz){
   allout2[[cn]] <- outs2; allpout2[[cn]] <- pouts2
 }
 
-summary(D[,..toget])
-D[,.(isoz,age,F.u5,value)] # why are some values 0? TODO BUG ?
-D[,summary(tpt.int/tpt.soc)]
-
-check1 <- names(labz)[4:14]
-check1 <- c(paste0(check1,'.soc'), paste0(check1,'.int'))
-check2 <- names(labz)[14:21]
-summary(D[,..check1])
-odds <- names(D)[grepl('OR',names(D))]
-summary(D[,..odds])
+# summary(D[,..toget])
+# D[,.(isoz,age,F.u5,value)] # why are some values 0? TODO BUG ?
+# D[,summary(tpt.int/tpt.soc)]
+# 
+# check1 <- names(labz)[4:14]
+# check1 <- c(paste0(check1,'.soc'), paste0(check1,'.int'))
+# check2 <- names(labz)[14:21]
+# summary(D[,..check1])
+# odds <- names(D)[grepl('OR',names(D))]
+# summary(D[,..odds])
 
 allout <- rbindlist(allout)
 allpout <- rbindlist(allpout)
