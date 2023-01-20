@@ -1,27 +1,7 @@
-library(here)
-library(data.table)
-library(ggplot2)
-
-load(here('outdata/out.Rdata'))
-
-effects <- out[,.(tpt.ratio=tpt.int/tpt.soc,
-                  att.ratio=att.int/att.soc,
-                  deaths.ratio=deaths.int/deaths.soc,
-                  Ddeaths=deaths.int-deaths.soc,
-                  DLYL=LYL.int-LYL.soc,
-                  Dcost=cost.int-cost.soc)]
-
-summary(effects)
-
-## text:
-## 35% increase in tpt
-## 15% reduction in ATT
-## 22% reduction in deaths
-## diff: 1% of LYL
-
-## not much death
-
 ## Generate manuscript tables/results for CONTACT
+# rm(list=ls())
+library(here)
+library(tidyverse)
 
 ## load other scripts
 # source(here('R/contact_run.R'))           # call if there is need to generate results otherwise they're already available
@@ -82,30 +62,36 @@ fwrite(parameters1,file=here('outdata/tableS1.csv'))
 
 # Supplementary Table: Cascade of care parameters (aggregated)
 # Need ParmsTab2, 
-ParmsTab2 <- fread(gh('outdata/Parameters2.csv')) 
+# ParmsTab2 <- fread(gh('outdata/Parameters2.csv')) 
+ParmsTab2 <- fread(here('indata/proportions.csv'))
 
 ParmsTab2 <- ParmsTab2[,variable:=gsub('int.|soc.', '',variable)]
-ParmsTab2 <- dcast(ParmsTab2, country+isoz+variable~care_model)
+# ParmsTab2 <- dcast(ParmsTab2, country+isoz+variable~care_model)
 unique(ParmsTab2$variable)
-ParmsTab2 <- ParmsTab2[!variable %in% c('frac.bac.7d.noclin.dx','frac.bac.noclin.dx','frac.clin.7d.noclin.dx','frac.noclin.dx')]
-vars <- c('frac.screened','frac.rescreened',
-          'frac.asymp','frac.tpt.eligible','frac.tpt.initiated','frac.tpt.completed',
-          'frac.symp','frac.rescr.symp','frac.symp.attending',
-          'frac.bac.assess','frac.bac.dx','frac.bac.clin.dx','frac.clin.dx',
-          'frac.bac.7d.clin.dx','frac.clin.7d.clin.dx')
+ParmsTab2 <- ParmsTab2[!variable %in% c("frac.bac.noclin.dx" ,"frac.bac.7d.ass","frac.bac.7d.noclin.dx","frac.bac.7d.ltfu","frac.noclin.dx","frac.clin.7d.ass","frac.noclin.7d.dx","frac.clin.7d.ltfu","frac.tpt.not.assessed","frac.tpt.not.reassessed","frac.tpt.not.eligible","frac.tpt.not.reeligible",  "frac.pre.tpt.ltfu" ,"frac.pre.tpt.reltfu","frac.tpt.notcompleted")]
+unique(ParmsTab2$variable)
+length(unique(ParmsTab2$variable))
+vars <- c('frac.screened','frac.asymp','frac.symp',
+          'frac.need.rescr','frac.rescreened','frac.rescr.asymp','frac.rescr.symp',
+          'frac.tpt.assessed','frac.tpt.eligible','frac.tpt.initiated','frac.tpt.reassessed','frac.tpt.reeligible','frac.tpt.reinitiated','frac.tpt.completed',
+          'frac.symp.attending', "frac.tb.evaluation",
+          'frac.bac.assess','frac.bac.dx','frac.bac.clin.dx','frac.bac.7d.clin.dx','frac.clin.assess','frac.clin.dx',
+          'frac.clin.7d.dx')
 
-var_labs <- c('Screened for TB symptoms','Re-screened for TB symptoms',
-              'Negative for TB symptoms','frac.tpt.eligible','frac.tpt.initiated','frac.tpt.completed',
-              'Positive for TB symptoms','Positive for TB symptoms (@re-screening)','Attending facility referral',
-              'Bacteriological assessment','Bacteriological diagnosis','Clinical diagnosis after bacteriological assessment',
+var_labs <- c('Screened for TB symptoms','Negative screening','Positive screening',
+              'Need re-screening','Re-screened for TB symptoms','Negative re-screening','Positive re-screening',
+              'Assessed for TPT','Eligible for TPT','Initiated on TPT',
+              'Re-assessed for TPT','Re-eligible for TPT','Re-initiated on TPT','TPT completed',
+              'Attending facility referral',"Evaluated for TB",
+              'Bacteriological assessment','Bacteriological diagnosis','Clinical diagnosis after bacteriological assessment','Clinical diagnosis after bacteriological assessment & 7 days',
               'Clinical diagnosis without bacteriological assessment',
               'Clinical diagnosis after bacteriological assessment & 7 days','Clinical diagnosis without bacteriological assessment & 7 days')
 
 ParmsTab2$variable <- factor(ParmsTab2$variable, 
-                             levels = vars)   
-setorder(ParmsTab2, country, isoz, variable)
+                          levels = vars)   
+setorder(ParmsTab2, country, variable)
 
-ParmsTab2 <- cbind(ParmsTab2[isoz=='CMR',.(variable, Control=SOC, Intervention=INT)], ParmsTab2[isoz=='UGA', .(Control=SOC, Intervention=INT)])
+ParmsTab2 <- cbind(ParmsTab2[country=='Cameroon',.(variable, Control=SOC, Intervention=INT)], ParmsTab2[country=='Uganda', .(Control=SOC, Intervention=INT)])
 ParmsTab2$variable <- var_labs
 ParmsTab2
 fwrite(ParmsTab2,file=here('outdata/tableS2.csv'))
@@ -131,7 +117,7 @@ var_labs <- c('Screened for TB symptoms','Re-screened for TB symptoms',
               'Clinical diagnosis after bacteriological assessment & 7 days','Clinical diagnosis without bacteriological assessment & 7 days')
 
 ParmsTab2a$variable <- factor(ParmsTab2a$variable, 
-                              levels = vars)   
+                             levels = vars)   
 setorder(ParmsTab2a, country, isoz, variable)
 
 ParmsTab2a <- cbind(ParmsTab2a[isoz=='CMR',.(age, variable, Control=SOC, Intervention=INT)], ParmsTab2a[isoz=='UGA', .(Control=SOC, Intervention=INT)])
@@ -160,7 +146,7 @@ vars <- c('declared_per_index_case','enrolled_per_index_case','frac.enrolled.u5'
 var_labs <- c('Child contacts declared per index case','Child contacts enrolled per index case','Child contacts enrolled under 5 years','Child contacts enrolled HIV+','TB co-prevalence intervention','TB incidence intervention')
 
 ParmsTab3$metric <- factor(ParmsTab3$metric, 
-                           levels = vars)   
+                              levels = vars)   
 setorder(ParmsTab3, country, isoz, metric)
 
 ParmsTab3 <- cbind(ParmsTab3[isoz=='CMR',.(country, metric, Control, Intervention)], 
@@ -251,3 +237,83 @@ table2O_format <- cbind(merged[iso3=='CMR',.(variable, Control, Intervention, In
 table2O_format$variable <- var_labs
 table2O_format
 fwrite(table2O_format,file=here('outdata/table2O.csv'))
+
+#  All below is work in progress
+# Looking at CE plane & other metrics
+## ## scraps for development of below fn
+## data <- dc
+## Kmax <- 1e3
+## file.id <- 'test'
+## wtp <- 500
+
+## NOTE this is more illustrative for now
+## NOTE needs a folder called graphs/ creating (which is currently excluded from the repo)
+## some automatic CEA outputs
+file.id='KEN';Kmax=5e3;wtp=5e3;
+MakeCEAoutputs <- function(data,LY,
+                           file.id='',Kmax=5e3,wtp=5e3,
+                           arms=c('SOC','INT')){
+  data <- merge(D,LYK,by='age') #add age
+  DS <- d[isoz=='CMR',.(cost.SOC=sum(cost.soc*value),
+                        cost.INT=sum(cost.int*value),
+                        lyl.SOC=sum(deaths.soc*value*LYS),
+                        lyl.INT=sum(deaths.int*value*LYS)),
+          by=id] #PSA summary
+  
+  ## prep for BCEA
+  DS <- data.frame(psaout[iso3=='CMR',])
+  LYS <- CST <- matrix(nrow=nreps,ncol=2)
+  LYS[,1] <- 1-DS$lyl.SOC #NOTE this is life years lost
+  LYS[,2] <- 1-DS$lyl.INT
+  CST[,1] <- DS$cost.SOC
+  CST[,2] <- DS$cost.INT
+  ## BCEA outputs
+  M <- bcea(e=LYS,c=CST,interventions = arms,Kmax=Kmax)
+  print(summary(M))
+  
+  M$k[M$ceac>=0.5][1]
+  print(with(M,ceac[which(k==830)]))
+  print(with(M,ceac[which(k==1660) ]))
+  
+  print(with(M,ceac[which(k==430) ]))
+  print(with(M,ceac[which(k==860) ]))
+  
+  fn <- paste0(here('outdata/kstar_'),file.id,'.txt')
+  cat(M$kstar,file = fn)
+  fn <- paste0(here('outdata/ICER_'),file.id,'.txt')
+  cat(M$ICER,file = fn)
+  
+  ## NOTE may need more configuration
+  ceac.plot(M,graph='ggplot2') +
+    scale_x_continuous(label=comma) +
+    theme_classic() + ggpubr::grids()
+  fn <- paste0(here('graphs/CEAC_'),file.id,'.png')
+  ggsave(file=fn,w=7,h=7)
+  
+  ceplane.plot(M,graph='ggplot2',wtp=wtp,title = "")+
+    scale_x_continuous(label=comma) +
+    theme_classic() +
+    theme(legend.position = 'top') + ggpubr::grids()
+  fn <- paste0(here('graphs/CE_'),file.id,'.png')
+  ggsave(file=fn,w=7,h=7)
+  
+  eib.plot(M,graph='ggplot2',wtp=wtp) +
+    scale_x_continuous(label=comma) +
+    theme_classic() + ggpubr::grids()
+  fn <- paste0(here('graphs/EIB_'),file.id,'.png')
+  ggsave(file=fn,w=7,h=7)
+  
+  evi.plot(M,graph='ggplot2',wtp=wtp) +
+    scale_x_continuous(label=comma) +
+    theme_classic() + ggpubr::grids()
+  fn <- paste0(here('graphs/EVI_'),file.id,'.png')
+  ggsave(file=fn,w=7,h=7)
+  
+}
+
+psaout[[cn]] <- dc[,.(iso3=cn,
+                      cost.SOC=sum(cost.soc*value),
+                      cost.INT=sum(cost.int*value),
+                      lyl.SOC=sum(deaths.soc*value*LYS),
+                      lyl.INT=sum(deaths.int*value*LYS)),
+                   by=id] #PSA summary

@@ -139,8 +139,9 @@ AddDetectionLabels <- function(D){
   D[,CDRi:=0.6] #TODO placeholder for TB detection if household visited
   tmp <- eval(parse(text=INTtbprev),envir=D) #TODO unclear why 0?!
   tmp <- rep(0.03,length(tmp))               #TODO for testing - made up
-  D[,int.tbprev.symptomatic:=tmp] #TB prev in symptomatics, based on INT
-  D[,soc.tbprev.symptomatic := tmp]
+  # D[,int.tbprev.symptomatic:=tmp] #TB prev in symptomatics, based on INT
+  # D[,soc.tbprev.symptomatic := tmp]
+  D[,soc.tbprev.symptomatic := int.tbprev.symptomatic]
 }
 
 ## test <- eval(parse(text=INTtbprev),envir=D)
@@ -156,6 +157,15 @@ AddDataDrivenLabels <- function(D){
         # set model entry  to per 1 child contact 
         D[,int.enrolled_per_index_case:=1]
         D[,soc.enrolled_per_index_case:=1]
+        
+        # country specific intervention effects
+        
+        # D[,tpt.resultOR:=ifelse(isoz=='CMR', cmr.tpt.resultOR, uga.tpt.resultOR)]
+        # D[,tpt.initiationOR:=ifelse(isoz=='CMR', cmr.tpt.initiationOR, uga.tpt.initiationOR)]
+        # D[,tpt.completionOR:=ifelse(isoz=='CMR', cmr.tpt.completionOR, uga.tpt.completionOR)]
+        # D[,tb.resultOR:=ifelse(isoz=='CMR', cmr.tb.resultOR, uga.tb.resultOR)]
+        # D[,tb.diagnosisOR:=ifelse(isoz=='CMR', cmr.tb.diagnosisOR, uga.tb.diagnosisOR)]
+        
         # D[,int.enrolled_per_declared:=ifelse(age=='0-4', 0.91, 0.78)] # basically enrolled/(declared + not declared but identified)
         # D[,soc.enrolled_per_declared:=ifelse(age=='0-4', 0.82, 0.2)]
         # D[,soc.enrolled_per_declared:=ifelse(isoz=='CMR', 0.40, 0.67)]
@@ -383,7 +393,7 @@ MakeCEAoutputs <- function(data,LY,
                            file.id='',Kmax=5e3,wtp=5e3,
                            arms=c('SOC','INT')){
   data <- merge(data,LY,by='age') #add age
-  DS <- D[isoz=='UGA',.(cost.SOC=sum(cost.soc*value),
+  DS <- D[,.(cost.SOC=sum(cost.soc*value),
                 cost.INT=sum(cost.int*value),
                 lyl.SOC=sum(deaths.soc*value*LYS),
                 lyl.INT=sum(deaths.int*value*LYS)),
@@ -542,7 +552,7 @@ make.ceac <- function(CEA,lamz){
 
 ## =========== output formatters
 Table2 <- function(dat){
-
+  
   ## mid/lo/hi
   outa <- MLH(dat[,.(
     Dcontacts,contacts.int,contacts.soc,
@@ -554,15 +564,19 @@ Table2 <- function(dat){
     Dincdeaths,incdeaths.int,incdeaths.soc,
     Dprevdeaths,prevdeaths.int,prevdeaths.soc,
     Ddeaths,deaths.int,deaths.soc,
+    Dcost.screen,cost.screen.int,cost.screen.soc,
+    Dcost.tpt,cost.tpt.int,cost.tpt.soc,
+    Dcost.prev.att,cost.prev.att.int,cost.prev.att.soc,
+    Dcost.inc.att,cost.inc.att.int,cost.inc.att.soc,
     Dcost,cost.int,cost.soc
   )])
-
+  
   ## more bespoke statistics
   outi <- dat[,.(ICER.int= -mean(Dcost) / mean(DLYL))]
-
+  
   ## join
   outs <- do.call(cbind,list(outa$M,outa$L,outa$H,outi)) #combine
-
+  
   ## pretty version
   fac <- 1e3 #per fac index cases
   pouts <- outs[,.(
@@ -593,12 +607,24 @@ Table2 <- function(dat){
     Ddeaths = brkt(fac*Ddeaths.mid,fac*Ddeaths.lo,fac*Ddeaths.hi),
     deaths.int = brkt(fac*deaths.int.mid,fac*deaths.int.lo,fac*deaths.int.hi),
     deaths.soc = brkt(fac*deaths.soc.mid,fac*deaths.soc.lo,fac*deaths.soc.hi),
+    Dcost.screen = brkt(fac*Dcost.screen.mid,fac*Dcost.screen.lo,fac*Dcost.screen.hi),
+    cost.screen.int = brkt(fac*cost.screen.int.mid,fac*cost.screen.int.lo,fac*cost.screen.int.hi),
+    cost.screen.soc = brkt(fac*cost.screen.soc.mid,fac*cost.screen.soc.lo,fac*cost.screen.soc.hi),
+    Dcost.tpt = brkt(fac*Dcost.tpt.mid,fac*Dcost.tpt.lo,fac*Dcost.tpt.hi),
+    cost.tpt.int = brkt(fac*cost.tpt.int.mid,fac*cost.tpt.int.lo,fac*cost.tpt.int.hi),
+    cost.tpt.soc = brkt(fac*cost.tpt.soc.mid,fac*cost.tpt.soc.lo,fac*cost.tpt.soc.hi),
+    Dcost.prev.att = brkt(fac*Dcost.prev.att.mid,fac*Dcost.prev.att.lo,fac*Dcost.prev.att.hi),
+    cost.prev.att.int = brkt(fac*cost.prev.att.int.mid,fac*cost.prev.att.int.lo,fac*cost.prev.att.int.hi),
+    cost.prev.att.soc = brkt(fac*cost.prev.att.soc.mid,fac*cost.prev.att.soc.lo,fac*cost.prev.att.soc.hi),
+    Dcost.inc.att = brkt(fac*Dcost.inc.att.mid,fac*Dcost.inc.att.lo,fac*Dcost.inc.att.hi),
+    cost.inc.att.int = brkt(fac*cost.inc.att.int.mid,fac*cost.inc.att.int.lo,fac*cost.inc.att.int.hi),
+    cost.inc.att.soc = brkt(fac*cost.inc.att.soc.mid,fac*cost.inc.att.soc.lo,fac*cost.inc.att.soc.hi),
     Dcost = brkt(fac*Dcost.mid,fac*Dcost.lo,fac*Dcost.hi),
     cost.int = brkt(fac*cost.int.mid,fac*cost.int.lo,fac*cost.int.hi),
-    cost.soc = brkt(fac*cost.soc.mid,fac*cost.soc.lo,fac*cost.soc.hi)
-    )]
-
+    cost.soc = brkt(fac*cost.soc.mid,fac*cost.soc.lo,fac*cost.soc.hi),
+    ICER.int=round(ICER.int,0)
+  )]
+  
   ## return value
   list(outs=outs,pouts=pouts)
 }
-

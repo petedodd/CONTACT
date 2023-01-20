@@ -1,0 +1,13 @@
+country,cascade_cost,SOC,INT
+Cameroon,TB symptom screening,15.09 (1.76),32.93 (24.02)
+Cameroon,Co-prevalent TB investigations,46.83 (16.28),39.61 (15.04)
+Cameroon,Co-prevalent TB treatment,93.01 (10.85),93.01 (10.85)
+Cameroon,TPT,90.44 (47.46),123.65 (83.74)
+Cameroon,Incident TB investigations,54.9 (34.26),60.24 (39.88)
+Cameroon,Incident TB treatment,93.01 (10.85),93.01 (10.85)
+Uganda,TB symptom screening,15.03 (2.14),22.73 (8.32)
+Uganda,Co-prevalent TB investigations,35.42 (8.73),30.54 (12.4)
+Uganda,Co-prevalent TB treatment,149.19 (22.29),149.19 (22.29)
+Uganda,TPT,82.3 (31.51),147.86 (29.11)
+Uganda,Incident TB investigations,13.43 (NA),13.43 (NA)
+Uganda,Incident TB treatment,149.19 (22.29),149.19 (22.29)

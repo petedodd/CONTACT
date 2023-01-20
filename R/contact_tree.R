@@ -1,4 +1,4 @@
-rm(list=ls())
+# rm(list=ls())
 library(here)
 library(HEdtree)
 library(discly)
@@ -210,7 +210,7 @@ tree2file(SOC,filename = here('indata/CSV/SOC.csv'),
           'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
           'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
 
-labdat <- c('p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb',
+labdat <- c('p','cost','cost.screen',	'cost.tpt','cost.prev.att','cost.inc.att','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb',
             'att','lives','incdeaths','deaths','check',
             'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
             'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
@@ -238,7 +238,7 @@ if(file.exists(fn)){
         ## SOC$Set(TB.treated=labz$TB.treated)
   ## save out
   tree2file(SOC,filename = here('indata/CSV/SOC2.csv'),
-            'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb',
+            'p','cost','cost.screen',	'cost.tpt','cost.prev.att','cost.inc.att','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb',
             'att','lives','incdeaths','deaths','check',
             'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
             'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
@@ -282,7 +282,7 @@ if(file.exists(fn)){
         ## INT$Set(TB.treated=labz$TB.treated)
   ## save out
   tree2file(INT,filename = here('indata/CSV/INT2.csv'),
-            'p','cost','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb',
+            'p','cost','cost.screen',	'cost.tpt','cost.prev.att','cost.inc.att','tpte', 'tpt', 'inctb','tbdxc','tbdxb', 'prevtb',
             'att','lives','incdeaths','deaths','check',
             'TPT.screened','TPT.asymptomatic','TPT.eligible','TPT.treated',
             'TB.symptoms','TB.evaluated','TB.diagnosed','TB.treated')
