@@ -1,25 +1,25 @@
 country,rando,cascade,cascade_cost,cost.m,cost.sd,cost.lo,cost.hi
-Cameroon,INT,att_coprev,Co-prevalent TB treatment,8.51,40.5,0,117.18
-Cameroon,SOC,att_coprev,Co-prevalent TB treatment,0,0,0,0
-Cameroon,INT,att_inc,Incident TB treatment,56.26,134.36,0,364.03
-Cameroon,SOC,att_inc,Incident TB treatment,0,0,0,0
-Cameroon,INT,inv_coprev,Co-prevalent TB investigations,42.45,17.67,12.53,72.95
-Cameroon,SOC,inv_coprev,Co-prevalent TB investigations,38.51,12.96,18.25,65.16
-Cameroon,INT,inv_inc,Incident TB investigations,48.46,37.02,14.74,127.31
-Cameroon,SOC,inv_inc,Incident TB investigations,63.28,46.43,29.79,162.68
-Cameroon,INT,screening,Household contact investigations,32.93,24.02,16.91,91.48
-Cameroon,SOC,screening,Household contact investigations,15.09,1.76,12.29,18.86
-Cameroon,INT,tpt,TPT,602.98,411.05,0,1322.7
-Cameroon,SOC,tpt,TPT,243.95,144.96,20.57,517.6
-Uganda,SOC,att_coprev,Co-prevalent TB treatment,10.11,41.7,0,103.16
-Uganda,INT,att_coprev,Co-prevalent TB treatment,33.21,84.06,0,259.37
-Uganda,INT,att_inc,Incident TB treatment,161.17,,161.17,161.17
-Uganda,SOC,inv_coprev,Co-prevalent TB investigations,37.43,9.22,20.31,50.13
-Uganda,INT,inv_coprev,Co-prevalent TB investigations,34.76,15.78,13.02,60.64
-Uganda,INT,inv_inc,Incident TB investigations,11.73,,11.73,11.73
-Uganda,SOC,screening,Household contact investigations,15.03,2.14,12.08,18.59
-Uganda,INT,screening,Household contact investigations,22.73,8.32,16.75,29
-Uganda,SOC,tpt,TPT,224.86,130.81,10.36,649.6
-Uganda,INT,tpt,TPT,658.84,160.5,133.56,943.94
-Uganda,SOC,att_inc,Incident TB treatment,161.17,,161.17,161.17
-Uganda,SOC,inv_inc,Incident TB investigations,11.73,,11.73,11.73
+Cameroon,INT,screening,TB symptom screening,32.93,24.02,16.91,91.48
+Cameroon,INT,inv_coprev,Co-prevalent TB investigations,39.61,15.04,15.16,71.81
+Cameroon,INT,att_coprev,Co-prevalent TB treatment,93.0079,21.7085597739693,0,95.72
+Cameroon,INT,tpt,TPT,123.65,83.74,0,234.12
+Cameroon,INT,inv_inc,Incident TB investigations,60.24,39.88,15.27,133.18
+Cameroon,INT,att_inc,Incident TB treatment,93.0079,21.7085597739693,0,125.18
+Cameroon,SOC,screening,TB symptom screening,15.09,1.76,12.29,18.87
+Cameroon,SOC,inv_coprev,Co-prevalent TB investigations,46.83,16.28,21.73,81.38
+Cameroon,SOC,att_coprev,Co-prevalent TB treatment,93.0079,21.7085597739693,0,0
+Cameroon,SOC,tpt,TPT,90.44,47.46,20.57,208.18
+Cameroon,SOC,inv_inc,Incident TB investigations,54.9,34.26,27.09,128.77
+Cameroon,SOC,att_inc,Incident TB treatment,93.0079,21.7085597739693,0,0
+Uganda,INT,screening,TB symptom screening,22.73,8.32,16.75,28.99
+Uganda,INT,inv_coprev,Co-prevalent TB investigations,30.54,12.4,13.71,55.65
+Uganda,INT,att_coprev,Co-prevalent TB treatment,149.1886,44.5818918783176,0,182.96
+Uganda,INT,tpt,TPT,147.86,29.11,53.52,187.64
+Uganda,INT,inv_inc,Incident TB investigations,13.43,,13.43,13.43
+Uganda,INT,att_inc,Incident TB treatment,149.1886,44.5818918783176,116.75,116.75
+Uganda,SOC,screening,TB symptom screening,15.03,2.14,12.08,18.59
+Uganda,SOC,inv_coprev,Co-prevalent TB investigations,35.42,8.73,24.46,52.1
+Uganda,SOC,att_coprev,Co-prevalent TB treatment,149.1886,44.5818918783176,0,95.7
+Uganda,SOC,tpt,TPT,82.3,31.51,6.98,150.95
+Uganda,SOC,inv_inc,Incident TB investigations,13.43,,13.43,13.43
+Uganda,SOC,att_inc,Incident TB treatment,149.1886,44.5818918783176,116.75,116.75

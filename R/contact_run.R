@@ -18,7 +18,7 @@ if(shell){
   ## 'discr'='base'/'lo'/'hi'
   ## 'cdr' = making cdr higher for incidence
   ## 'txd' = making the completion influence tx/pt outcome
-  sacases <- c('','lo','tptru','hicoprev')
+  sacases <- c('','lo','tptru','hicoprev', 'ctryeff','ugaattcsts', 'cdr')
   SA <- sacases[1]
 }
 
@@ -118,13 +118,15 @@ tmp <- INTE %>%
   separate(lo,c("lo","hi"),"-") %>%
   mutate_at(c("mid", "lo","hi"), as.numeric)
 
+tmp <- setDT(tmp)
 tmp1 <- getLNparms(tmp[,mid],(tmp[,hi]-tmp[,lo])^2/3.92^2,med=FALSE)
 tmp[,DISTRIBUTION:=paste0("LN(",tmp1$mu,",",tmp1$sig,")")] #LN distributions
 
 INTE[,DISTRIBUTION:=tmp$DISTRIBUTION]
 INTE[DISTRIBUTION=='LN(NA,NA)', DISTRIBUTION:=NA]
 
-ParmsTab3 <- INTE     # save for later use in creating parameter tables for Appendix
+
+ParmsTab3 <- copy(INTE)     # save for later use in creating parameter tables for Appendix
 ParmsTab3[,DISTRIBUTION:=paste0("LN(",round(tmp1$mu,5),",",round(tmp1$sig,5),")")] #LN distributions
 fwrite(ParmsTab3,file=here('outdata/Parameters3.csv'))
 
@@ -204,8 +206,9 @@ TBPREV[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
 TBPREV <- TBPREV[,.(isoz, tb_prev)]
 names(TBPREV) <- c('isoz', 'int.tbprev.symptomatic')
 
-if(SA=='hicoprev'){
+if(SA=='hicoprev'){       
   TBPREV[,int.tbprev.symptomatic:=0.1]              # higher co-prevalence of tuberculosis disease among household child contacts (10%?)
+                                                    # 10% (5.0–18.9%) in children < 5 years & 8.4% (2.8–22.6%) for children 5-14 years
 }
 
 # pull together 
@@ -218,8 +221,9 @@ PPA[,age:=rep(agelevels,each=nrow(PPA)/2)]
 
 # adding study data on: frac u5, HIV prevalence and ART coverage
 # currently using CMR data
-# TODO: figure out how to add country and model of care specific data
+
 names(INTE) <- names(PD0)
+INTE <- INTE[INTE$DISTRIBUTION!="",]
 PD0 <- rbind(PD0, age_split, INTE)
 
 PD0 <- PD0[!is.na(PD0$DISTRIBUTION),]
@@ -239,17 +243,58 @@ D <- makePSA(nreps,P,dbls = list(c('hivartOR:mn','hivartOR:sg')))
 ## }
 ## D[['d.OR.dh.if.TB']] <- exp(log(D[['d.OR.dh.if.TB']]) + rnorm(nreps)/5)
 
-
 ## use these parameters to construct input data by attribute
 D <- makeAttributes(D)
 D[,sum(value),by=.(isoz,id)] #CHECK
 # D[tb!='noTB',sum(value),by=id] #CHECK
 D[,sum(value),by=.(isoz,id,age)] #CHECK
 
+load(file=here('outdata/CDR.Rdata')) #CDR
+
+## make PSA for country CDRs
+CDRs <- CDR[qty=='cdr']
+CDRs <- CDRs[rep(1:nrow(CDRs),each=max(D$id))]
+CDRs[,id:=rep(1:max(D$id),nrow(CDRs)/max(D$id))]
+CDRs[,sz:=value*(1-value)/cdr.v-1]
+CDRs[,c('a','b'):=.(sz*value,sz*(1-value))]
+CDRs[,cdr0:=rbeta(nrow(CDRs),a,b)]
+CDRs[,cdr:=cdr0] #basecase
+# CDRs[,mn:=value*(1+runif(nrow(CDRs)))]  
+# CDRs[,mn:=pmin(mn,1)]
+# CDRs[,cdri:=rbeta(nrow(CDRs),mn*cdr.v,(1-mn)*cdr.v)] # TB detection if household visited
+CDRs[,cdri:=aCDR(value,cdr.v)] # TB detection if household visited
+if(SA=='cdr'){   #sensitivity analysis
+  CDRs[,cdr:=runif(nrow(CDRs))]
+  CDRs[,cdr:=cdr0*(1-cdr) + cdr] #interpolate between cdr0 & 1
+}
+CDRs[,summary(cdr)]
+CDRs[iso3=='CMR',summary(cdr)]
+CDRs[iso3=='UGA',summary(cdr)]
+
+CDRs[,summary(cdr)]*1.5
+CDRs[iso3=='CMR',summary(cdr)]*1.5
+CDRs[iso3=='UGA',summary(cdr)]*1.5
+
+## merge in CDRs
+D <- merge(D,CDRs[,.(isoz=iso3,age,id,cdr,cdri)],by=c('isoz','age','id'))
 # D <- rbind(D,D)
 # D[,isoz:=rep(c('CMR','UGA'),each=nrow(D)/2)]
 # D <- merge(D,PP,by=c('isoz', 'age'),all.x = TRUE)
-D <- merge(D,PP,by=c('isoz', 'age'),all.x = TRUE)
+D <- merge(D,PPA,by=c('isoz', 'age'),all.x = TRUE)
+
+
+# TODO: figure out how to add country and model of care specific data
+
+if(SA=='ctryeff'){
+  D[,tpt.resultOR:=ifelse(isoz=='CMR', cmr.tpt.resultOR, uga.tpt.resultOR)]
+  D[,tpt.initiationOR:=ifelse(isoz=='CMR', cmr.tpt.initiationOR, uga.tpt.initiationOR)]
+  D[,tpt.completionOR:=ifelse(isoz=='CMR', cmr.tpt.completionOR, uga.tpt.completionOR)]
+  D[,tb.resultOR:=ifelse(isoz=='CMR', cmr.tb.resultOR, uga.tb.resultOR)]
+  D[,tb.diagnosisOR:=ifelse(isoz=='CMR', cmr.tb.diagnosisOR, uga.tb.diagnosisOR)]
+}
+
+
+
 ## read and make cost data
 # csts <- fread(here('indata/testcosts.csv'))         #read cost data
 # rcsts <- fread(gh('indata/model_mean_total_costs_age.csv'))    #read cost data
@@ -273,7 +318,7 @@ D <- merge(D,PP,by=c('isoz', 'age'),all.x = TRUE)
 # C <- MakeCostData(allcosts[iso3=='CMR'],nreps)               #make cost PSA NOTE using CMR cost data
 
 # rcsts <- fread(gh('indata/model_mean_total_costs.csv'))    #read cost data
-rcsts <- fread(gh('indata/model_mean_total_costs_2.csv'))    #read revised cost data
+rcsts <- fread(gh('indata/model_mean_total_costs.csv'))    #read revised cost data
 
 if(SA=='tptru'){
   rcsts <- fread(gh('indata/model_mean_total_costs_red.csv'))    #read cost data
@@ -281,6 +326,12 @@ if(SA=='tptru'){
 
 names(rcsts)
 
+if(SA=='ugaattcsts'){
+rcsts <- rcsts[!(country=='Uganda' & cascade %in% cascade[grepl('att', cascade)]),]
+tmp <- rcsts[country=='Cameroon' & cascade %in% cascade[grepl('att', cascade)],]
+tmp <- tmp[, country:='Uganda']
+rcsts <- rbind(rcsts, tmp)
+}
 # rcsts[, age:=ifelse(age_cat=='u5', '0-4', '5-14')]
 rcsts[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
 
@@ -357,6 +408,7 @@ D <- runallfuns(D,arm=arms)                      #appends anwers
 summary(D)
 
 
+
 ## --- run over different countries
 cnmz <- names(C) # C=cost PSA data
 cnmz <- cnmz[cnmz!=c('id')]
@@ -396,6 +448,7 @@ allout <- allpout <- list() #tabular outputs
 allout2 <- allpout2 <- list() #tabular outputs
 ceacl <- NMB <- list()             #CEAC outputs etc
 psaout <- psapout <- list()
+parmsout <- parmsout <- list()
 ## NOTE I think there was an additional problem here -
 ## because countries are contained as separate rows we were summing over both in the below computations
 ## ie we were looping but then operating over data for both countries
@@ -493,14 +546,33 @@ for(cn in isoz){
   outs2[,iso3:=cn]; pouts2[,iso3:=cn]
   ## capture tabular
   allout2[[cn]] <- outs2; allpout2[[cn]] <- pouts2
-  
+  ## capture data for NMB
+  # NMB2[[cn]] <- out2[,.(iso3=cn,DLYL,Dcost)]
+  # psaout1[[cn]] <- out2[,.(iso3=cn,cost.soc,cost.int,LYL.soc,LYL.int,DLYL,Dcost)]
+  # ## ceac data
+  # ceacl2[[cn]] <- data.table(iso3=cn,
+  #                           int=make.ceac(out2[,.(Q=-DLYL,P=Dcost)],lz),
+  #                           threshold=lz)
   psaout[[cn]] <- dc[,.(iso3=cn,
-               cost.SOC=sum(cost.soc*value),
-               cost.INT=sum(cost.int*value),
-               lyl.SOC=sum(deaths.soc*value*LYS),
-               lyl.INT=sum(deaths.int*value*LYS)),
-           by=id] #PSA summary
-
+                        cost.soc=sum(cost.soc*value),
+                        cost.int=sum(cost.int*value),
+                        lyl.soc=sum(deaths.soc*value*LYS),
+                        lyl.int=sum(deaths.int*value*LYS)),
+                     by=.(id, isoz, age)] #PSA summary
+  
+  
+  parms_epicalc <- c('cfr.notx','cfr.tx', 'p.tbdx.1yr', 'tptRR', 'CDR', 'CDRi')
+  parms_inteff <- c('tpt.resultOR','tpt.initiationOR','tpt.completionOR','tb.resultOR','tb.diagnosisOR')
+  parms_cstssoc <- vrz[grepl('c.soc', vrz)]
+  parms_cstsint <- vrz[grepl('c.int', vrz)]
+  
+  vars <- c(parms_epicalc, parms_inteff, parms_cstssoc, parms_cstsint) 
+  parms <- dc[,lapply(.SD,function(x) mean(x, na.rm = T)),.SDcols=vars,by=.(id, isoz, age)]
+  # parms <- cbind(dc[,.(id, iso3=isoz, age)],
+  #                dc[,..vars])
+  parms[,iso3:=cn]
+  parms[,isoz:=NULL]
+  parmsout[[cn]] <- parms
 }
 
 # summary(D[,..toget])
@@ -519,6 +591,7 @@ allpout <- rbindlist(allpout)
 allout2 <- rbindlist(allout2)
 allpout2 <- rbindlist(allpout2)
 psaout <- rbindlist(psaout)
+parmsout <- rbindlist(parmsout)
 
 ceacl <- rbindlist(ceacl)
 NMB <- rbindlist(NMB)
@@ -596,7 +669,7 @@ ggsave(GP,file=gh('plots/CEAC1') + SA + '.png',w=7,h=5)
 # ## because countries are contained as separate rows we were summing over both in the below computations
 # ## ie we were looping but then operating over data for both countries
 # ## cn <- isoz[1]
-# 
+#
 # for(cn in isoz){
   # dc <- D[isoz==cn & age=='0-4']
 #   cat('running model for:',cn,'0-4 years\n')
@@ -622,9 +695,9 @@ ggsave(GP,file=gh('plots/CEAC1') + SA + '.png',w=7,h=5)
 #   out <- out[,lapply(.SD,function(x) sum(x*value, na.rm = T)),.SDcols=tosum,by=id] #sum against popn
 #   ## non-incremental cost per ATT
 #   out[,costperATT.soc:=cost.soc/att.soc];
-#   out[,costperATT.int:=cost.int/att.int]; 
+#   out[,costperATT.int:=cost.int/att.int];
 #   out[,costperTPT.soc:=cost.soc/tpt.soc];
-#   out[,costperTPT.int:=cost.int/tpt.int]; 
+#   out[,costperTPT.int:=cost.int/tpt.int];
 #   ## increments wrt SOC (per child screened at either facility/household)
 #   out[,Dcost.int:=cost.int-cost.soc];  #inc costs
 #   out[,Datt.int:=att.int-att.soc];  #inc atts
@@ -674,7 +747,7 @@ ggsave(GP,file=gh('plots/CEAC1') + SA + '.png',w=7,h=5)
 #   out2[,Ddeaths:=deaths.int-deaths.soc]
 #   out2[,Dcontacts:=contacts.int-contacts.soc]
 #   # out2[,cost.att.soc:=cost.soc/att.soc];
-#   # out2[,cost.att.int:=cost.int/att.int]; 
+#   # out2[,cost.att.int:=cost.int/att.int];
 #   # out2[,cost.tpt.soc:=cost.soc/tpt.soc];
 #   # out2[,cost.tpt.int:=cost.int/tpt.int];
 #   out2[,Dcost.screen:=cost.screen.int-cost.screen.soc]
@@ -682,67 +755,67 @@ ggsave(GP,file=gh('plots/CEAC1') + SA + '.png',w=7,h=5)
 #   out2[,Dcost.prev.att:=cost.prev.att.int-cost.prev.att.soc]
 #   out2[,Dcost.inc.att:=cost.inc.att.int-cost.inc.att.soc]
 #   out2[,Dcost:=cost.int-cost.soc]
-#   
+#
 #   ## summarize
 #   smy2 <- Table2(out2) #NOTE set per 1000 index cases or HHs - adjust fac in contact_functions.R
 #   outs2 <- smy2$outs; pouts2 <- smy2$pouts;
 #   outs2[,iso3:=cn]; pouts2[,iso3:=cn]
 #   ## capture tabular
 #   allout2[[cn]] <- outs2; allpout2[[cn]] <- pouts2
-#   
+#
 #   psaout[[cn]] <- dc[,.(iso3=cn,
 #                         cost.SOC=sum(cost.soc*value),
 #                         cost.INT=sum(cost.int*value),
 #                         lyl.SOC=sum(deaths.soc*value*LYS),
 #                         lyl.INT=sum(deaths.int*value*LYS)),
 #                      by=id] #PSA summary
-#   
+#
 # }
-# 
-# 
+#
+#
 # # summary(D[,..toget])
 # # D[,.(isoz,age,F.u5,value)] # why are some values 0? TODO BUG ?
 # # D[,summary(tpt.int/tpt.soc)]
-# # 
+# #
 # # check1 <- names(labz)[4:14]
 # # check1 <- c(paste0(check1,'.soc'), paste0(check1,'.int'))
 # # check2 <- names(labz)[14:21]
 # # summary(D[,..check1])
 # # odds <- names(D)[grepl('OR',names(D))]
 # # summary(D[,..odds])
-# 
+#
 # allout <- rbindlist(allout)
 # allpout <- rbindlist(allpout)
 # allout2 <- rbindlist(allout2)
 # allpout2 <- rbindlist(allpout2)
 # psaout <- rbindlist(psaout)
-# 
+#
 # ceacl <- rbindlist(ceacl)
 # NMB <- rbindlist(NMB)
-# 
+#
 # fwrite(allout,file=gh('outdata/alloutY') + SA + '.csv')
 # fwrite(allpout,file=gh('outdata/allpoutY') + SA + '.csv')
 # fwrite(allout2,file=gh('outdata/allout2Y') + SA + '.csv')
 # fwrite(allpout2,file=gh('outdata/allpout2Y') + SA + '.csv')
 # save(ceacl,file=gh('outdata/ceaclY') + SA + '.Rdata')
 # save(NMB,file=gh('outdata/NMBY') + SA + '.Rdata')
-# 
+#
 # ICERSY <- allpout[,.(iso3,ICER=ICER.int)]
 # fwrite(ICERSY,file=gh('outdata/ICERSY') + SA + '.csv')
-# 
+#
 # ## CEAC plot
 # cbPalette <- c("#999999", "#E69F00", "#56B4E9","#009E73",
 #                         "#F0E442", "#0072B2","#D55E00", "#CC79A7")
-#                         
+#
 # ceaclm <- melt(ceacl,id=c('iso3','threshold'))
 # ceaclm[,Intervention:=ifelse(variable=='int','Intervention','SOC')]
-# 
+#
 # ## name key
 # ckey <- data.table(iso3=c('CMR','UGA'),
 #                    country=c('Cameroon','Uganda'))
-# 
+#
 # ceaclm <- merge(ceaclm,ckey,by='iso3',all.x=TRUE)
-# 
+#
 # ## plot
 # GP <- ggplot(ceaclm,aes(threshold,value,
 #                         col=country,lty=Intervention)) +
@@ -754,10 +827,10 @@ ggsave(GP,file=gh('plots/CEAC1') + SA + '.png',w=7,h=5)
 #   xlab('Cost-effectiveness threshold (USD/DALY)')+
 #   scale_colour_manual(values=cbPalette)
 # GP
-#                         
+#
 # ggsave(GP,file=gh('plots/CEACY') + SA + '.png',w=7,h=5)
-#                         
-#                         
+#
+#
 # ## plot
 # GP <- ggplot(ceaclm[variable=='int'],aes(threshold,value,
 #                                          col=country)) +
@@ -769,11 +842,11 @@ ggsave(GP,file=gh('plots/CEAC1') + SA + '.png',w=7,h=5)
 #   xlab('Cost-effectiveness threshold (USD/DALY)')+
 #   scale_colour_manual(values=cbPalette) ## + xlim(x=c(0,1500))
 # GP
-#                         
+#
 # ggsave(GP,file=gh('plots/CEAC1Y') + SA + '.png',w=7,h=5)
-# 
+#
 # ## --- 5-14 YEARS
-# 
+#
 # ## containers & loop
 # allout <- allpout <- list() #tabular outputs
 # allout2 <- allpout2 <- list() #tabular outputs
@@ -783,7 +856,7 @@ ggsave(GP,file=gh('plots/CEAC1') + SA + '.png',w=7,h=5)
 # ## because countries are contained as separate rows we were summing over both in the below computations
 # ## ie we were looping but then operating over data for both countries
 # ## cn <- isoz[1]
-# 
+#
 # for(cn in isoz){
 #   dc <- D[isoz==cn & age=='5-14']
 #   cat('running model for:',cn,'5-14 years\n')
@@ -810,9 +883,9 @@ ggsave(GP,file=gh('plots/CEAC1') + SA + '.png',w=7,h=5)
 #   out <- out[,lapply(.SD,function(x) sum(x*value, na.rm = T)),.SDcols=tosum,by=id] #sum against popn
 #   ## non-incremental cost per ATT
 #   out[,costperATT.soc:=cost.soc/att.soc];
-#   out[,costperATT.int:=cost.int/att.int]; 
+#   out[,costperATT.int:=cost.int/att.int];
 #   out[,costperTPT.soc:=cost.soc/tpt.soc];
-#   out[,costperTPT.int:=cost.int/tpt.int]; 
+#   out[,costperTPT.int:=cost.int/tpt.int];
 #   ## increments wrt SOC (per child screened at either facility/household)
 #   out[,Dcost.int:=cost.int-cost.soc];  #inc costs
 #   out[,Datt.int:=att.int-att.soc];  #inc atts
@@ -862,7 +935,7 @@ ggsave(GP,file=gh('plots/CEAC1') + SA + '.png',w=7,h=5)
 #   out2[,Ddeaths:=deaths.int-deaths.soc]
 #   out2[,Dcontacts:=contacts.int-contacts.soc]
 #   # out2[,cost.att.soc:=cost.soc/att.soc];
-#   # out2[,cost.att.int:=cost.int/att.int]; 
+#   # out2[,cost.att.int:=cost.int/att.int];
 #   # out2[,cost.tpt.soc:=cost.soc/tpt.soc];
 #   # out2[,cost.tpt.int:=cost.int/tpt.int];
 #   out2[,Dcost.screen:=cost.screen.int-cost.screen.soc]
@@ -870,68 +943,68 @@ ggsave(GP,file=gh('plots/CEAC1') + SA + '.png',w=7,h=5)
 #   out2[,Dcost.prev.att:=cost.prev.att.int-cost.prev.att.soc]
 #   out2[,Dcost.inc.att:=cost.inc.att.int-cost.inc.att.soc]
 #   out2[,Dcost:=cost.int-cost.soc]
-#   
+#
 #   ## summarize
 #   smy2 <- Table2(out2) #NOTE set per 1000 index cases or HHs - adjust fac in contact_functions.R
 #   outs2 <- smy2$outs; pouts2 <- smy2$pouts;
 #   outs2[,iso3:=cn]; pouts2[,iso3:=cn]
 #   ## capture tabular
 #   allout2[[cn]] <- outs2; allpout2[[cn]] <- pouts2
-#   
+#
 #   psaout[[cn]] <- dc[,.(iso3=cn,
 #                         cost.SOC=sum(cost.soc*value),
 #                         cost.INT=sum(cost.int*value),
 #                         lyl.SOC=sum(deaths.soc*value*LYS),
 #                         lyl.INT=sum(deaths.int*value*LYS)),
 #                      by=id] #PSA summary
-#   
+#
 # }
-# 
-# 
+#
+#
 # # summary(D[,..toget])
 # # D[,.(isoz,age,F.u5,value)] # why are some values 0? TODO BUG ?
 # # D[,summary(tpt.int/tpt.soc)]
-# # 
+# #
 # # check1 <- names(labz)[4:14]
 # # check1 <- c(paste0(check1,'.soc'), paste0(check1,'.int'))
 # # check2 <- names(labz)[14:21]
 # # summary(D[,..check1])
 # # odds <- names(D)[grepl('OR',names(D))]
 # # summary(D[,..odds])
-# 
+#
 # allout <- rbindlist(allout)
 # allpout <- rbindlist(allpout)
 # allout2 <- rbindlist(allout2)
 # allpout2 <- rbindlist(allpout2)
 # psaout <- rbindlist(psaout)
-# 
+#
 # ceacl <- rbindlist(ceacl)
 # NMB <- rbindlist(NMB)
-# 
+#
 # fwrite(allout,file=gh('outdata/alloutO') + SA + '.csv')
 # fwrite(allpout,file=gh('outdata/allpoutO') + SA + '.csv')
 # fwrite(allout2,file=gh('outdata/allout2O') + SA + '.csv')
 # fwrite(allpout2,file=gh('outdata/allpout2O') + SA + '.csv')
 # save(ceacl,file=gh('outdata/ceaclY') + SA + '.Rdata')
 # save(NMB,file=gh('outdata/NMBY') + SA + '.Rdata')
-# 
-# 
+#
+#
 # ICERSO <- allpout[,.(iso3,ICER=ICER.int)]
 # fwrite(ICERSO,file=gh('outdata/ICERSO') + SA + '.csv')
-# 
+#
 # ## CEAC plot
 # cbPalette <- c("#999999", "#E69F00", "#56B4E9","#009E73",
 #                         "#F0E442", "#0072B2","#D55E00", "#CC79A7")
-#                         
+#
 # ceaclm <- melt(ceacl,id=c('iso3','threshold'))
 # ceaclm[,Intervention:=ifelse(variable=='int','Intervention','SOC')]
-# 
+#
 # ## name key
 # ckey <- data.table(iso3=c('CMR','UGA'),
 #                    country=c('Cameroon','Uganda'))
-# 
+#
 # ceaclm <- merge(ceaclm,ckey,by='iso3',all.x=TRUE)
-# 
+#
 # ## plot
 # GP <- ggplot(ceaclm,aes(threshold,value,
 #                         col=country,lty=Intervention)) +
@@ -943,10 +1016,10 @@ ggsave(GP,file=gh('plots/CEAC1') + SA + '.png',w=7,h=5)
 #   xlab('Cost-effectiveness threshold (USD/DALY)')+
 #   scale_colour_manual(values=cbPalette)
 # GP
-# 
+#
 # ggsave(GP,file=gh('plots/CEACO') + SA + '.png',w=7,h=5)
-# 
-# 
+#
+#
 # ## plot
 # GP <- ggplot(ceaclm[variable=='int'],aes(threshold,value,
 #                                          col=country)) +
@@ -958,5 +1031,6 @@ ggsave(GP,file=gh('plots/CEAC1') + SA + '.png',w=7,h=5)
 #   xlab('Cost-effectiveness threshold (USD/DALY)')+
 #   scale_colour_manual(values=cbPalette) ## + xlim(x=c(0,1500))
 # GP
-# 
+#
 # ggsave(GP,file=gh('plots/CEAC1O') + SA + '.png',w=7,h=5)
+ICERS

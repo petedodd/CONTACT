@@ -135,13 +135,26 @@ AddTPTrr <- function(D,P){
 
 ## new parameters as part of reach work
 AddDetectionLabels <- function(D){
-  D[,CDR:=0.4] #TODO placeholder for background TB detection
-  D[,CDRi:=0.6] #TODO placeholder for TB detection if household visited
+  # D[,CDR:=ifelse(isoz=='CMR', 0.1878, 0.6190)] # fixed to mean background TB detection
+  # D[,CDRi:=CDR*1.5] # TB detection if household visited - upscale background mean by a factor of 1.5
+  D[,CDR:=cdr] #TODO country-specific background TB detection sampled from a beta distribution
+  # D[,CDRi:=pmin(cdr*1.5,1)] #TODO TB detection if household visited based on adjusted country-specific background TB detection
+  D[,CDRi:=cdri] #TODO TB detection if household visited based on adjusted country-specific background TB detection
   tmp <- eval(parse(text=INTtbprev),envir=D) #TODO unclear why 0?!
   tmp <- rep(0.03,length(tmp))               #TODO for testing - made up
   # D[,int.tbprev.symptomatic:=tmp] #TB prev in symptomatics, based on INT
   # D[,soc.tbprev.symptomatic := tmp]
   D[,soc.tbprev.symptomatic := int.tbprev.symptomatic]
+}
+
+## == case detection
+aCDR <- function(mn,ab){
+  mn <- mn*(1 + runif(length(mn))) #CDR adjustment 2
+  mn <- pmin(mn,1)
+  a <- mn*ab
+  b <- (1-mn)*ab
+  rbeta(n=length(mn),shape1 = a,shape2 = b)
+  ## 0.4
 }
 
 ## test <- eval(parse(text=INTtbprev),envir=D)
@@ -204,11 +217,33 @@ AddDataDrivenLabels <- function(D){
         # # # AOR(D$tb.resultOR[1]*logit(PPA$soc.frac.symp))
         D[,int.frac.symp:=AOR(soc.frac.symp, tb.resultOR)]
         D[,int.frac.rescr.symp:=AOR(soc.frac.rescr.symp, tb.resultOR)]
+        
+ 
+        D[,soc.frac.bac.clin.dx:=0]
+        D[,soc.frac.bac.7d.clin.dx:=0]
+        D[,soc.frac.clin.dx:=0]
+        D[,soc.frac.clin.7d.clin.dx:=0]
+        
+        # D[,soc.frac.bac.dx:=ifelse(isoz=='CMR', 1/267, 1/230)]
+        # D[,int.frac.bac.dx:=AOR(soc.frac.bac.dx, tb.diagnosisOR)]
+        # D[,soc.frac.bac.dx:=ifelse(isoz=='CMR', 0, 1/230)]
+        
+        D[,soc.frac.bac.dx:=AOR(soc.frac.bac.dx, 1/tb.diagnosisOR)]
         D[,int.frac.bac.dx:=AOR(soc.frac.bac.dx, tb.diagnosisOR)]
-        D[,int.frac.bac.clin.dx:=AOR(soc.frac.bac.clin.dx, tb.diagnosisOR)]
-        D[,int.frac.bac.7d.clin.dx:=AOR(soc.frac.bac.7d.clin.dx, tb.diagnosisOR)]
-        D[,int.frac.clin.dx:=AOR(soc.frac.clin.dx, tb.diagnosisOR)]
-        D[,int.frac.clin.7d.clin.dx:=AOR(soc.frac.clin.7d.clin.dx, tb.diagnosisOR)]
+        
+        # D[,int.frac.bac.clin.dx:=AOR(soc.frac.bac.clin.dx, tb.diagnosisOR)]
+        # D[,int.frac.bac.7d.clin.dx:=AOR(soc.frac.bac.7d.clin.dx, tb.diagnosisOR)]
+        # D[,int.frac.clin.dx:=AOR(soc.frac.clin.dx, tb.diagnosisOR)]
+        # D[,int.frac.clin.7d.clin.dx:=AOR(soc.frac.clin.7d.clin.dx, tb.diagnosisOR)]
+        
+       
+        
+        
+        # D[,int.frac.bac.dx:=ifelse(isoz=='CMR', int.frac.bac.dx, AOR(soc.frac.bac.dx, tb.diagnosisOR))]
+        # D[,int.frac.bac.clin.dx:=ifelse(isoz=='CMR', int.frac.bac.clin.dx, AOR(soc.frac.bac.clin.dx, tb.diagnosisOR))]
+        # D[,int.frac.bac.7d.clin.dx:=ifelse(isoz=='CMR', int.frac.bac.7d.clin.dx, AOR(soc.frac.bac.7d.clin.dx, tb.diagnosisOR))]
+        # D[,int.frac.clin.dx:=ifelse(isoz=='CMR', int.frac.clin.dx, AOR(soc.frac.clin.dx, tb.diagnosisOR))]
+        # D[,int.frac.clin.7d.clin.dx:=ifelse(isoz=='CMR', int.frac.clin.7d.clin.dx,AOR(soc.frac.clin.7d.clin.dx, tb.diagnosisOR))]
         
         # hard coded
         # TPT cascade
@@ -230,6 +265,8 @@ AddDataDrivenLabels <- function(D){
         
         # other parameters
         # fraction not attending facility referral
+        D[,soc.frac.symp.attending:=1]
+        D[,int.frac.symp.attending:=ifelse(isoz=='CMR', 74.4/100, 96.5/100)]
         D[,soc.frac.symp.ltfu:=(1-soc.frac.symp.attending)]
         D[,int.frac.symp.ltfu:=(1-int.frac.symp.attending)]
         

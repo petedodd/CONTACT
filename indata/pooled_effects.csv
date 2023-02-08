@@ -1,6 +1,6 @@
 NAME,DISTRIBUTION,MEDIAN (IQR),DESCRIPTION,SOURCE,NOTES,CATEGORY,"WORKING NOTES, QUERIES, ACTIONS",NOTES - CONTACT STUDY
 tpt.screeningOR,,,Proportion of children screened for TB among declared child contacts < 15 years old ,CONTACT study ,,,,
-tpt.resultOR,,0.42 (0.42 - 6.20),Proportion of children with a final negative screening result,CONTACT study ,Extracted from text in main draft,,,
+tpt.resultOR,,1.61 (0.42 - 6.20),Proportion of children with a final negative screening result,CONTACT study ,Extracted from text in main draft,,,
 tpt.initiationOR,,0.79 (0.15 - 4.28),Proportion of children started on TPT among child contacts screened for TB (enrolled contacts),CONTACT study ,Extracted from text in main draft,,,
 tpt.completionOR,,5.47 (1.68 - 17.82),Proportion of children who completed TPT among enrolled contacts started on TPT,CONTACT study ,Extracted from text in main draft,,,
 tb.screeningOR,,5.08 (2.17 - 11.90),Proportion of child contacts screened for TB among declared child contacts  < 15 years old ,CONTACT study ,Extracted from text in main draft,,,

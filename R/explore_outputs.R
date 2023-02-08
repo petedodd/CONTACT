@@ -272,11 +272,11 @@ MakeCEAoutputs <- function(data,LY,
   print(summary(M))
   
   M$k[M$ceac>=0.5][1]
-  print(with(M,ceac[which(k==830)]))
-  print(with(M,ceac[which(k==1660) ]))
+  print(with(M,ceac[which(k==750)]))
+  print(with(M,ceac[which(k==1500) ]))
   
-  print(with(M,ceac[which(k==430) ]))
-  print(with(M,ceac[which(k==860) ]))
+  print(with(M,ceac[which(k==410) ]))
+  print(with(M,ceac[which(k==820) ]))
   
   fn <- paste0(here('outdata/kstar_'),file.id,'.txt')
   cat(M$kstar,file = fn)

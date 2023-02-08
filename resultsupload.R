@@ -91,14 +91,18 @@ sa.hi <- fread(here('outdata/ICERShi.csv'))
 sa.lo <- fread(here('outdata/ICERSlo.csv'))
 sa.tptru <- fread(here('outdata/ICERStptru.csv'))
 sa.hicoprev <- fread(here('outdata/ICERShicoprev.csv'))
+sa.ctryeff <- fread(here('outdata/ICERSctryeff.csv'))
+sa.cdr <- fread(here('outdata/ICERScdr.csv'))
 
 names(sa.base)[2] <- 'Base case'
 names(sa.hi)[2] <- '5% discount rate'
 names(sa.lo)[2] <- '0% discount rate'
 names(sa.tptru)[2] <- 'Baseline resource use (TPT visits)'
 names(sa.hicoprev)[2] <- 'Higher co-prevalence of tuberculosis disease'
+names(sa.ctryeff)[2] <- 'Country specific intervention effects'
+names(sa.cdr)[2] <- 'Higher case detection rates for incidence'
 
-SAll <- Reduce(merge,list(sa.base,sa.hi,sa.lo,sa.tptru,sa.hicoprev))
+SAll <- Reduce(merge,list(sa.base,sa.hi,sa.lo,sa.tptru,sa.hicoprev, sa.cdr,sa.ctryeff))
 
 write_sheet(SAll,shidneat,sheet="SAll")
 
@@ -110,9 +114,9 @@ write_sheet(ParmsTable1,shidneat,sheet="ParmsTab1RAW")
 # Other parameter tables
 flz1 <- c(
  "tableS1.csv",   "tableS2.csv","tableS2a.csv",
- "tableS3.csv", "tableS4.csv")
+ "tableS3.csv", "tableS4.csv", "allpout2.csv")
 for( fn in flz1)
-  upload.to.sheets(here('outdata/'),fn,shidneat)
+  upload.to.sheets(here('outdata//'),fn,shidneat)
 
 
 
