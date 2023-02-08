@@ -228,7 +228,7 @@ AddDataDrivenLabels <- function(D){
         # D[,int.frac.bac.dx:=AOR(soc.frac.bac.dx, tb.diagnosisOR)]
         # D[,soc.frac.bac.dx:=ifelse(isoz=='CMR', 0, 1/230)]
         
-        D[,soc.frac.bac.dx:=AOR(soc.frac.bac.dx, 1/tb.diagnosisOR)]
+        D[,soc.frac.bac.dx:=AOR(int.frac.bac.dx, 1/tb.diagnosisOR)]
         D[,int.frac.bac.dx:=AOR(soc.frac.bac.dx, tb.diagnosisOR)]
         
         # D[,int.frac.bac.clin.dx:=AOR(soc.frac.bac.clin.dx, tb.diagnosisOR)]
