@@ -249,7 +249,11 @@ D[,sum(value),by=.(isoz,id)] #CHECK
 # D[tb!='noTB',sum(value),by=id] #CHECK
 D[,sum(value),by=.(isoz,id,age)] #CHECK
 
-load(file=here('outdata/CDR.Rdata')) #CDR
+if(!file.exists(here('outdata/CDR.Rdata'))){
+  source(here('R/tb_cdr.R'))
+} else {
+  load(file=here('outdata/CDR.Rdata')) #CDR
+}
 
 ## make PSA for country CDRs
 CDRs <- CDR[qty=='cdr']
