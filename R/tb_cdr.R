@@ -58,6 +58,17 @@ H
 hfn <- here('outdata/H.Rdata')
 save(H,file=hfn)
 
+## HIV/ART
+fn <- whodir+'TB_notifications_2023-02-02.csv'
+HA <- fread(fn)
+HA <- HA[iso3 %in% isoz & year==max(year),.(iso3,newrel_hivtest,newrel_hivpos,newrel_art)]
+HA[,.(iso3,newrel_hivpos/newrel_hivtest,newrel_art/newrel_hivpos)]
+HA[,hivprop:=newrel_hivpos/newrel_hivtest]
+HA[,artprop:=newrel_art/newrel_hivpos]
+HA
+
+hfn <- here('outdata/HA.Rdata')
+save(HA,file=hfn)
 
 ## === merge data
 AN <- merge(NP[,.(iso3,sex,age,notes=value)],

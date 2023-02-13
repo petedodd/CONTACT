@@ -18,7 +18,7 @@ if(shell){
   ## 'discr'='base'/'lo'/'hi'
   ## 'cdr' = making cdr higher for incidence
   ## 'txd' = making the completion influence tx/pt outcome
-  sacases <- c('','lo','tptru','hicoprev', 'ctryeff','ugaattcsts', 'cdr')
+  sacases <- c('','lo','tptru','hicoprev', 'ctryeff','ugaattcsts', 'cdr', 'hivprev')
   SA <- sacases[1]
 }
 
@@ -41,7 +41,6 @@ artlevels <- c(0,1)
 agelevels <- c('0-4','5-14')
 isoz <- c('CMR','UGA') #relevant countries
 
-
 ## --- life years and other outputs NOTE needs to be set FALSE on first run thru
 LYSdone <- TRUE
 if(!LYSdone){
@@ -59,6 +58,7 @@ if(!LYSdone){
   load(file=here('indata/LYK.Rdata'))
 }
 
+# Sensitivity analysis: 0% & 5% discount rates
 if(SA %in% c('hi','lo')){
   LYKc[,LYS:=ifelse(SA=='lo', LYS0, 
                     ifelse(SA=='hi',LYS5, LYS))]  
@@ -170,6 +170,26 @@ library(readxl)
 base_popn <- data.table(read_excel(here("indata/Baseline information.xlsx"), sheet = 'Sheet1', range = 'Z13:AB17'))
 base_popn <- melt(base_popn, variable.name = 'isoz')
 age_split <- base_popn[grepl('enrolled.', metric), .(isoz, variable=metric, value)]
+age_split <- age_split[,variable:=gsub('enrolled.', '',variable)]
+
+# Adding in HIV/ART data - basically just ART data for now
+if(!file.exists(here('outdata/HA.Rdata'))){
+  source(here('R/tb_cdr.R'))
+} else {
+  load(file=here('outdata/HA.Rdata')) #CDR
+}
+
+# merge in WHO HIV/ART data 
+tmp <- HA[,.(isoz, frac.hiv=hivprop, artcov=artprop)]
+tmp <- melt(tmp, id.vars = 'isoz')
+tmp_splits <- rbind(age_split, tmp[variable!='frac.hiv',])
+
+# if(SA=='popnhivprev'){       
+#   tmp_splits <- rbind(age_split[variable!='frac.hiv',], tmp)
+# }
+
+age_split <- tmp_splits
+
 age_split <- age_split[isoz=='CMR', variable:=paste('cmr.', variable, sep = '')]
 age_split <- age_split[isoz=='UGA', variable:=paste('uga.', variable, sep = '')]
 
@@ -181,7 +201,6 @@ names(tmp) <- names(PD0)
 tmp <- tmp[,NAME:=age_split$variable]
 tmp <- tmp[,DISTRIBUTION:=age_split$value]
 age_split <- copy(tmp)
-age_split <- age_split[,NAME:=gsub('enrolled.', '',NAME)]
 
 # commented CODE below not working
 
@@ -206,9 +225,10 @@ TBPREV[, isoz:=ifelse(country=='Uganda', 'UGA', 'CMR')]
 TBPREV <- TBPREV[,.(isoz, tb_prev)]
 names(TBPREV) <- c('isoz', 'int.tbprev.symptomatic')
 
+# Sensitivity analysis: # higher co-prevalence of tuberculosis disease among household child contacts (10%?)
+# 10% (5.0–18.9%) in children < 5 years & 8.4% (2.8–22.6%) for children 5-14 years
 if(SA=='hicoprev'){       
-  TBPREV[,int.tbprev.symptomatic:=0.1]              # higher co-prevalence of tuberculosis disease among household child contacts (10%?)
-                                                    # 10% (5.0–18.9%) in children < 5 years & 8.4% (2.8–22.6%) for children 5-14 years
+  TBPREV[,int.tbprev.symptomatic:=0.1]              
 }
 
 # pull together 
@@ -243,12 +263,23 @@ D <- makePSA(nreps,P,dbls = list(c('hivartOR:mn','hivartOR:sg')))
 ## }
 ## D[['d.OR.dh.if.TB']] <- exp(log(D[['d.OR.dh.if.TB']]) + rnorm(nreps)/5)
 
+# Sensitivity analysis: CONTACT study observed HIV prevalence - very low
+# CMR: 0.005576; UGA: 0.006361
+if(SA=='hivprev'){
+  D[,hivprev.u5:=0.01]
+  D[,hivprev.o5:=hivprev.u5]
+}
+
 ## use these parameters to construct input data by attribute
 D <- makeAttributes(D)
 D[,sum(value),by=.(isoz,id)] #CHECK
 # D[tb!='noTB',sum(value),by=id] #CHECK
 D[,sum(value),by=.(isoz,id,age)] #CHECK
 
+summary(D[,.(hivprev.u5, hivprev.o5)])
+summary(D[,.(cmr.frac.hiv, uga.frac.hiv)])
+
+# Country specific case detection rates based on WHO TB data
 if(!file.exists(here('outdata/CDR.Rdata'))){
   source(here('R/tb_cdr.R'))
 } else {
@@ -267,13 +298,18 @@ CDRs[,cdr:=cdr0] #basecase
 # CDRs[,mn:=pmin(mn,1)]
 # CDRs[,cdri:=rbeta(nrow(CDRs),mn*cdr.v,(1-mn)*cdr.v)] # TB detection if household visited
 CDRs[,cdri:=aCDR(value,cdr.v)] # TB detection if household visited
-if(SA=='cdr'){   #sensitivity analysis
-  CDRs[,cdr:=runif(nrow(CDRs))]
-  CDRs[,cdr:=cdr0*(1-cdr) + cdr] #interpolate between cdr0 & 1
+
+# Sensitivity analysis: higher CDRs
+if(SA=='cdr'){   
+  CDRs[,cdri:=runif(nrow(CDRs))]
+  CDRs[,cdri:=cdr0*(1-cdri) + cdri] #interpolate between cdr0 & 1
+  CDRs[,cdri:=pmin(cdri*1.5,1)]
 }
 CDRs[,summary(cdr)]
 CDRs[iso3=='CMR',summary(cdr)]
 CDRs[iso3=='UGA',summary(cdr)]
+CDRs[iso3=='CMR',summary(cdri)]
+CDRs[iso3=='UGA',summary(cdri)]
 
 CDRs[,summary(cdr)]*1.5
 CDRs[iso3=='CMR',summary(cdr)]*1.5
@@ -286,9 +322,7 @@ D <- merge(D,CDRs[,.(isoz=iso3,age,id,cdr,cdri)],by=c('isoz','age','id'))
 # D <- merge(D,PP,by=c('isoz', 'age'),all.x = TRUE)
 D <- merge(D,PPA,by=c('isoz', 'age'),all.x = TRUE)
 
-
-# TODO: figure out how to add country and model of care specific data
-
+# Sensitivity analysis: applying country specific intervention effects
 if(SA=='ctryeff'){
   D[,tpt.resultOR:=ifelse(isoz=='CMR', cmr.tpt.resultOR, uga.tpt.resultOR)]
   D[,tpt.initiationOR:=ifelse(isoz=='CMR', cmr.tpt.initiationOR, uga.tpt.initiationOR)]
@@ -296,8 +330,6 @@ if(SA=='ctryeff'){
   D[,tb.resultOR:=ifelse(isoz=='CMR', cmr.tb.resultOR, uga.tb.resultOR)]
   D[,tb.diagnosisOR:=ifelse(isoz=='CMR', cmr.tb.diagnosisOR, uga.tb.diagnosisOR)]
 }
-
-
 
 ## read and make cost data
 # csts <- fread(here('indata/testcosts.csv'))         #read cost data
@@ -324,12 +356,14 @@ if(SA=='ctryeff'){
 # rcsts <- fread(gh('indata/model_mean_total_costs.csv'))    #read cost data
 rcsts <- fread(gh('indata/model_mean_total_costs.csv'))    #read revised cost data
 
+# Sensitivity analysis: applying reduced TPT visits 
 if(SA=='tptru'){
   rcsts <- fread(gh('indata/model_mean_total_costs_red.csv'))    #read cost data
 }
 
 names(rcsts)
 
+# Sensitivity analysis: applying reduced att costs in Uganda
 if(SA=='ugaattcsts'){
 rcsts <- rcsts[!(country=='Uganda' & cascade %in% cascade[grepl('att', cascade)]),]
 tmp <- rcsts[country=='Cameroon' & cascade %in% cascade[grepl('att', cascade)],]
@@ -379,7 +413,6 @@ D[,.(isoz,age,soc.frac.screened,tb.screeningOR,int.frac.screened)]
 head(SOC.F$checkfun(D)) #SOC arm
 head(INT.F$checkfun(D)) #INT arm
 
-
 ## === REACH LOGIC
 ## Logic for coverage etc:
 ## index: 558, 341 (int/soc)
@@ -397,7 +430,6 @@ DENR[,.(soc.screened=soc.enr_per_index_case/int.enr_per_index_case), by=.(isoz)]
 # D[,c('soc.frac.screened','int.frac.screened'):=.(2.0/3.4,1.0)]
 D[,c('soc.frac.screened','int.frac.screened'):=.(soc.enr_per_index_case/int.enr_per_index_case,1.0)]
 
-
 ## TODO approximate for now
 
 names(SOC.F)
@@ -409,9 +441,7 @@ D <- merge(D,C,by=c('id'),all.x=TRUE)       #merge into PSA
 arms <- c('SOC','INT')
 D <- runallfuns(D,arm=arms)                      #appends anwers
 
-summary(D)
-
-
+# summary(D)
 
 ## --- run over different countries
 cnmz <- names(C) # C=cost PSA data
@@ -580,15 +610,15 @@ for(cn in isoz){
 }
 
 # summary(D[,..toget])
-# D[,.(isoz,age,F.u5,value)] # why are some values 0? TODO BUG ?
-# D[,summary(tpt.int/tpt.soc)]
-# 
-# check1 <- names(labz)[4:14]
-# check1 <- c(paste0(check1,'.soc'), paste0(check1,'.int'))
-# check2 <- names(labz)[14:21]
-# summary(D[,..check1])
-# odds <- names(D)[grepl('OR',names(D))]
-# summary(D[,..odds])
+D[,.(isoz,age,F.u5,value)] # why are some values 0? TODO BUG ?
+D[,summary(tpt.int/tpt.soc)]
+
+check1 <- names(labz)[4:14]
+check1 <- c(paste0(check1,'.soc'), paste0(check1,'.int'))
+check2 <- names(labz)[14:21]
+summary(D[,..check1])
+odds <- names(D)[grepl('OR',names(D))]
+summary(D[,..odds])
 
 allout <- rbindlist(allout)
 allpout <- rbindlist(allpout)
